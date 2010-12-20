@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+  <persistence-unit name="natty" transaction-type="RESOURCE_LOCAL">
+    <provider>oracle.toplink.essentials.PersistenceProvider</provider>
+    <class>com.sun.demo.jpa.Player</class>
+    <class>com.sun.demo.jpa.Team</class>
+    <class>ru.natty.persist.Track</class>
+    <class>ru.natty.persist.Album</class>
+    <class>ru.natty.persist.Genre</class>
+    <class>ru.natty.persist.Artist</class>
+    <properties>
+      <property name="toplink.jdbc.user" value="superrobot"/>
+      <property name="toplink.jdbc.password" value="robotsuper"/>
+      <property name="toplink.jdbc.url" value="jdbc:postgresql://93.175.0.190:5432/natty/public"/>
+      <property name="toplink.jdbc.driver" value="org.postgresql.Driver"/>
+    </properties>
+  </persistence-unit>
+</persistence>
