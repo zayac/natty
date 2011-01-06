@@ -47,41 +47,6 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.doxia</groupId>
-        <artifactId>doxia-maven-plugin</artifactId>
-  	<version>${doxiaVersion}</version>
-  	<executions>
-    	  <execution>
-      	    <phase>pre-site</phase>
-      	    <goals>
-	      <goal>render-books</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <books>
-            <book>
-	      <directory>docs/postgresql/setup</directory>
-	      <descriptor>docs/postgresql/setup.apt</descriptor>
-	      <formats>
-	        <format>
-	          <id>latex</id>
-	        </format>
-	        <format>
-	          <id>xdoc</id>
-	        </format>
-	        <format>
-	          <id>pdf</id>
-	        </format>
-	        <format>
-	          <id>rtf</id>
-	        </format>
-	      </formats>
-            </book>
-          </books>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
