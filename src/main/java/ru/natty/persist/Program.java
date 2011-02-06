@@ -19,20 +19,24 @@ public class Program {
         EntityManager em = emf.createEntityManager();
 
         em.getTransaction().begin();
+        Genre gen = new Genre(1111, "rock");
+        em.persist(gen);
 
-        Query q = em.createNamedQuery ("Artist.findByName");
-        q.setParameter ("name", "miclucha maklay");
-        Artist mik = (Artist)q.getSingleResult();
-        System.out.print ("\n\n" +  mik.getName () + "\n\n");
-
-        Track t = new Track ("Artivasto winter");
-        mik.addTrack (t);
-        t.setArtist (mik);//It's a thing to improve,
-                          //because I have to do such thing, but I shouldn't
-
-        em.persist (mik);
+//        Query q = em.createNamedQuery ("Artist.findByName");
+//        q.setParameter ("name", "miclucha maklay");
+//        Artist mik = (Artist)q.getSingleResult();
+//        System.out.print ("\n\n" +  mik.getName () + "\n\n");
+//
+//        Track t = new Track ("Artivasto winter");
+//        mik.addTrack (t);
+//        t.setArtist (mik);//It's a thing to improve,
+//                          //because I have to do such thing, but I shouldn't
+//
+//        em.persist (mik);
 
         em.getTransaction().commit();
+
+
 
         em.close();
         emf.close();

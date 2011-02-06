@@ -23,7 +23,7 @@ import javax.persistence.Table;
  * @author zayac
  */
 @Entity
-@Table(name = "genre", catalog = "natty", schema = "public")
+@Table(name = "genre")
 @NamedQueries({
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),

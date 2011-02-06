@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
  * @author zayac
  */
 @Entity
-@Table(name = "album", catalog = "natty", schema = "public")
+@Table(name = "album")
 @NamedQueries({
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
