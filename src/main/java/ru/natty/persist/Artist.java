@@ -7,134 +7,115 @@ package ru.natty.persist;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  *
- * @author necto
+ * @author zayac
  */
 @Entity
-@Table(name = "artist")
-@NamedQueries(
-{
+@Table(name = "artist", catalog = "natty", schema = "public")
+@NamedQueries({
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
-    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")
-})
+    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "id", nullable=false)
-    @GeneratedValue
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.PERSIST)
+    @JoinTable(name = "tracks_artists", joinColumns = {
+        @JoinColumn(name = "artist_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "track_id", referencedColumnName = "id")})
+    @ManyToMany
     private Collection<Track> trackCollection;
-    @JoinColumn(name = "genre", referencedColumnName = "id")
-    @ManyToOne
-    private Genre genre;
+    @JoinTable(name = "artists_genres", joinColumns = {
+        @JoinColumn(name = "artist_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "genre_id", referencedColumnName = "id")})
+    @ManyToMany
+    private Collection<Genre> genreCollection;
 
-    public Artist ()
-    {
-        trackCollection = new HashSet();
+    public Artist() {
     }
 
-    public Artist (Integer id)
-    {
-        trackCollection = new HashSet();
+    public Artist(Integer id) {
         this.id = id;
     }
 
-    public Artist (Integer id, String name)
-    {
-        trackCollection = new HashSet();
+    public Artist(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Artist (String name)
-    {
-        trackCollection = new HashSet();
-        this.name = name;
-    }
-
-    public Integer getId ()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public void setId (Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName ()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName (String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Collection<Track> getTrackCollection ()
-    {
+    public Collection<Track> getTrackCollection() {
         return trackCollection;
     }
 
-    public void setTrackCollection (Collection<Track> trackCollection)
-    {
+    public void setTrackCollection(Collection<Track> trackCollection) {
         this.trackCollection = trackCollection;
     }
 
-    public void addTrack (Track t)
-    {
-        this.trackCollection.add (t);
+    public Collection<Genre> getGenreCollection() {
+        return genreCollection;
     }
 
-    public Genre getGenre ()
-    {
-        return genre;
-    }
-
-    public void setGenre (Genre genre)
-    {
-        this.genre = genre;
+    public void setGenreCollection(Collection<Genre> genreCollection) {
+        this.genreCollection = genreCollection;
     }
 
     @Override
-    public int hashCode ()
-    {
+    public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode () : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object)
-    {
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Artist))
-        {
+        if (!(object instanceof Artist)) {
             return false;
         }
         Artist other = (Artist) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals (other.id)))
-        {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString ()
-    {
+    public String toString() {
         return "ru.natty.persist.Artist[id=" + id + "]";
     }
 
 }
+
