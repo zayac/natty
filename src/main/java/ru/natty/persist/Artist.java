@@ -10,6 +10,8 @@ import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -30,7 +32,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
+    @Id @GeneratedValue(generator="artist_id_seq",strategy=GenerationType.SEQUENCE)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
@@ -57,6 +59,10 @@ public class Artist implements Serializable {
 
     public Artist(Integer id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Artist(String name) {
         this.name = name;
     }
 

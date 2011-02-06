@@ -19,7 +19,7 @@ public class Program {
         EntityManager em = emf.createEntityManager();
 
         em.getTransaction().begin();
-        Genre gen = new Genre(1111, "rock");
+        Genre gen = new Genre("rock");
         em.persist(gen);
 
 //        Query q = em.createNamedQuery ("Artist.findByName");
