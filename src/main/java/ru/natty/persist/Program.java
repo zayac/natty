@@ -20,6 +20,10 @@ public class Program {
 
         em.getTransaction().begin();
         Genre gen = new Genre("rock");
+        
+        q.setParameter ("name", "pop");
+        Genre mik = (Genre)q.getSingleResult();
+        System.out.print ("\n\n" +  mik.getName () + "\n\n");
         em.persist(gen);
 
 //        Query q = em.createNamedQuery ("Artist.findByName");

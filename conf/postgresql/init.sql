@@ -65,8 +65,3 @@ CREATE TABLE sequence /* table for autogeneration uniq identifiers of any entity
     SEQ_NAME character(50) NOT NULL,
     SEQ_COUNT integer NULL, PRIMARY KEY (SEQ_NAME)
 );
-INSERT INTO sequence
-(
-    SEQ_NAME,
-    SEQ_COUNT
-) values ('SEQ_GEN', 1);
