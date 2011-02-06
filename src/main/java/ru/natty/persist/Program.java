@@ -5,6 +5,8 @@
 
 package ru.natty.persist;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.persistence.*;
 
 
@@ -19,13 +21,16 @@ public class Program {
         EntityManager em = emf.createEntityManager();
 
         em.getTransaction().begin();
-        Genre gen = new Genre("rock");
-        
-        q.setParameter ("name", "pop");
-        Genre mik = (Genre)q.getSingleResult();
-        System.out.print ("\n\n" +  mik.getName () + "\n\n");
+        Genre gen = new Genre("alternative");
         em.persist(gen);
+        Artist art = new Artist("Muse");
+        em.persist(art);
+        em.flush();
 
+        art.getGenreCollection().add(gen);
+        //gen.getArtistCollection().add(art);
+
+//
 //        Query q = em.createNamedQuery ("Artist.findByName");
 //        q.setParameter ("name", "miclucha maklay");
 //        Artist mik = (Artist)q.getSingleResult();

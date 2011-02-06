@@ -60,25 +60,12 @@ public class Album implements Serializable {
     public Album() {
     }
 
-    public Album(Integer id) {
-        this.id = id;
-    }
-
-    public Album(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public Album(String name) {
         this.name = name;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
