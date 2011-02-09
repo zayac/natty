@@ -33,10 +33,8 @@ import javax.persistence.Table;
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id @GeneratedValue(generator="artist_id_seq",strategy=GenerationType.SEQUENCE)
-    @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
     @Column(name = "name")
     private String name;
     @JoinTable(name = "tracks_artists", joinColumns = {
@@ -88,9 +86,7 @@ public class Artist implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return id != null ? id : 0;
     }
 
     @Override

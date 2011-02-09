@@ -1,13 +1,13 @@
 CREATE TABLE genre
 (
     id          serial primary key,
-    name        char(64) not null
+    name        varchar(255) not null
 );
 
 CREATE TABLE artist
 (
     id          serial primary key,
-    name        char(64) not null
+    name        varchar(255) not null
 );
 
 CREATE TABLE artists_genres
@@ -20,7 +20,7 @@ CREATE TABLE artists_genres
 CREATE TABLE album
 (
     id          serial primary key,
-    name        char(64) not null,
+    name        varchar(255) not null,
     year        date
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE albums_genres
 CREATE TABLE track
 (
     id          serial primary key,
-    name        char(64) not null,
+    name        varchar(255) not null,
     year        date,
     url         varchar
 );
@@ -60,8 +60,3 @@ CREATE TABLE tracks_genres
     primary key (track_id, genre_id)
 );
 
-CREATE TABLE sequence /* table for autogeneration uniq identifiers of any entity */
-(
-    SEQ_NAME character(50) NOT NULL,
-    SEQ_COUNT integer NULL, PRIMARY KEY (SEQ_NAME)
-);

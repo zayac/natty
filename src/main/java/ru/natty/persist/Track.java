@@ -115,9 +115,7 @@ public class Track implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return id != null ? id : 0;
     }
 
     @Override

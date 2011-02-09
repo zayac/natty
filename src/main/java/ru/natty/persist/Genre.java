@@ -35,10 +35,8 @@ public class Genre implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id @GeneratedValue(generator="genre_id_seq",strategy=GenerationType.SEQUENCE)
-    @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
     @Column(name = "name")
     private String name;
     @ManyToMany(mappedBy = "genreCollection")
@@ -96,9 +94,7 @@ public class Genre implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return id != null ? id : 0;
     }
 
     @Override
