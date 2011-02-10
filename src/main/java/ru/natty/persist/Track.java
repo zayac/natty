@@ -36,10 +36,8 @@ import javax.persistence.TemporalType;
 public class Track implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id @GeneratedValue(generator="track_id_seq",strategy=GenerationType.SEQUENCE)
-    @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
     @Column(name = "name")
     private String name;
     @Column(name = "year")

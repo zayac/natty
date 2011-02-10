@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.persistence.*;
 
-
 /**
  *
  * @author necto
@@ -28,21 +27,6 @@ public class Program {
         em.flush();
 
         art.getGenreCollection().add(gen);
-        //gen.getArtistCollection().add(art);
-
-//
-//        Query q = em.createNamedQuery ("Artist.findByName");
-//        q.setParameter ("name", "miclucha maklay");
-//        Artist mik = (Artist)q.getSingleResult();
-//        System.out.print ("\n\n" +  mik.getName () + "\n\n");
-//
-//        Track t = new Track ("Artivasto winter");
-//        mik.addTrack (t);
-//        t.setArtist (mik);//It's a thing to improve,
-//                          //because I have to do such thing, but I shouldn't
-//
-//        em.persist (mik);
-
         em.getTransaction().commit();
 
 
