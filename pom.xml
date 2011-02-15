@@ -13,6 +13,11 @@
       <url>http://download.java.net/maven/1</url>
       <layout>legacy</layout>
     </repository>
+    <repository>
+      <id>JBOSS</id>
+      <name>JBoss Repository</name>
+      <url>http://repository.jboss.org/maven2/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -36,10 +41,20 @@
       <version>2.0-35</version>
     </dependency>
     <dependency>
+      <groupId>org.jaudiotagger</groupId>
+      <artifactId>jaudiotagger</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <!--<dependency>
       <groupId>commons-vfs</groupId>
       <artifactId>commons-vfs</artifactId>
       <version>1.0</version>
-    </dependency>
+    </dependency>-->
+    <dependency>
+      <groupId>jcifs</groupId>
+      <artifactId>jcifs</artifactId>
+      <version>1.2.6</version>
+    </dependency>    
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>

@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
  *
  * @author zayac
  */
-public class File {
-    private static final Logger log = Logger.getLogger(File.class.getName());
+public class SimpleFile {
+    private static final Logger log = Logger.getLogger(SimpleFile.class.getName());
 
     protected String fullPath;
     protected String extension;
@@ -37,12 +37,12 @@ public class File {
         }
     }
 
-    public File(String fullPath)
+    public SimpleFile(String fullPath)
     {
         init(fullPath);
     }
 
-    protected File(String fullPath, String filePattern)
+    protected SimpleFile(String fullPath, String filePattern)
     {
         FILE_PATTERN = filePattern;
         init(fullPath);
