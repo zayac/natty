@@ -48,7 +48,6 @@ public class SMBParser implements Parser {
                     if (file.isDirectory()) {
                         log.debug("File " + file.getPath() + " is a directory");
                         SmbFile[] filesInDirectory = file.listFiles();
-                        log.debug(filesInDirectory[0].getPath());
                         for (int i = 0; i < filesInDirectory.length; i++) {
                             log.debug("Parsing " + filesInDirectory[i].getPath());
                             if (filesInDirectory[i].isDirectory()) {

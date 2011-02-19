@@ -36,7 +36,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue(generator="album_id_seq",strategy=GenerationType.SEQUENCE)
+    @Id @GeneratedValue(generator="album_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")

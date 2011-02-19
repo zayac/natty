@@ -34,7 +34,7 @@ import javax.persistence.Table;
 public class Genre implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    @Id @GeneratedValue(generator="genre_id_seq",strategy=GenerationType.SEQUENCE)
+    @Id @GeneratedValue(generator="genre_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")

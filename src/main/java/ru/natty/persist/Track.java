@@ -8,7 +8,6 @@ package ru.natty.persist;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +34,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue(generator="track_id_seq",strategy=GenerationType.SEQUENCE)
+    @Id @GeneratedValue(generator="track_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")
