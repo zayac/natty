@@ -5,7 +5,7 @@
 
 package ru.natty.parser;
 import java.util.Map;
-import org.jaudiotagger.tag.Tag;
+import org.blinkenlights.jid3.v2.ID3V2Tag;
 
 /**
  * An interface that describes methods of a parser that runs over file system.
@@ -15,30 +15,19 @@ import org.jaudiotagger.tag.Tag;
  * @see org.jaudiotagger.tag.Tag
  */
 public interface Parser {
-    /*
-     * Setter for Home path.
-     * Set Home directory, that will be used as the root directory for parser.
-     * "/" (slash) should end the path.
-     * @param a string that contains path, i.e. /home/musiclover/music/
-     */
 
-    public void setHome(String path);
-    /*
-     * Getter for Home path.
-     * @return a string that contains Home path
-     */
-    public String getHome();
     /*
      * Start parsing file system.
      * Beware, you can't start parsing unless Home path is set.
      * You can't access to Tags Map unless you have run this method.
+     * @param a string that contains path, i.e. /home/musiclover/music/. "/" (slash) should end the path.
      */
-    public void parse();
+    public void parse(String path);
 
     /*
      * Get Tags Map. Should be accessed after parse is run.
      * @return A map where the key is for file absolute path and the value is for Tag from jAudioTagger library
      * @see org.jaudiotagger.tag.Tag
      */
-    public Map<String, Tag> getTags();
+    public Map<String, ID3V2Tag> getTags();
 }

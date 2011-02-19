@@ -41,10 +41,15 @@
       <version>2.0-35</version>
     </dependency>
     <dependency>
+       <groupId>org.blinkenlights.jid3</groupId>
+       <artifactId>JID3</artifactId>
+       <version>0.46</version>
+    </dependency>
+    <!--<dependency>
       <groupId>org.jaudiotagger</groupId>
       <artifactId>jaudiotagger</artifactId>
       <version>1.0.8</version>
-    </dependency>
+    </dependency>-->
     <!--<dependency>
       <groupId>commons-vfs</groupId>
       <artifactId>commons-vfs</artifactId>

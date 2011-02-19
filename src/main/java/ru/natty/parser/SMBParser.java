@@ -5,8 +5,7 @@
 
 package ru.natty.parser;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.net.MalformedURLException;
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -15,13 +14,9 @@ import java.util.Set;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import org.apache.log4j.Logger;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.TagException;
+import org.blinkenlights.jid3.MP3File;
+import org.blinkenlights.jid3.MediaFile;
+import org.blinkenlights.jid3.v2.ID3V2Tag;
 
 /**
  *
@@ -29,13 +24,14 @@ import org.jaudiotagger.tag.TagException;
  */
 public class SMBParser implements Parser {
     private String homePath = null;
-    private HashMap<String, Tag> files = null;
+    private HashMap<String, ID3V2Tag> files = null;
     private ArrayDeque<SmbFile> queue = null;
     private Set<SmbFile> parsedFiles = null;
     private final static Logger log = Logger.getLogger(SMBParser.class);
 
-    public void parse()
+    public void parse(String path)
     {
+        this.homePath = path;
         if(homePath == null)
         {
             log.error("Home path for parsing is not set");
@@ -64,23 +60,14 @@ public class SMBParser implements Parser {
                                 }
                             } else {
                                 try {
-                                    //filesInDirectory[i].copyTo(new SmbFile("/tmp/music.mp3"));
-                                    AudioFile audiof = AudioFileIO.read(new File(filesInDirectory[i].getPath()));
+                                    MediaFile audiof = new MP3File(new SMBFileSource(filesInDirectory[i]));
                                     log.debug("File is read successfully");
-                                    Tag tag = audiof.getTag();
+                                    ID3V2Tag tag = audiof.getID3V2Tag();
                                     files.put(filesInDirectory[i].getPath(), tag);
                                     log.debug("File " + filesInDirectory[i].getPath() + " is cached");
                                     // MusicFile fileWithTag = new MusicFile(filesInDirectory[i].getPath(), tag.get);
-                                } catch (CannotReadException ex) {
-                                    log.error("Can't read " + filesInDirectory[i].getPath());
-                                } catch (IOException ex) {
-                                    log.error("IO error with " + filesInDirectory[i].getPath());
-                                } catch (TagException ex) {
-                                    log.error("Error accessing tags in " + filesInDirectory[i].getPath());
-                                } catch (ReadOnlyFileException ex) {
-                                    log.error("Read only file " + filesInDirectory[i].getPath());
-                                } catch (InvalidAudioFrameException ex) {
-                                    log.error("Invalid audio frame in" + filesInDirectory[i].getPath());
+                                } catch (Exception ex) {
+                                    log.error("Can't parse" + filesInDirectory[i].getPath() + ". " + ex.getMessage());
                                 }
                             }
                         }
@@ -90,37 +77,20 @@ public class SMBParser implements Parser {
                 }
                 parsedFiles.add(file);
             }
-            log.debug("Parsing thread has finished to parse");
+            log.debug("Parser has finished to parse");
         } catch (MalformedURLException ex) {
             log.error("File path " + homePath + " is set incorrectly");
         }
     }
     public SMBParser()
     {
-        files = new HashMap<String, Tag> ();
+        files = new HashMap<String, ID3V2Tag> ();
         queue = new ArrayDeque<SmbFile>();
         parsedFiles = new HashSet<SmbFile> ();
         log.debug("SMBMusicController() has been called");
     }
 
-    public SMBParser(String path)
-    {
-        files = new HashMap<String, Tag> ();
-        queue = new ArrayDeque<SmbFile>();
-        parsedFiles = new HashSet<SmbFile> ();
-        this.homePath = path;
-        log.debug("SMBMusicController(String path) has been called. Path: " + path);
-    }
-
-    public void setHome(String path) {
-        this.homePath = path;
-    }
-
-    public String getHome() {
-        return this.homePath;
-    }
-
-    public HashMap<String, Tag> getTags() {
+    public HashMap<String, ID3V2Tag> getTags() {
         return files;
     }
 
