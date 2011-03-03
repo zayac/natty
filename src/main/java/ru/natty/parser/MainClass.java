@@ -6,7 +6,6 @@
 package ru.natty.parser;
 
 import jcifs.smb.SmbException;
-import ru.natty.tags.TagsCommiter;
 
 /**
  *
@@ -15,9 +14,9 @@ import ru.natty.tags.TagsCommiter;
 public class MainClass {
     public static void main(String[] args) throws SmbException {
         SMBParser musicController = new SMBParser();
-        musicController.parse("smb://natalie.campus/music/");
-        TagsCommiter commiter = new TagsCommiter(musicController.getTags());
-        commiter.commit();
-        commiter.close();
+        musicController.parse("smb://natalie.campus/music/Russian/");
+        //TagsCommiter commiter = new TagsCommiter(musicController.getTags());
+        //commiter.commit();
+        //commiter.close();
     }
 }

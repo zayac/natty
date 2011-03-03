@@ -4,8 +4,6 @@
  */
 
 package ru.natty.parser;
-import java.util.Map;
-import org.blinkenlights.jid3.v2.ID3V2Tag;
 
 /**
  * An interface that describes methods of a parser that runs over file system.
@@ -29,5 +27,5 @@ public interface Parser {
      * @return A map where the key is for file absolute path and the value is for Tag from jAudioTagger library
      * @see org.jaudiotagger.tag.Tag
      */
-    public Map<String, ID3V2Tag> getTags();
+    //public Map<String, ID3V2Tag> getTags();
 }
