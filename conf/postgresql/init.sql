@@ -60,3 +60,43 @@ CREATE TABLE tracks_genres
     CONSTRAINT pr_pair_tra_gen primary key (track_id, genre_id)
 );
 
+
+
+
+
+CREATE TABLE widget_type
+(
+    id          serial CONSTRAINT id_pr_widget_type primary key,
+	name        varchar(255) not null
+);
+
+CREATE TABLE gui_properties
+(
+    id          serial CONSTRAINT id_pr_gui_props primary key,
+    parent_id   integer references gui_properties(id),
+    wtype       integer references widget_type(id)
+);
+
+CREATE TABLE content_header
+(
+    content_id  integer references gui_properties(id),
+    header      varchar(255) not null,
+    CONSTRAINT  pr_key_cont primary key (content_id)
+);
+
+CREATE TABLE panel_contents
+(
+    panel_id    integer references gui_properties(id),
+	ord_number  integer,
+    content_id  integer references gui_properties(id),
+    CONSTRAINT  pr_pair_pan_cont primary key (panel_id, content_id)
+);
+
+CREATE TABLE label
+(
+    id          integer references gui_properties(id),
+    text        varchar,
+    CONSTRAINT  pr_key_label_id primary key (id)
+);
+
+
