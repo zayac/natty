@@ -16,7 +16,6 @@ import ru.natty.web.shared.Parameters;
  */
 @RemoteServiceRelativePath("mainservice")
 public interface MainService extends RemoteService {
-    public String myMethod(String s);
 
 	DiffPatcher getInitialContent (Integer id, Parameters p);
 	DiffPatcher getDifference(Integer id, Parameters p, Integer prevId,

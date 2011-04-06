@@ -14,7 +14,6 @@ import ru.natty.web.shared.Parameters;
  * @author necto
  */
 public interface MainServiceAsync {
-    public void myMethod(String s, AsyncCallback<String> callback);
 	void getInitialContent(Integer id, Parameters p, AsyncCallback<DiffPatcher> callback);
 	void getDifference (Integer id, Parameters p, Integer prevId,
 			Parameters prevP, AsyncCallback<DiffPatcher> callback);

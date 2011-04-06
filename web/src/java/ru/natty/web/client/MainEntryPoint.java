@@ -26,10 +26,12 @@ public class MainEntryPoint implements EntryPoint {
 
 	static public Parameters curPar = new Parameters(100500);
 
+	@Override
 	public void onModuleLoad()
 	{
 		RootPanel.get().clear();
 		ElementReceiver.init (0, curPar, RootPanel.get());
+		//RootPanel.get().add(new Label("working"));
 
 	}
 }

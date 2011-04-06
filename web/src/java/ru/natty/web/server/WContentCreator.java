@@ -1,9 +1,7 @@
 package ru.natty.web.server;
 
 public class WContentCreator
-{
-	int query_num = 0;
-	
+{	
 	DataBaseOld db = new DataBaseOld();
 	WComplexPanelContent def;
 	WLabelContent cur_num;
@@ -67,18 +65,6 @@ public class WContentCreator
 	}
 	public WContent createAll ()
 	{
-		++query_num;
-//		cur_num.text = ("query number " + query_num);
-//		WHorizontalPanelContent whpc = new WHorizontalPanelContent();
-//		def.addItem (33*query_num, query_num + 5, whpc);
-//		wt.contents.put(4312*(query_num + 1), new WTabPanelContent.Tab ("tab #" + (3 + query_num), 2 + query_num, new WLabelContent("intab string")));
-//		zeroLabel.setText("changed inner text:" + query_num);
-//		for (int i = 0; i < query_num; ++i)
-//		{
-//			whpc.addItem (7000*i+query_num, i, new WLabelContent ("; inner line " + query_num + ".-." + i));
-//		}
-//		return def.copy();
-		db.addLabel(6, "lap number:" + query_num, 0);
 		return new DataBase().createContent(0);//db.createContent(0);
 	}
 	public WContent createBranch (Integer id)

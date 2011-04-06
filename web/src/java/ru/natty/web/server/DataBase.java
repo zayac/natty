@@ -5,6 +5,7 @@
 
 package ru.natty.web.server;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -12,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import ru.natty.persist.Genre;
 import ru.natty.web.persist.ContentHeader;
 import ru.natty.web.persist.GuiProperties;
 import ru.natty.web.persist.Label;
@@ -76,6 +78,8 @@ public class DataBase
                 return getVPanel (em, id);
             case 3://tab panel
                 return getTabPanel (em, id);
+            case 4://genres list
+                return getGenresList (em, id);
             default:
                 return new WLabelContent("can't dispatch content named:" + wt.getName());
         }
@@ -97,10 +101,12 @@ public class DataBase
         WidgetType wt = getWidgetType(em, id);
         switch (wt.getId())
         {
+			case 2://vertical panel
+				return getCustomVPanel (em, id, contentId, view);
             case 3://tab panel
-                return getCustomTabPanel(em, id, contentId, view);
-            default:
-                return new WLabelContent("Not an aggregating content, named:" + wt.getName());
+                return getCustomTabPanel (em, id, contentId, view);
+			default:// TODO: !!! change exception macanism !!!
+                return new WLabelContent ("Not an aggregating content, named:" + wt.getName());
         }
     }
 
@@ -120,6 +126,18 @@ public class DataBase
         getLab.setParameter("id", id);
         Label l = (Label)getLab.getSingleResult();
         return new WLabelContent(l.getText());
+    }
+
+    private WGenresList getGenresList (EntityManager em, Integer id)
+    {
+		Query getGenres = em.createNamedQuery("Genre.findAll");
+		List rez = getGenres.getResultList();
+		List<Genre> gens = new ArrayList<Genre>();
+		
+		for (Object o : rez)
+			gens.add ((Genre)o);
+
+        return new WGenresList (gens);
     }
 
     private WVerticalPanelContent getVPanel (EntityManager em, Integer id)
@@ -149,6 +167,8 @@ public class DataBase
 
         Integer defaultTab = 0;
 
+		ret.setActiveTab (defaultTab);
+
         for (Object o : contents)
         {
             PanelContents pc = (PanelContents)o;
@@ -162,6 +182,29 @@ public class DataBase
             else
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(), createVoid());
+        }
+        return ret;
+    }
+
+    private WVerticalPanelContent getCustomVPanel (EntityManager em, Integer id,
+												   Integer contentId, WContent view)
+    {
+        WVerticalPanelContent ret = new WVerticalPanelContent();
+
+        Query getPanel = em.createNamedQuery ("PanelContents.findByPanelId");
+        getPanel.setParameter ("panelId", id);
+        List contents = getPanel.getResultList();
+        for (Object o : contents)
+        {
+            PanelContents pc = (PanelContents)o;
+			if (pc.getContentId().equals(contentId))
+			{
+				ret.addItem (pc.getContentId(), pc.getOrdNumber(),
+					         view);
+			}
+			else
+				ret.addItem (pc.getContentId(), pc.getOrdNumber(),
+					         getContent(em, pc.getContentId()));
         }
         return ret;
     }
@@ -183,8 +226,11 @@ public class DataBase
             ContentHeader tabLabel = (ContentHeader)getTname.getSingleResult();
 
             if (pc.getContentId().equals(contentId))
+			{
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(), view);
+				ret.setActiveTab(pc.getOrdNumber());
+			}
             else
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(), createVoid());

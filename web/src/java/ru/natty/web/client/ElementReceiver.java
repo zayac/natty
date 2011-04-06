@@ -36,17 +36,15 @@ public class ElementReceiver
 				result.applay(root);
 				diff.clear();
 				diff.add(new HTML(result.toString()));
-                ((ComplexPanelI)root).add(new ILabel(324, "id " + id + " succeded"));
+                //((ComplexPanelI)root).add(new ILabel(324, "id " + id + " succeded"));
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				((ComplexPanelI)root).add(new ILabel(324, "id " + id + " failed while being requested"));
+				((ComplexPanelI)root).add(new ILabel(325, "cause: " + caught.getMessage()));
 			}
 		});
-//				diff.clear();
-//                ((ComplexPanelI)root).add(new ILabel(324, "id " + id + " finished"));
-//                diff.add(new ILabel(324, "id " + id + " finished"));
 		lastLeaf = id;
 		lastParam = param;
 	}
