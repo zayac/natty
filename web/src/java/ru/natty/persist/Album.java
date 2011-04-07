@@ -1,1 +1,1 @@
-/home/zayac/code/natty/src/main/java/ru/natty/persist/Album.java
+../../../../../../src/main/java/ru/natty/persist/Album.java
