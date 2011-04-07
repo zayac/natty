@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.blinkenlights.jid3.ID3Exception;
 import org.blinkenlights.jid3.MP3File;
 import org.blinkenlights.jid3.MediaFile;
+import org.blinkenlights.jid3.io.TextEncoding;
 import org.blinkenlights.jid3.v2.ID3V2Tag;
 import ru.natty.tags.TagsCommiter;
 
@@ -29,8 +30,18 @@ public class SMBParser implements Parser {
     //private ArrayDeque<SmbFile> queue = null;
     private Set<Integer> parsedFiles = null;
     private final static Logger log = Logger.getLogger(SMBParser.class);
-    private final static TagsCommiter commiter = new TagsCommiter();
-    
+    private final static TagsCommiter commiter = TagsCommiter.getInstance();
+
+    public String getExtension(String path)
+    {
+        int dot = path.lastIndexOf(".");
+        return path.substring(dot + 1);
+    }
+
+    public void close()
+    {
+        commiter.close();
+    }
     public void parse(String path)
     {
         try {
@@ -56,11 +67,18 @@ public class SMBParser implements Parser {
                             log.debug("Directory " + filesInDirectory[i].getPath() + " has been already parsed. Skipping");
                         }
                     } else {
-                        MediaFile audiof = new MP3File(new SMBFileSource(filesInDirectory[i]));
-                        log.debug("File is read successfully");
-                        ID3V2Tag tag = audiof.getID3V2Tag();
-                        commiter.commit(filesInDirectory[i].getPath(), tag);
-                        log.debug("File " + filesInDirectory[i].getPath() + " is cached");
+                        if(!getExtension(filesInDirectory[i].getPath()).equalsIgnoreCase("mp3"))
+                        {
+                            log.debug("File " + filesInDirectory[i].getPath() + " is not an mp3 file");
+                        } else
+                        {
+                            MediaFile audiof = new MP3File(new SMBFileSource(filesInDirectory[i]));
+                            log.debug("File is read successfully");
+                            ID3V2Tag tag = audiof.getID3V2Tag();
+                            TextEncoding.setDefaultTextEncoding(TextEncoding.ISO_8859_1);
+                            commiter.commit(filesInDirectory[i].getPath(), tag);
+                            log.debug("File " + filesInDirectory[i].getPath() + " is cached");
+                        }
                     }
                 }
                 parsedFiles.add(file.hashCode());

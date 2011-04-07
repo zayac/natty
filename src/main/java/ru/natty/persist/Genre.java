@@ -7,6 +7,8 @@ package ru.natty.persist;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,21 +39,25 @@ public class Genre implements Serializable {
     private Integer id;
     @Column(name = "name")
     private String name;
-    @ManyToMany(mappedBy = "genreCollection")
+    @ManyToMany(mappedBy="genreCollection")
     private Collection<Album> albumCollection;
     @JoinTable(name = "tracks_genres", joinColumns = {
         @JoinColumn(name = "genre_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "track_id", referencedColumnName = "id")})
     @ManyToMany
     private Collection<Track> trackCollection;
-    @ManyToMany(mappedBy = "genreCollection")
+    @ManyToMany(mappedBy="genreCollection")
     private Collection<Artist> artistCollection;
 
     public Genre() {
+        trackCollection = new HashSet<Track>();
+        albumCollection = new HashSet<Album>();
+        artistCollection = new HashSet<Artist>();
     }
 
     public Genre(String name) {
-        this.name = name;
+        this();
+        this.name = name.replaceAll("\u0000", "");
     }
 
     public Integer getId() {
@@ -63,7 +69,7 @@ public class Genre implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.replaceAll("\u0000", "");
     }
 
     public Collection<Album> getAlbumCollection() {
@@ -90,27 +96,10 @@ public class Genre implements Serializable {
         this.artistCollection = artistCollection;
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id : 0;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Genre)) {
-            return false;
-        }
-        Genre other = (Genre) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String toString() {
-        return "ru.natty.persist.Genre[id=" + id + "]";
+        return "ru.natty.persist.Genre[id=" + id + "]"+getName()+" "+super.hashCode();
     }
 
 }
