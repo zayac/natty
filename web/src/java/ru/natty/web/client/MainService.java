@@ -15,9 +15,8 @@ import ru.natty.web.shared.Parameters;
  * @author necto
  */
 @RemoteServiceRelativePath("mainservice")
-public interface MainService extends RemoteService {
-
-	DiffPatcher getInitialContent (Integer id, Parameters p);
-	DiffPatcher getDifference(Integer id, Parameters p, Integer prevId,
-			Parameters prevP);
+public interface MainService extends RemoteService
+{
+	public abstract DiffPatcher getInitialContent (Parameters p);
+	public abstract DiffPatcher getDifference(Parameters p, Parameters prevP);
 }

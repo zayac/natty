@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -13,62 +12,77 @@ import ru.natty.web.shared.Parameters;
 
 public class ElementReceiver
 {
-	private static final MainServiceAsync greetingService = GWT.create(MainService.class);
-	private static IWidget root;
-	private static Panel diff;
-	private static Integer lastLeaf;
-	private static Parameters lastParam;
-	
-	static public void init (Integer id, Parameters param, ComplexPanel base)
+	private final MainServiceAsync greetingService = GWT.create(MainService.class);
+	private IWidget root;
+	private Panel diff;
+	private ParamsBuilder pb = ParamsBuilder.get();
+
+	private static ElementReceiver instance = null;
+	private ElementReceiver() {}
+
+	public static ElementReceiver get()
 	{
-		queryInit (id, param, base);
-		lastLeaf = id;
-		lastParam = param;
+		if (null == instance) instance = new ElementReceiver();
+		return instance;
 	}
 	
-	static public void queryElement (final Integer id, Parameters param)
+	public void init (ComplexPanel base)
 	{
-		greetingService.getDifference(id, param, lastLeaf, lastParam,
-				new AsyncCallback<DiffPatcher>() {
+		queryInit (base);
+	}
+	
+	public void queryElement()
+	{
+		final Parameters param = pb.getCurrent();
+		greetingService.getDifference (param, pb.getPrev(),
+									   new AsyncCallback<DiffPatcher>() {
 			
 			@Override
 			public void onSuccess(DiffPatcher result) {
+				if (null == result)
+				{
+					((ComplexPanelI)root).add(new ILabel(324, "diff is null!"));
+					return;
+				}
 				result.applay(root);
 				diff.clear();
 				diff.add(new HTML(result.toString()));
-                //((ComplexPanelI)root).add(new ILabel(324, "id " + id + " succeded"));
+                ((ComplexPanelI)root).add(new ILabel(324, "id " + param.getElementId() + " succeded"));
+
+				pb.requestSucceeded();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				((ComplexPanelI)root).add(new ILabel(324, "id " + id + " failed while being requested"));
+				((ComplexPanelI)root).add(new ILabel(324, "query " + param.getQuery() + " failed while being requested"));
 				((ComplexPanelI)root).add(new ILabel(325, "cause: " + caught.getMessage()));
 			}
 		});
-		lastLeaf = id;
-		lastParam = param;
+		//((ComplexPanelI)root).add(new ILabel(324, "get difference completed"));
 	}
 	
-	static private void queryInit (final Integer id, Parameters param, final ComplexPanel base)
+	private void queryInit (final ComplexPanel base)
 	{
-		greetingService.getInitialContent (id, param,
+		greetingService.getInitialContent (pb.getCurrent(),
 			new AsyncCallback<DiffPatcher>() {
 			
 			@Override
 			public void onSuccess(DiffPatcher result) {
 				root = result.createNew(0);
-				base.add(root);
-				base.add(new HTML("<h2> Received from server: </h2>"));
+				base.add (root);
+				base.add (new HTML ("<h2> Received from server: </h2>"));
 				diff = new VerticalPanel();
-				base.add(diff);
+				base.add (diff);
 				diff.clear();
-				diff.add(new HTML(result.toString()));
+				diff.add (new HTML (result.toString()));
+
+				pb.requestSucceeded();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				base.add(new HTML("<h1> Sorry, but there an error occured int page loading," + 
-								  "with following response:" + caught.getMessage()));
+				base.add(new HTML ("<h1> Sorry, but there an error occured int page loading," +
+								   "with following response:" + caught.getMessage()));
 			}
 		});
 	}

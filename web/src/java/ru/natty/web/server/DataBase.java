@@ -19,6 +19,7 @@ import ru.natty.web.persist.GuiProperties;
 import ru.natty.web.persist.Label;
 import ru.natty.web.persist.PanelContents;
 import ru.natty.web.persist.WidgetType;
+import ru.natty.web.shared.Parameters;
 
 /**
  *
@@ -65,46 +66,56 @@ public class DataBase
         return gp.getWidgetType();
     }
 
-    private WContent getContent (EntityManager em, Integer id)
+    private WContent getContent (EntityManager em, Integer id, Parameters ps)
     {
         log (Level.SEVERE, "getting content, id = " + id.toString());
 
-        WidgetType wt = getWidgetType(em, id);
+        WidgetType wt = getWidgetType (em, id);
         switch (wt.getId())
         {
             case 1://label
-                return getLabel (em, id);
+                return getLabel (em, id, ps);
             case 2://vertical panel
-                return getVPanel (em, id);
+                return getVPanel (em, id, ps);
             case 3://tab panel
-                return getTabPanel (em, id);
+                return getTabPanel (em, id, ps);
             case 4://genres list
-                return getGenresList (em, id);
+                return getGenresList (em, id, ps);
+			case 5://Text box
+				return getTextBox (em, id, ps);
+			case 6://Basic button
+				return getButton (em, id, ps);
+            case 7://Horizontal panel
+                return getHPanel (em, id, ps);
             default:
                 return new WLabelContent("can't dispatch content named:" + wt.getName());
         }
     }
 
-    private WContent getAggregatingBranch (EntityManager em, Integer id, WContent content)
+    private WContent getAggregatingBranch (EntityManager em, Integer id,
+										   WContent content, Parameters p)
     {
         log (Level.SEVERE, "getting aggregating branch , id = " + id.toString());
         if (isRoot(id)) return content;
         GuiProperties props = GuiProperties.queryById(id, em);
         GuiProperties parent = props.getParent();
-        WContent parentContent = getAggregatingContent (em, parent.getId(), id, content);
-        return getAggregatingBranch (em, parent.getId(), parentContent);
+        WContent parentContent = getAggregatingContent (em, parent.getId(),
+														id, content, p);
+        return getAggregatingBranch (em, parent.getId(), parentContent, p);
     }
 
-    private WContent getAggregatingContent (EntityManager em, Integer id, Integer contentId, WContent view)
+    private WContent getAggregatingContent (EntityManager em, Integer id,
+											Integer contentId, WContent view,
+											Parameters p)
     {
         log (Level.SEVERE, "getting custom content, id = " + id.toString());
         WidgetType wt = getWidgetType(em, id);
         switch (wt.getId())
         {
 			case 2://vertical panel
-				return getCustomVPanel (em, id, contentId, view);
+				return getCustomVPanel (em, id, contentId, view, p);
             case 3://tab panel
-                return getCustomTabPanel (em, id, contentId, view);
+                return getCustomTabPanel (em, id, contentId, view, p);
 			default:// TODO: !!! change exception macanism !!!
                 return new WLabelContent ("Not an aggregating content, named:" + wt.getName());
         }
@@ -120,7 +131,7 @@ public class DataBase
         return id == 0;
     }
 
-    private WLabelContent getLabel (EntityManager em, Integer id)
+    private WLabelContent getLabel (EntityManager em, Integer id, Parameters ps)
     {
         Query getLab = em.createNamedQuery("Label.findById");
         getLab.setParameter("id", id);
@@ -128,9 +139,26 @@ public class DataBase
         return new WLabelContent(l.getText());
     }
 
-    private WGenresList getGenresList (EntityManager em, Integer id)
+    private WTextBoxContent getTextBox (EntityManager em, Integer id, Parameters ps)
     {
-		Query getGenres = em.createNamedQuery("Genre.findAll");
+        Query getLab = em.createNamedQuery("Label.findById");
+        getLab.setParameter("id", id);
+        Label l = (Label)getLab.getSingleResult();
+        return new WTextBoxContent (l.getText());
+    }
+
+    private WBasicButtonContent getButton (EntityManager em, Integer id, Parameters ps)
+    {
+        Query getLab = em.createNamedQuery ("Label.findById");
+        getLab.setParameter("id", id);
+        Label l = (Label)getLab.getSingleResult();
+        return new WBasicButtonContent (l.getText());
+    }
+
+    private WGenresList getGenresList (EntityManager em, Integer id, Parameters ps)
+    {
+		Query getGenres = em.createNamedQuery ("Genre.findByName");
+		getGenres.setParameter("name", ps.getQuery());
 		List rez = getGenres.getResultList();
 		List<Genre> gens = new ArrayList<Genre>();
 		
@@ -140,10 +168,8 @@ public class DataBase
         return new WGenresList (gens);
     }
 
-    private WVerticalPanelContent getVPanel (EntityManager em, Integer id)
-    {
-        WVerticalPanelContent ret = new WVerticalPanelContent();
-
+	private void fillPanel (EntityManager em, Integer id, WComplexPanelContent ret, Parameters ps)
+	{
         Query getPanel = em.createNamedQuery ("PanelContents.findByPanelId");
         getPanel.setParameter ("panelId", id);
         List contents = getPanel.getResultList();
@@ -151,12 +177,24 @@ public class DataBase
         {
             PanelContents pc = (PanelContents)o;
             ret.addItem (pc.getContentId(), pc.getOrdNumber(),
-                         getContent(em, pc.getContentId()));
+                         getContent(em, pc.getContentId(), ps));
         }
-        return ret;
+	}
+
+    private WVerticalPanelContent getVPanel (EntityManager em, Integer id, Parameters ps)
+    {
+        WVerticalPanelContent ret = new WVerticalPanelContent();
+		fillPanel (em, id, ret, ps);
+		return ret;
+    }
+    private WHorizontalPanelContent getHPanel (EntityManager em, Integer id, Parameters ps)
+    {
+        WHorizontalPanelContent ret = new WHorizontalPanelContent();
+		fillPanel (em, id, ret, ps);
+		return ret;
     }
 
-    private WTabPanelContent getTabPanel (EntityManager em, Integer id)
+    private WTabPanelContent getTabPanel (EntityManager em, Integer id, Parameters ps)
     {
         WTabPanelContent ret = new WTabPanelContent();
 
@@ -178,7 +216,7 @@ public class DataBase
             if (pc.getOrdNumber().equals(defaultTab))
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(),
-                               getContent(em, pc.getContentId()));
+                               getContent(em, pc.getContentId(), ps));
             else
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(), createVoid());
@@ -187,7 +225,8 @@ public class DataBase
     }
 
     private WVerticalPanelContent getCustomVPanel (EntityManager em, Integer id,
-												   Integer contentId, WContent view)
+												   Integer contentId, WContent view,
+												   Parameters ps)
     {
         WVerticalPanelContent ret = new WVerticalPanelContent();
 
@@ -204,13 +243,14 @@ public class DataBase
 			}
 			else
 				ret.addItem (pc.getContentId(), pc.getOrdNumber(),
-					         getContent(em, pc.getContentId()));
+					         getContent(em, pc.getContentId(), ps));
         }
         return ret;
     }
 
     private WTabPanelContent getCustomTabPanel (EntityManager em, Integer id,
-                                                Integer contentId, WContent view)
+                                                Integer contentId, WContent view,
+												Parameters ps)
     {
         WTabPanelContent ret = new WTabPanelContent();
 
@@ -238,19 +278,19 @@ public class DataBase
         return ret;
     }
 
-    public WContent createContent (Integer id)
+    public WContent createContent (Parameters ps)
     {
         EntityManager em = startTransaction();
-        WContent ret = getContent(em, id);
+        WContent ret = getContent(em, ps.getElementId(), ps);
         finishTransaction(em);
         return ret;
     }
 
-    public WContent createContentBranch (Integer id)
+    public WContent createContentBranch (Parameters ps)
     {
         EntityManager em = startTransaction();
-        WContent leaf = getContent(em, id);
-        WContent ret = getAggregatingBranch(em, id, leaf);
+        WContent leaf = getContent (em, ps.getElementId(), ps);
+        WContent ret = getAggregatingBranch (em, ps.getElementId(), leaf, ps);
         finishTransaction(em);
         return ret;
     }

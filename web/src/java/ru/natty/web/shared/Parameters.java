@@ -4,23 +4,44 @@ import java.io.Serializable;
 
 public class Parameters implements Serializable
 {
-	private Integer gid;
+	private String query;
+	private Integer elementId;
 
 	public Parameters()
 	{
-		gid = 0;
+		query = "";
+		elementId = 0;
 	}
 	
-	public Parameters(Integer gid) {
+	public Parameters (String query, Integer elementId)
+	{
 		super();
-		this.gid = gid;
+		this.query = query;
+		this.elementId = elementId;
 	}
 
-	public Integer getGid() {
-		return gid;
+	public String getQuery()
+	{
+		return query;
 	}
 
-	public void setGid(Integer gid) {
-		this.gid = gid;
+	public void setQuery (String query)
+	{
+		this.query = query;
+	}
+
+	public Integer getElementId()
+	{
+		return elementId;
+	}
+
+	public void setElementId (Integer elementId)
+	{
+		this.elementId = elementId;
+	}
+
+	public Parameters copy()
+	{
+		return new Parameters (query, elementId);
 	}
 }

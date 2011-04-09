@@ -1,5 +1,7 @@
 package ru.natty.web.server;
 
+import ru.natty.web.shared.Parameters;
+
 public class WContentCreator
 {	
 	DataBaseOld db = new DataBaseOld();
@@ -63,12 +65,8 @@ public class WContentCreator
 		wvpc.addItem (7, 5, new WLabelContent("last string"));
 		def = wvpc;*/
 	}
-	public WContent createAll ()
+	public WContent createBranch (Parameters p)
 	{
-		return new DataBase().createContent(0);//db.createContent(0);
-	}
-	public WContent createBranch (Integer id)
-	{
-		return new DataBase().createContentBranch(id);//db.getContent(0);//db.createContentBranch(id);//db.createContent (id);//new WLabelContent("created at query#" + ++query_num);
+		return new DataBase().createContentBranch (p);//db.getContent(0);//db.createContentBranch(id);//db.createContent (id);//new WLabelContent("created at query#" + ++query_num);
 	}
 }

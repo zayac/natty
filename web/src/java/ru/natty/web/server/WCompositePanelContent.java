@@ -2,12 +2,22 @@ package ru.natty.web.server;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import ru.natty.web.shared.CompositePanelDP;
 import ru.natty.web.shared.DiffPatcher;
 
 abstract public class WCompositePanelContent extends WContent {
+
+    private static com.google.gwt.logging.client.SystemLogHandler slh =
+               new com.google.gwt.logging.client.SystemLogHandler();
+
+    private static void log (Level l, String message)
+    {
+        slh.publish(new LogRecord(l, message));
+    }
 
 	static abstract public class UnitContent
 	{
@@ -48,6 +58,8 @@ abstract public class WCompositePanelContent extends WContent {
 	@Override
 	public DiffPatcher getDifference(WContent prev, boolean amputation)
 	{
+        log (Level.SEVERE, "computing diff for" + toString());
+
 		CompositePanelDP cpdp = create();
 		if (amputation)
 			for (Map.Entry<Integer, UnitContent> e: ((WCompositePanelContent)prev).contents.entrySet())
@@ -56,6 +68,7 @@ abstract public class WCompositePanelContent extends WContent {
 		
 		for (Map.Entry<Integer, UnitContent> e: contents.entrySet())
 		{
+			log (Level.SEVERE, "differing: " + e.getValue().toString());
 			UnitContent old = ((WCompositePanelContent)prev).contents.get (e.getKey());
 			if (null == old)
 				e.getValue().bringContentTo(cpdp, e.getKey());
@@ -66,6 +79,7 @@ abstract public class WCompositePanelContent extends WContent {
 					cpdp.addChange(e.getKey(), dp);
 			}
 		}
+        log (Level.SEVERE, "diff computed: " + cpdp.toString());
 		if (cpdp.vital())
 			return cpdp;
 		return null;

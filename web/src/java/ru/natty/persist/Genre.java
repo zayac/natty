@@ -29,7 +29,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
-    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name")})
+    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name like :name")})
 public class Genre implements Serializable {
     private static final long serialVersionUID = 1L;
     

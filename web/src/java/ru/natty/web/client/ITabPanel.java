@@ -2,14 +2,8 @@ package ru.natty.web.client;
 
 import java.util.Iterator;
 
-import ru.natty.web.shared.DiffPatcher;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -23,24 +17,10 @@ public class ITabPanel extends IWidget implements Iterable<IWidget>
 			if (!queryAllowed) return;
 
 			final IStreak sp = (IStreak)ITabPanel.this.tp.getWidget (event.getSelectedItem());
-			final Integer id = sp.getId();
-			ElementReceiver.queryElement(id, MainEntryPoint.curPar);
-			/*
 			
-			greetingService.getDifference(id, TestGWT.curPar, new AsyncCallback<DiffPatcher>() {
-				
-				@Override
-				public void onSuccess(DiffPatcher result) {
-					sp.alterContent(result.createNew(id));
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					sp.alterContent( new ILabel(id, caught.getMessage()));
-				}
-			});*/
+			ParamsBuilder.getCurrent().setElementId(sp.getId());
+			ElementReceiver.get().queryElement();
 		}
-		
 	}
 	
 	TabPanel tp;
