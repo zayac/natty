@@ -8,6 +8,8 @@ package ru.natty.persist;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,18 +46,22 @@ public class Track implements Serializable {
     private Date year;
     @Column(name = "url")
     private String url;
-    @ManyToMany(mappedBy = "trackCollection")
+    @ManyToMany(mappedBy="trackCollection")
     private Collection<Album> albumCollection;
-    @ManyToMany(mappedBy = "trackCollection")
+    @ManyToMany(mappedBy="trackCollection")
     private Collection<Genre> genreCollection;
-    @ManyToMany(mappedBy = "trackCollection")
+    @ManyToMany(mappedBy="trackCollection")
     private Collection<Artist> artistCollection;
 
     public Track() {
+        albumCollection = new HashSet<Album>();
+        artistCollection = new HashSet<Artist>();
+        genreCollection = new HashSet<Genre>();
     }
 
     public Track(String name) {
-        this.name = name;
+        this();
+        this.name = name.replaceAll("\u0000", "");
     }
 
     public Integer getId() {
@@ -67,7 +73,7 @@ public class Track implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.replaceAll("\u0000", "");
     }
 
     public Date getYear() {
@@ -83,7 +89,7 @@ public class Track implements Serializable {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.url = url.replaceAll("\u0000", "");
     }
 
     public Collection<Album> getAlbumCollection() {
@@ -108,24 +114,6 @@ public class Track implements Serializable {
 
     public void setArtistCollection(Collection<Artist> artistCollection) {
         this.artistCollection = artistCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id : 0;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Track)) {
-            return false;
-        }
-        Track other = (Track) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
     }
 
     @Override

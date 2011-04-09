@@ -7,6 +7,8 @@ package ru.natty.persist;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,10 +50,13 @@ public class Artist implements Serializable {
     private Collection<Genre> genreCollection;
 
     public Artist() {
+        trackCollection = new HashSet<Track>();
+        genreCollection = new HashSet<Genre>();  
     }
 
     public Artist(String name) {
-        this.name = name;
+        this();
+        this.name = name.replaceAll("\u0000", "");
     }
 
     public Integer getId() {
@@ -64,7 +69,7 @@ public class Artist implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.replaceAll("\u0000", "");
     }
 
     public Collection<Track> getTrackCollection() {
@@ -81,24 +86,6 @@ public class Artist implements Serializable {
 
     public void setGenreCollection(Collection<Genre> genreCollection) {
         this.genreCollection = genreCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id : 0;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Artist)) {
-            return false;
-        }
-        Artist other = (Artist) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
     }
 
     @Override
