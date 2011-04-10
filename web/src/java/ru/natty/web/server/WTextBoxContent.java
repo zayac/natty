@@ -7,6 +7,8 @@ package ru.natty.web.server;
 
 import ru.natty.web.shared.DiffPatcher;
 import ru.natty.web.shared.TextBoxDP;
+import ru.natty.web.persist.Label;
+import ru.natty.web.shared.Parameters;
 
 /**
  *
@@ -47,8 +49,18 @@ public class WTextBoxContent extends WContent
 	}
 
 	@Override
+	public boolean isAggregating() {
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return "WTextBoxContent\"" + text + "\"";
 	}
 
+	public static WTextBoxContent make (Integer id, Parameters ps, DataBase db)
+	{
+        Label l = db.queryLabelById(id);
+        return new WTextBoxContent(l.getText());
+	}
 }

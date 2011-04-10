@@ -8,4 +8,5 @@ public abstract class WContent
 	public abstract DiffPatcher getAllContent();
 	public abstract WContent copy();
 	public boolean isNotVoid() {return true;}
+	public abstract boolean isAggregating();
 }

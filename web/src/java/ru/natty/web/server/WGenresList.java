@@ -44,4 +44,13 @@ public class WGenresList extends WContent
 		return data.copy();
 	}
 
+	@Override
+	public boolean isAggregating() {
+		return false;//!!! TODO: or true?
+	}
+
+	public static WVoid make()
+	{
+		return new WVoid();
+	}
 }

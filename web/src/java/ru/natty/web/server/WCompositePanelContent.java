@@ -4,12 +4,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import ru.natty.web.shared.CompositePanelDP;
 import ru.natty.web.shared.DiffPatcher;
 
-abstract public class WCompositePanelContent extends WContent {
+abstract public class WCompositePanelContent extends WContent
+{
 
     private static com.google.gwt.logging.client.SystemLogHandler slh =
                new com.google.gwt.logging.client.SystemLogHandler();
@@ -105,6 +105,11 @@ abstract public class WCompositePanelContent extends WContent {
 		for (Map.Entry<Integer, UnitContent> e: contents.entrySet())
 			ret.contents.put(e.getKey(), e.getValue().copy());
 		return ret;
+	}
+
+	@Override
+	public boolean isAggregating() {
+		return true;
 	}
 
 	@Override

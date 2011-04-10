@@ -2,6 +2,8 @@ package ru.natty.web.server;
 
 import ru.natty.web.shared.DiffPatcher;
 import ru.natty.web.shared.StringDiff;
+import ru.natty.web.persist.Label;
+import ru.natty.web.shared.Parameters;
 
 public class WLabelContent extends WContent
 {
@@ -42,7 +44,18 @@ public class WLabelContent extends WContent
 	}
 
 	@Override
+	public boolean isAggregating() {
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return "WLabelContent [text=" + text + "]";
+	}
+
+	public static WLabelContent make (Integer id, Parameters ps, DataBase db)
+	{
+        Label l = db.queryLabelById(id);
+        return new WLabelContent(l.getText());
 	}
 }

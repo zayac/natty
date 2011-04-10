@@ -7,6 +7,8 @@ package ru.natty.web.server;
 
 import ru.natty.web.shared.BasicButtonDP;
 import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.persist.Label;
+import ru.natty.web.shared.Parameters;
 
 /**
  *
@@ -47,7 +49,18 @@ public class WBasicButtonContent extends WContent
 	}
 
 	@Override
+	public boolean isAggregating() {
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return "WBasicButtonContent\"" + text + "\"";
+	}
+
+	public static WBasicButtonContent make (Integer id, Parameters ps, DataBase db)
+	{
+        Label l = db.queryLabelById(id);
+        return new WBasicButtonContent(l.getText());
 	}
 }

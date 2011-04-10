@@ -23,4 +23,14 @@ public class WVoid extends WContent {
 	public WContent copy() {
 		return new WVoid();
 	}
+
+	@Override
+	public boolean isAggregating() {
+		return false;
+	}
+
+	public static WVoid make()
+	{
+		return new WVoid();
+	}
 }

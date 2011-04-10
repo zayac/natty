@@ -1,13 +1,13 @@
 package ru.natty.web.server;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
+import ru.natty.web.persist.ContentHeader;
+import ru.natty.web.persist.PanelContents;
 
 import ru.natty.web.server.WCompositePanelContent.UnitContent;
 import ru.natty.web.shared.CompositePanelDP;
-import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.shared.Parameters;
 import ru.natty.web.shared.TabPanelDP;
-import ru.natty.web.shared.TabPanelDP.TabUnit;
 
 public class WTabPanelContent extends WCompositePanelContent
 {	
@@ -72,5 +72,56 @@ public class WTabPanelContent extends WCompositePanelContent
 		return "WTabPanelContent [activeTab=" + activeTab + ", contents="
 				+ contents + "]";
 	}
-	
+
+	public static WTabPanelContent make (Integer id, Parameters ps,
+										 DataBase db, WContentCreator creator)
+	{
+        WTabPanelContent ret = new WTabPanelContent();
+
+		ContentHeader.ByIdFinder getTname = db.getContentHeaderFinder();
+        List<PanelContents> contents = db.queryPanelContentsById(id);
+
+        Integer defaultTab = 0;
+
+		ret.setActiveTab (defaultTab);
+
+        for (PanelContents pc : contents)
+        {
+            ContentHeader tabLabel = getTname.find(pc.getContentId());
+
+            if (pc.getOrdNumber().equals(defaultTab))
+                ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
+                               pc.getOrdNumber(),
+                               creator.getContent (pc.getContentId(), ps));
+            else
+                ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
+                               pc.getOrdNumber(), WVoid.make());
+        }
+        return ret;
+	}
+
+    public static WTabPanelContent makeCustom (Integer id, Integer contentId,
+											   WContent view, Parameters ps,
+											   DataBase db, WContentCreator creator)
+    {
+        WTabPanelContent ret = new WTabPanelContent();
+		ContentHeader.ByIdFinder getTname = db.getContentHeaderFinder();
+        List<PanelContents> pcs = db.queryPanelContentsById(id);
+
+        for (PanelContents pc : pcs)
+        {
+            ContentHeader tabLabel = getTname.find(pc.getContentId());
+
+            if (pc.getContentId().equals(contentId))
+			{
+                ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
+                               pc.getOrdNumber(), view);
+				ret.setActiveTab (pc.getOrdNumber());
+			}
+            else
+                ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
+                               pc.getOrdNumber(), WVoid.make());
+        }
+        return ret;
+    }
 }
