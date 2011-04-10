@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,7 +37,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue(generator="track_id_seq",strategy=GenerationType.IDENTITY)
+    @Id
+	@SequenceGenerator(name="track_id_seq", sequenceName="track_id_seq")
+	@GeneratedValue(generator="track_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")

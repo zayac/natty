@@ -19,6 +19,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -33,7 +34,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue(generator="artist_id_seq",strategy=GenerationType.IDENTITY)
+    @Id
+	@SequenceGenerator(name="artist_id_seq", sequenceName="artist_id_seq")
+	@GeneratedValue(generator="artist_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")

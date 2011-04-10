@@ -6,11 +6,14 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +22,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -30,11 +35,13 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
-    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name")})
+    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name like :name")})
 public class Genre implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    @Id @GeneratedValue(generator="genre_id_seq",strategy=GenerationType.IDENTITY)
+    @Id
+	@SequenceGenerator(name="genre_id_seq", sequenceName="genre_id_seq")
+	@GeneratedValue(generator="genre_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")
@@ -96,6 +103,18 @@ public class Genre implements Serializable {
         this.artistCollection = artistCollection;
     }
 
+
+    public static List<Genre> queryByPattern (String pattern, EntityManager em)
+    {
+		Query getGenres = em.createNamedQuery ("Genre.findByName");
+		getGenres.setParameter("name", pattern);
+		List rez = getGenres.getResultList();
+		List<Genre> gens = new ArrayList<Genre>();
+
+		for (Object o : rez)
+			gens.add ((Genre)o);
+		return gens;
+    }
 
     @Override
     public String toString() {

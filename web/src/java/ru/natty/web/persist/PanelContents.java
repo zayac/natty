@@ -6,13 +6,17 @@
 package ru.natty.web.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -105,6 +109,18 @@ public class PanelContents implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public static List<PanelContents> queryById (Integer id, EntityManager em)
+    {
+        Query getPanel = em.createNamedQuery ("PanelContents.findByPanelId");
+        getPanel.setParameter ("panelId", id);
+        List contents = getPanel.getResultList();
+		List<PanelContents> pcs = new ArrayList<PanelContents>();
+
+		for (Object o : contents)
+			pcs.add ((PanelContents)o);
+		return pcs;
     }
 
     @Override

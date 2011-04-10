@@ -24,13 +24,13 @@ public class MainServiceImpl extends RemoteServiceServlet implements MainService
 	@Override
 	public DiffPatcher getInitialContent (Parameters p)
 	{
-		return gen.createBranch (p).getAllContent();
+		return gen.createContentBranch (p).getAllContent();
 	}
 	@Override
 	public DiffPatcher getDifference (Parameters p, Parameters prevP)
     {
-		WContent content = gen.createBranch (p);
-		WContent prev = gen.createBranch (prevP);
+		WContent content = gen.createContentBranch (p);
+		WContent prev = gen.createContentBranch (prevP);
 		
 		DiffPatcher ret = content.getDifference (prev, true);
 		return ret;

@@ -9,9 +9,11 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -74,6 +76,14 @@ public class Label implements Serializable {
             return false;
         }
         return true;
+    }
+
+
+    public static Label queryById (Integer id, EntityManager em)
+    {
+        Query query = em.createNamedQuery("Label.findById");
+        query.setParameter("id", id);
+        return (Label)query.getSingleResult();
     }
 
     @Override
