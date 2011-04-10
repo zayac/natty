@@ -6,7 +6,7 @@
 package ru.natty.web.server;
 
 import java.util.List;
-import ru.natty.persist.Genre;
+import ru.natty.persist.Track;
 import ru.natty.web.shared.DiffPatcher;
 import ru.natty.web.shared.Parameters;
 
@@ -14,24 +14,24 @@ import ru.natty.web.shared.Parameters;
  *
  * @author necto
  */
-public class WGenresList extends WContent
+public class WTracksList extends WContent
 {
 	private WVerticalPanelContent data;
 
-	public WGenresList (List<Genre> genres)
+	public WTracksList (List<Track> tracks)
 	{
 		data = new WVerticalPanelContent();
-		
+
 		int i = 0;
-		for (Genre g : genres)
-			data.addItem(100500 + i/*TODO: !!! completely wrong*/, i++, new WLabelContent(g.getName()));
+		for (Track t : tracks)
+			data.addItem(100500 + i/*TODO: !!! completely wrong*/, i++, new WLabelContent(t.getName()));
 	}
 
 	@Override
 	public DiffPatcher getDifference(WContent prev, boolean amputation)
 	{
-		//TODO: assert prev to be instance of WGenresList
-		return data.getDifference (((WGenresList)prev).data, amputation);
+		//TODO: assert prev to be instance of WTracksList
+		return data.getDifference (((WTracksList)prev).data, amputation);
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class WGenresList extends WContent
 		return false;//!!! TODO: or true?
 	}
 
-	public static WGenresList make (Integer id, Parameters ps, DataBase db)
+	public static WTracksList make (Integer id, Parameters ps, DataBase db)
 	{
-        return new WGenresList (db.queryGenreByPattern(ps.getQuery()));
+        return new WTracksList (db.queryTrackByPattern(ps.getQuery()));
 	}
 }

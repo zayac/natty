@@ -6,18 +6,16 @@
 package ru.natty.web.server;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import ru.natty.persist.Genre;
+import ru.natty.persist.Track;
 import ru.natty.web.persist.ContentHeader;
 import ru.natty.web.persist.GuiProperties;
 import ru.natty.web.persist.Label;
 import ru.natty.web.persist.PanelContents;
 import ru.natty.web.persist.WidgetType;
-import ru.natty.web.shared.Parameters;
 
 /**
  *
@@ -74,6 +72,11 @@ public class DataBase
 	public List<Genre> queryGenreByPattern (String pattern)
 	{
 		return Genre.queryByPattern (pattern, em);
+	}
+
+	public List<Track> queryTrackByPattern (String pattern)
+	{
+		return Track.queryByPattern (pattern, em);
 	}
 
 	public ContentHeader.ByIdFinder getContentHeaderFinder()

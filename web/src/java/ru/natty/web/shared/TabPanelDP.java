@@ -1,23 +1,7 @@
 package ru.natty.web.shared;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import ru.natty.web.client.ILabel;
-import ru.natty.web.client.IStreak;
 import ru.natty.web.client.ITabPanel;
 import ru.natty.web.client.IWidget;
-import ru.natty.web.client.Identified;
-
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.Widget;
 
 public class TabPanelDP extends CompositePanelDP
 {
@@ -44,6 +28,7 @@ public class TabPanelDP extends CompositePanelDP
 			this.id = id;
 		}
 		
+		@Override
 		public void insertMe (IWidget panel)
 		{
 			ITabPanel tp = (ITabPanel)panel;
@@ -88,11 +73,14 @@ public class TabPanelDP extends CompositePanelDP
 		addUnit(new TabUnit (tabText, position, id, dp));
 	}
 	
+	@Override
 	protected void finalInitialization (IWidget w)
 	{
 		if (activeTab >= 0)
 			((ITabPanel)w).setActiveTab(activeTab);
 	}
+
+	@Override
 	protected IWidget create (Integer id)
 	{
 		return new ITabPanel(id);

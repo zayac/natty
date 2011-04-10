@@ -41,8 +41,6 @@ public class ITabPanel extends IWidget implements Iterable<IWidget>
 		queryAllowed = true;
 	}
 	
-	
-
 	@Override
 	public Iterator<IWidget> iterator() {
 		return new IWidget.IteratorAdapter<IWidget, Widget> (((TabPanel)getWidget()).iterator(),

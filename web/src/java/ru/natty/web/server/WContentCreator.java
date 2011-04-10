@@ -27,8 +27,6 @@ public class WContentCreator
 		db = new DataBase();
 	}
 
-
-
     public WContent getContent (Integer id, Parameters ps)
     {
         log (Level.SEVERE, "getting content, id = " + id.toString());
@@ -39,20 +37,28 @@ public class WContentCreator
             case 1://label
                 return WLabelContent.make (id, ps, db);
             case 2://vertical panel
-                return WVerticalPanelContent.make(id, ps, db, this);
+                return WVerticalPanelContent.make (id, ps, db, this);
             case 3://tab panel
-                return WTabPanelContent.make(id, ps, db, this);
+                return WTabPanelContent.make (id, ps, db, this);
             case 4://genres list
-                return getGenresList (id, ps);
+                return WGenresList.make (id, ps, db);
 			case 5://Text box
-				return WTextBoxContent.make(id, ps, db);
+				return WTextBoxContent.make (id, ps, db);
 			case 6://Basic button
-				return WBasicButtonContent.make(id, ps, db);
+				return WBasicButtonContent.make (id, ps, db);
             case 7://Horizontal panel
-                return WHorizontalPanelContent.make(id, ps, db, this);
+                return WHorizontalPanelContent.make (id, ps, db, this);
+            case 8://track list
+                return WTracksList.make (id, ps, db);
             default:
                 return new WLabelContent("can't dispatch content named:" + wt.getName());
         }
+    }
+
+
+    private boolean isRoot (Integer id)
+    {
+        return id == 0;
     }
 
     private WContent getAggregatingBranch (Integer id, WContent content,
@@ -84,47 +90,6 @@ public class WContentCreator
                 return new WLabelContent ("Not an aggregating content, named:" + wt.getName());
         }
     }
-
-    private boolean isRoot (Integer id)
-    {
-        return id == 0;
-    }
-
-    private WGenresList getGenresList (Integer id, Parameters ps)
-    {
-        return new WGenresList (db.queryGenreByPattern(ps.getQuery()));
-    }
-
-//	private void fillCustomPanel (Integer id, Integer contentId,
-//								  WContent view, Parameters ps,
-//								  WComplexPanelContent panel)
-//	{
-//        List<PanelContents> contents = db.queryPanelContentsById(id);
-//        for (PanelContents pc : contents)
-//        {
-//			if (pc.getContentId().equals(contentId))
-//				panel.addItem (pc.getContentId(), pc.getOrdNumber(), view);
-//			else
-//				panel.addItem (pc.getContentId(), pc.getOrdNumber(),
-//					         getContent (pc.getContentId(), ps));
-//        }
-//	}
-//
-//    private WVerticalPanelContent getCustomVPanel (Integer id, Integer contentId,
-//												   WContent view, Parameters ps)
-//    {
-//        WVerticalPanelContent ret = new WVerticalPanelContent();
-//		fillCustomPanel(id, contentId, view, ps, ret);
-//        return ret;
-//    }
-//
-//    private WHorizontalPanelContent getCustomHPanel (Integer id, Integer contentId,
-//												   WContent view, Parameters ps)
-//    {
-//        WHorizontalPanelContent ret = new WHorizontalPanelContent();
-//		fillCustomPanel(id, contentId, view, ps, ret);
-//        return ret;
-//    }
 
     public WContent createContentBranch (Parameters ps)
     {
