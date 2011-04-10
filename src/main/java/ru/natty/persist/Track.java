@@ -6,18 +6,22 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,7 +36,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
-    @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
+    @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name like :name"),
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable {
@@ -117,6 +121,18 @@ public class Track implements Serializable {
 
     public void setArtistCollection(Collection<Artist> artistCollection) {
         this.artistCollection = artistCollection;
+    }
+
+    public static List<Track> queryByPattern (String pattern, EntityManager em)
+    {
+		Query getGenres = em.createNamedQuery ("Track.findByName");
+		getGenres.setParameter("name", pattern);
+		List rez = getGenres.getResultList();
+		List<Track> gens = new ArrayList<Track>();
+
+		for (Object o : rez)
+			gens.add ((Track)o);
+		return gens;
     }
 
     @Override
