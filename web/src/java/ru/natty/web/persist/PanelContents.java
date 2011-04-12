@@ -24,7 +24,7 @@ import javax.persistence.Table;
  * @author necto
  */
 @Entity
-@Table(name = "panel_contents")
+@Table(name = "panel_content")
 @NamedQueries({
     @NamedQuery(name = "PanelContents.findAll", query = "SELECT p FROM PanelContents p"),
     @NamedQuery(name = "PanelContents.findByPanelId", query = "SELECT p FROM PanelContents p WHERE p.panelContentsPK.panelId = :panelId"),

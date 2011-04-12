@@ -16,15 +16,15 @@ import ru.natty.web.shared.Parameters;
  */
 public class WTracksList extends WContent
 {
-	private WVerticalPanelContent data;
+	private WVerticalPanel data;
 
 	public WTracksList (List<Track> tracks)
 	{
-		data = new WVerticalPanelContent();
+		data = new WVerticalPanel();
 
 		int i = 0;
 		for (Track t : tracks)
-			data.addItem(100500 + i/*TODO: !!! completely wrong*/, i++, new WLabelContent(t.getName()));
+			data.addItem(100500 + i/*TODO: !!! completely wrong*/, i++, new WLabel(t.getName()));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class WTracksList extends WContent
 		return false;//!!! TODO: or true?
 	}
 
-	public static WTracksList make (Integer id, Parameters ps, DataBase db)
+	public static WTracksList make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
         return new WTracksList (db.queryTrackByPattern(ps.getQuery()));
 	}

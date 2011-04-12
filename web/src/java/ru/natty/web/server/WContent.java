@@ -4,7 +4,7 @@ import ru.natty.web.shared.DiffPatcher;
 
 public abstract class WContent
 {
-	public abstract DiffPatcher getDifference (WContent prev, boolean amputation);	
+	public abstract DiffPatcher getDifference (WContent prev, boolean amputation);
 	public abstract DiffPatcher getAllContent();
 	public abstract WContent copy();
 	public boolean isNotVoid() {return true;}

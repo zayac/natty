@@ -16,15 +16,15 @@ import ru.natty.web.shared.Parameters;
  */
 public class WGenresList extends WContent
 {
-	private WVerticalPanelContent data;
+	private WVerticalPanel data;
 
 	public WGenresList (List<Genre> genres)
 	{
-		data = new WVerticalPanelContent();
+		data = new WVerticalPanel();
 		
 		int i = 0;
 		for (Genre g : genres)
-			data.addItem(100500 + i/*TODO: !!! completely wrong*/, i++, new WLabelContent(g.getName()));
+			data.addItem(100500 + i/*TODO: !!! completely wrong*/, i++, new WLabel(g.getName()));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class WGenresList extends WContent
 		return false;//!!! TODO: or true?
 	}
 
-	public static WGenresList make (Integer id, Parameters ps, DataBase db)
+	public static WGenresList make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
         return new WGenresList (db.queryGenreByPattern(ps.getQuery()));
 	}

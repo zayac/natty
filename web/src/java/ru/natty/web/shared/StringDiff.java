@@ -3,9 +3,6 @@ package ru.natty.web.shared;
 import ru.natty.web.client.ILabel;
 import ru.natty.web.client.IWidget;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-
 public class StringDiff implements DiffPatcher
 {
 	String nStr;

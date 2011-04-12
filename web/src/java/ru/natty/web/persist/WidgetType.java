@@ -35,6 +35,8 @@ public class WidgetType implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
+    @Column(name = "classname")
+    private String className;
     @OneToMany(mappedBy = "widgetType")
     private Collection<GuiProperties> guiPropertiesCollection;
 
@@ -64,6 +66,14 @@ public class WidgetType implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public Collection<GuiProperties> getGuiPropertiesCollection() {

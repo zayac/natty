@@ -30,6 +30,7 @@ public class ITabPanel extends IWidget implements Iterable<IWidget>
 	{
 		super(id, new TabPanel());
 		tp = (TabPanel)getWidget();
+		//tp.setStylePrimaryName("gwt-DecoratedTabBar");
 		tp.addSelectionHandler(new OnChange());
 		queryAllowed = true;
 	}
