@@ -8,11 +8,11 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import ru.natty.web.client.IStreak;
-import ru.natty.web.client.IVoid;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.IStreak;
+import ru.natty.web.client.iwidget.IVoid;
+import ru.natty.web.client.iwidget.IWidget;
 
-public abstract class CompositePanelDP implements DiffPatcher {
+public abstract class CompositePanelDP extends DiffPatcher {
 
 	static public abstract class Unit implements Serializable, Comparable<Unit>
 	{
@@ -58,7 +58,7 @@ public abstract class CompositePanelDP implements DiffPatcher {
 	}
 	
 	@Override
-	public IWidget createNew(int id) {
+	protected IWidget createNewInt (int id) {
 		IWidget panel = create(id);
 		for (Unit u: creations)
 			u.pushMe(panel);
@@ -68,7 +68,7 @@ public abstract class CompositePanelDP implements DiffPatcher {
 	}
 
 	@Override
-	public void applay(IWidget w) {
+	protected void applayInt (IWidget w) {
 		Iterable<IWidget> panel = (Iterable<IWidget>)w;
 		
 		for (Iterator<IWidget> i = panel.iterator(); i.hasNext();)

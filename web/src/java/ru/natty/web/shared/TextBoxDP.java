@@ -5,14 +5,14 @@
 
 package ru.natty.web.shared;
 
-import ru.natty.web.client.ITextBox;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.ITextBox;
+import ru.natty.web.client.iwidget.IWidget;
 
 /**
  *
  * @author necto
  */
-public class TextBoxDP implements DiffPatcher
+public class TextBoxDP extends DiffPatcher
 {
 	String nStr;
 
@@ -24,13 +24,13 @@ public class TextBoxDP implements DiffPatcher
 	public TextBoxDP(){}
 
 	@Override
-	public IWidget createNew (int id)
+	protected IWidget createNewInt (int id)
 	{
 		return new ITextBox (id, nStr);
 	}
 
 	@Override
-	public void applay(IWidget w)
+	protected void applayInt(IWidget w)
 	{
 		((ITextBox)w).setText(nStr);
 	}

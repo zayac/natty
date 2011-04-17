@@ -1,9 +1,9 @@
 package ru.natty.web.shared;
 
-import ru.natty.web.client.ILabel;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.ILabel;
+import ru.natty.web.client.iwidget.IWidget;
 
-public class StringDiff implements DiffPatcher
+public class StringDiff extends DiffPatcher
 {
 	String nStr;
 	
@@ -19,7 +19,7 @@ public class StringDiff implements DiffPatcher
 	
 	public StringDiff(){}
 
-	public void applay(IWidget w)
+	protected void applayInt (IWidget w)
 	{
 		applay((ILabel) w);
 	}
@@ -31,7 +31,7 @@ public class StringDiff implements DiffPatcher
 	}
 	
 	@Override
-	public IWidget createNew (int id)
+	protected IWidget createNewInt (int id)
 	{
 		return new ILabel (id, nStr);
 	}

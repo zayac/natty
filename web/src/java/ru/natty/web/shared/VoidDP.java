@@ -1,9 +1,9 @@
 package ru.natty.web.shared;
 
-import ru.natty.web.client.IVoid;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.IVoid;
+import ru.natty.web.client.iwidget.IWidget;
 
-public class VoidDP implements DiffPatcher {
+public class VoidDP extends DiffPatcher {
 
 	@Override
 	public boolean isVoid()
@@ -12,12 +12,12 @@ public class VoidDP implements DiffPatcher {
 	}
 	
 	@Override
-	public IWidget createNew(int id) {
+	protected IWidget createNewInt (int id) {
 		return new IVoid (id);
 	}
 
 	@Override
-	public void applay(IWidget w) {
+	protected void applayInt (IWidget w) {
 		assert w.isVoid();
 	}
 

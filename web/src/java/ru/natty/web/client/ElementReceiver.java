@@ -1,5 +1,8 @@
 package ru.natty.web.client;
 
+import ru.natty.web.client.iwidget.ILabel;
+import ru.natty.web.client.iwidget.IWidget;
+import ru.natty.web.client.iwidget.ComplexPanelI;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -28,6 +31,7 @@ public class ElementReceiver
 	
 	public void init (ComplexPanel base)
 	{
+		ParamsUrl.getInstance().getFromHistory(pb.getCurrent());
 		queryInit (base);
 	}
 	
@@ -42,6 +46,7 @@ public class ElementReceiver
 				if (null == result)
 				{
 					((ComplexPanelI)root).add(new ILabel(324, "diff is null!"));
+					pb.requestSucceeded();
 					return;
 				}
 				result.applay(root);

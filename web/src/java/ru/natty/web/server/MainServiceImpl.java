@@ -5,6 +5,7 @@
 
 package ru.natty.web.server;
 
+import ru.natty.web.server.wcontent.WContent;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import ru.natty.web.client.MainService;

@@ -2,8 +2,8 @@ package ru.natty.web.shared;
 
 import com.google.gwt.user.client.ui.Widget;
 
-import ru.natty.web.client.IVerticalPanel;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.IVerticalPanel;
+import ru.natty.web.client.iwidget.IWidget;
 
 
 

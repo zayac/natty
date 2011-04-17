@@ -37,6 +37,7 @@ public class ParamsBuilder
 
 	public void requestSucceeded()
 	{
+		ParamsUrl.getInstance().putIntoHistory(current);
 		last = current.copy();
 	}
 }

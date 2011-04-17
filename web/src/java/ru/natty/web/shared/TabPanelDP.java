@@ -1,7 +1,7 @@
 package ru.natty.web.shared;
 
-import ru.natty.web.client.ITabPanel;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.ITabPanel;
+import ru.natty.web.client.iwidget.IWidget;
 
 public class TabPanelDP extends CompositePanelDP
 {

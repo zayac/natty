@@ -1,7 +1,7 @@
 package ru.natty.web.shared;
 
-import ru.natty.web.client.IHorizontalPanel;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.IHorizontalPanel;
+import ru.natty.web.client.iwidget.IWidget;
 
 import com.google.gwt.user.client.ui.Widget;
 

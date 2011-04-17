@@ -47,6 +47,8 @@ public class GuiProperties implements Serializable {
     private GuiProperties parent;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "guiProperties")
     private ContentHeader contentHeaders;
+    @Column(name = "style")
+    private String style;
 
     public GuiProperties() {
     }
@@ -85,6 +87,14 @@ public class GuiProperties implements Serializable {
 
     public void setParent(GuiProperties guiProperties) {
         this.parent = guiProperties;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
     }
 
     public ContentHeader getContentHeaders() {

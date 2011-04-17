@@ -5,14 +5,14 @@
 
 package ru.natty.web.shared;
 
-import ru.natty.web.client.IBasicButton;
-import ru.natty.web.client.IWidget;
+import ru.natty.web.client.iwidget.IBasicButton;
+import ru.natty.web.client.iwidget.IWidget;
 
 /**
  *
  * @author necto
  */
-public class BasicButtonDP implements DiffPatcher
+public class BasicButtonDP extends DiffPatcher
 {
 	String nStr;
 
@@ -24,13 +24,13 @@ public class BasicButtonDP implements DiffPatcher
 	public BasicButtonDP(){}
 
 	@Override
-	public IWidget createNew (int id)
+	protected IWidget createNewInt (int id)
 	{
 		return new IBasicButton (id, nStr);
 	}
 
 	@Override
-	public void applay(IWidget w)
+	protected void applayInt(IWidget w)
 	{
 		((IBasicButton)w).setText(nStr);
 	}

@@ -1,5 +1,7 @@
 package ru.natty.web.server;
 
+import ru.natty.web.server.wcontent.WLabel;
+import ru.natty.web.server.wcontent.WContent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -31,13 +33,18 @@ public class WContentCreator
 		db = new DataBase();
 	}
 
+	private Class getContentClass (WidgetType wt) throws ClassNotFoundException
+	{
+		return Class.forName("ru.natty.web.server.wcontent." + wt.getClassName());
+	}
+
     public WContent getContent (Integer id, Parameters ps)
     {
 		try
 		{
 			log(Level.SEVERE, "getting content, id = " + id.toString());
 			WidgetType wt = db.getWidgetType(id);
-			Class wclass = Class.forName("ru.natty.web.server." + wt.getClassName());
+			Class wclass = getContentClass(wt);
 			Method make = wclass.getMethod("make", Integer.class, Parameters.class,
 											DataBase.class, WContentCreator.class);
 			return (WContent)make.invoke (null, id, ps, db, this);
@@ -86,7 +93,7 @@ public class WContentCreator
 		{
 			log (Level.SEVERE, "getting custom content, id = " + id.toString());
 			WidgetType wt = db.getWidgetType (id);
-			Class wclass = Class.forName("ru.natty.web.server." + wt.getClassName());
+			Class wclass = getContentClass(wt);
 			Method make = wclass.getMethod("makeCustom", Integer.class, Integer.class,
 											WContent.class, Parameters.class,
 											DataBase.class, WContentCreator.class);
