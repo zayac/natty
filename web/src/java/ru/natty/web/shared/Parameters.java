@@ -1,47 +1,76 @@
 package ru.natty.web.shared;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Parameters implements Serializable
 {
-	private String query;
-	private Integer elementId;
+	private Integer id;
+	private HashMap<String, String> map;
 
 	public Parameters()
 	{
-		query = "";
-		elementId = 0;
-	}
-	
-	public Parameters (String query, Integer elementId)
-	{
 		super();
-		this.query = query;
-		this.elementId = elementId;
+		map = new HashMap<String, String>();
+		id = 0;
 	}
 
-	public String getQuery()
+	public Integer getId()
 	{
-		return query;
+		return id;
 	}
 
-	public void setQuery (String query)
+	public void setId (Integer elementId)
 	{
-		this.query = query;
+		this.id = elementId;
 	}
 
-	public Integer getElementId()
+	public String getVal (String name)
 	{
-		return elementId;
+		String val = map.get(name);
+		if (null == val) val = "";
+		return val;
 	}
 
-	public void setElementId (Integer elementId)
+	public String setVal (String name, String val)
 	{
-		this.elementId = elementId;
+		return map.put(name, val);
 	}
 
 	public Parameters copy()
 	{
-		return new Parameters (query, elementId);
+		Parameters ret = new Parameters();
+		ret.id = id;
+		ret.map.putAll(map);
+		return ret;
+	}
+
+	@Override
+	public String toString()
+	{
+		String ret = "id=" + id.toString();
+
+		for(Entry<String, String> entry :map.entrySet())
+			if (!entry.getKey().equals("")) //There is always unnamed parameter appears here 
+				ret += "&" + entry.getKey() + "=" + entry.getValue();
+		return ret;
+	}
+
+	public void byString (String str)
+	{
+		for (String param : str.split("&"))
+		{
+			String[] arr = param.split("=");
+			assert arr.length > 1 : "each parameter must contain a '=' character";
+			String name = arr[0];
+			String val = arr[1];
+			if (name.equals("id"))
+			{
+				id = Integer.parseInt(val);
+				continue;
+			}
+			map.put(name, val);
+		}
 	}
 }

@@ -9,7 +9,7 @@ import ru.natty.web.server.wcontent.WContent;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import ru.natty.web.client.MainService;
-import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.shared.Parameters;
 
 /**

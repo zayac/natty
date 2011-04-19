@@ -1,7 +1,7 @@
 package ru.natty.web.server.wcontent;
 
-import ru.natty.web.shared.DiffPatcher;
-import ru.natty.web.shared.StringDiff;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.StringDiff;
 import ru.natty.web.persist.Label;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.WContentCreator;
@@ -29,6 +29,7 @@ public class WLabel extends WContent
 	@Override
 	public DiffPatcher getDifferenceInt(WContent prev, boolean amputation)
 	{
+		if (null == text) return new StringDiff("my text is null!");
 		if (text.equals(((WLabel)prev).getText())) return null;
 		return new StringDiff (text);
 	}
@@ -55,9 +56,9 @@ public class WLabel extends WContent
 		return "WLabelContent [text=" + text + "]";
 	}
 
-	public static WLabel make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
+	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
         Label l = db.queryLabelById(id);
-        return new WLabel(l.getText());
+        return new WLabel(l.getText()).setStyle(id, db);
 	}
 }

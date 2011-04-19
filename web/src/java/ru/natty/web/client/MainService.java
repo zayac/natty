@@ -7,7 +7,7 @@ package ru.natty.web.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.shared.Parameters;
 
 /**

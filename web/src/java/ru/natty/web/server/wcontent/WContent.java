@@ -1,6 +1,9 @@
 package ru.natty.web.server.wcontent;
 
-import ru.natty.web.shared.DiffPatcher;
+import javax.xml.crypto.Data;
+import ru.natty.web.persist.GuiProperties;
+import ru.natty.web.server.DataBase;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 
 public abstract class WContent
 {
@@ -9,6 +12,14 @@ public abstract class WContent
 	public void setStyle (String st)
 	{
 		style = st;
+	}
+
+	public WContent setStyle (Integer id, DataBase db)
+	{
+		GuiProperties gp = db.queryGuiPropsById(id);
+		if (null != gp.getStyle())
+			setStyle(gp.getStyle());
+		return this;
 	}
 
 	public DiffPatcher applayStyle (DiffPatcher dp)

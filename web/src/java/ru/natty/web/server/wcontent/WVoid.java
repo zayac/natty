@@ -1,7 +1,7 @@
 package ru.natty.web.server.wcontent;
 
-import ru.natty.web.shared.DiffPatcher;
-import ru.natty.web.shared.VoidDP;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.VoidDP;
 
 public class WVoid extends WContent {
 

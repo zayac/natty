@@ -5,8 +5,8 @@ import java.util.List;
 import ru.natty.web.persist.PanelContents;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.WContentCreator;
-import ru.natty.web.shared.ComplexPanelDiffPatcher;
-import ru.natty.web.shared.CompositePanelDP;
+import ru.natty.web.shared.diffpatchers.ComplexPanelDiffPatcher;
+import ru.natty.web.shared.diffpatchers.CompositePanelDP;
 import ru.natty.web.shared.Parameters;
 
 public class WComplexPanel extends WCompositePanel

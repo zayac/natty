@@ -21,23 +21,12 @@ public class ParamsUrl
 	
 	public void putIntoHistory (Parameters p)
 	{
-		String item = "";
-		item += "elem.id=" + p.getElementId();
-		item += "&query=" + p.getQuery();
-		History.newItem(item);
+		History.newItem(p.toString());
 	}
 	
 	public void getFromHistory (Parameters p)
 	{
 		String url = History.getToken();
-		if (url.isEmpty()) return;
-		
-		String[] table = url.split("&");
-		assert table.length >= 0 : "There must be at least 2 arguments";
-		assert table[0].matches("elem\\.id=[0-9]+");
-		assert table[1].matches("query=.*");
-
-		p.setElementId (Integer.parseInt(table[0].split("=")[1]));
-		p.setQuery(table[1].split("=")[1]);
+		p.byString(url);
 	}
 }

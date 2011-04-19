@@ -5,8 +5,8 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import ru.natty.web.shared.CompositePanelDP;
-import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.CompositePanelDP;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 
 abstract public class WCompositePanel extends WContent
 {

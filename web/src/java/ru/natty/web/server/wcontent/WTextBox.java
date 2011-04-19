@@ -5,8 +5,8 @@
 
 package ru.natty.web.server.wcontent;
 
-import ru.natty.web.shared.DiffPatcher;
-import ru.natty.web.shared.TextBoxDP;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.TextBoxDP;
 import ru.natty.web.persist.Label;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.WContentCreator;
@@ -60,9 +60,9 @@ public class WTextBox extends WContent
 		return "WTextBoxContent\"" + text + "\"";
 	}
 
-	public static WTextBox make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
+	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
         Label l = db.queryLabelById(id);
-        return new WTextBox(l.getText());
+        return new WTextBox(l.getText()).setStyle(id, db);
 	}
 }

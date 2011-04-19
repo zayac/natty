@@ -7,9 +7,9 @@ import ru.natty.web.persist.PanelContents;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.wcontent.WCompositePanel.UnitContent;
 import ru.natty.web.server.WContentCreator;
-import ru.natty.web.shared.CompositePanelDP;
+import ru.natty.web.shared.diffpatchers.CompositePanelDP;
 import ru.natty.web.shared.Parameters;
-import ru.natty.web.shared.TabPanelDP;
+import ru.natty.web.shared.diffpatchers.TabPanelDP;
 
 public class WTabPanel extends WCompositePanel
 {	
@@ -75,7 +75,7 @@ public class WTabPanel extends WCompositePanel
 				+ contents + "]";
 	}
 
-	public static WTabPanel make (Integer id, Parameters ps,
+	public static WContent make (Integer id, Parameters ps,
 										 DataBase db, WContentCreator creator)
 	{
         WTabPanel ret = new WTabPanel();
@@ -99,10 +99,10 @@ public class WTabPanel extends WCompositePanel
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(), WVoid.make());
         }
-        return ret;
+        return ret.setStyle(id, db);
 	}
 
-    public static WTabPanel makeCustom (Integer id, Integer contentId,
+    public static WContent makeCustom (Integer id, Integer contentId,
 											   WContent view, Parameters ps,
 											   DataBase db, WContentCreator creator)
     {
@@ -124,6 +124,6 @@ public class WTabPanel extends WCompositePanel
                 ret.InsertTab (pc.getContentId(), tabLabel.getHeader(),
                                pc.getOrdNumber(), WVoid.make());
         }
-        return ret;
+        return ret.setStyle(id, db);
     }
 }

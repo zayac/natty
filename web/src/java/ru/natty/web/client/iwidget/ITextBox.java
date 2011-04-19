@@ -25,12 +25,12 @@ public class ITextBox extends IWidget
 
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				ParamsBuilder.getCurrent().setQuery(((TextBox)getWidget()).getText());
+				ParamsBuilder.getCurrent().setVal("query", ((TextBox)getWidget()).getText());
 			}
 		});
 	}
 
-	public void setText(String nStr) {
+	final public void setText(String nStr) {
 		((TextBox)getWidget()).setText (nStr);
 	}
 }

@@ -5,8 +5,8 @@
 
 package ru.natty.web.server.wcontent;
 
-import ru.natty.web.shared.BasicButtonDP;
-import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.BasicButtonDP;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.persist.Label;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.WContentCreator;
@@ -60,9 +60,9 @@ public class WBasicButton extends WContent
 		return "WBasicButtonContent\"" + text + "\"";
 	}
 
-	public static WBasicButton make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
+	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
         Label l = db.queryLabelById(id);
-        return new WBasicButton(l.getText());
+        return new WBasicButton(l.getText()).setStyle(id, db);
 	}
 }

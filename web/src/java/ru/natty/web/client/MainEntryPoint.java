@@ -25,7 +25,7 @@ public class MainEntryPoint implements EntryPoint {
 	public void onModuleLoad()
 	{
 		RootPanel.get().clear();
-		ParamsBuilder.getCurrent().setElementId(0);
+		ParamsBuilder.getCurrent().setId(0);
 		ElementReceiver.get().init (RootPanel.get());
 		Label lb = new Label("main entry point entered");
 		RootPanel.get().add(lb);

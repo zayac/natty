@@ -16,8 +16,8 @@ public class ParamsBuilder
 	static private ParamsBuilder instance = null;
 	private ParamsBuilder () {}
 
-	private Parameters last = new Parameters("", 0);
-	private Parameters current = new Parameters("", 0);;
+	private Parameters last = new Parameters();
+	private Parameters current = new Parameters();
 
 	public static ParamsBuilder get()
 	{

@@ -9,6 +9,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import ru.natty.persist.Album;
+import ru.natty.persist.Artist;
 import ru.natty.persist.Genre;
 import ru.natty.persist.Track;
 import ru.natty.web.persist.ContentHeader;
@@ -74,9 +76,24 @@ public class DataBase
 		return Genre.queryByPattern (pattern, em);
 	}
 
+	public List<Artist> queryArtistByPattern (String pattern)
+	{
+		return Artist.queryByPattern (pattern, em);
+	}
+
+	public List<Album> queryAlbumByPattern (String pattern)
+	{
+		return Album.queryByPattern (pattern, em);
+	}
+
 	public List<Track> queryTrackByPattern (String pattern)
 	{
 		return Track.queryByPattern (pattern, em);
+	}
+
+	public List<Track> queryTrackByPatternWindowed (String pattern, Integer lim, Integer offset)
+	{
+		return Track.queryByPatternWindowed (pattern, em, lim, offset);
 	}
 
 	public ContentHeader.ByIdFinder getContentHeaderFinder()

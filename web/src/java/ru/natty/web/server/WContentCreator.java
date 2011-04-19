@@ -2,17 +2,11 @@ package ru.natty.web.server;
 
 import ru.natty.web.server.wcontent.WLabel;
 import ru.natty.web.server.wcontent.WContent;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import javassist.tools.reflect.Reflection;
-import ru.natty.web.persist.ContentHeader;
 import ru.natty.web.persist.GuiProperties;
-import ru.natty.web.persist.PanelContents;
-import ru.natty.web.persist.Label;
 import ru.natty.web.persist.WidgetType;
 import ru.natty.web.shared.Parameters;
 
@@ -108,8 +102,8 @@ public class WContentCreator
     public WContent createContentBranch (Parameters ps)
     {
         db.startTransaction();
-        WContent leaf = getContent (ps.getElementId(), ps);
-        WContent ret = getAggregatingBranch (ps.getElementId(), leaf, ps);
+        WContent leaf = getContent (ps.getId(), ps);
+        WContent ret = getAggregatingBranch (ps.getId(), leaf, ps);
         db.finishTransaction();
         return ret;
     }

@@ -20,7 +20,7 @@ public class ITabPanel extends IWidget implements Iterable<IWidget>
 
 			final IStreak sp = (IStreak)ITabPanel.this.tp.getWidget (event.getSelectedItem());
 			
-			ParamsBuilder.getCurrent().setElementId(sp.getId());
+			ParamsBuilder.getCurrent().setId(sp.getId());
 			ElementReceiver.get().queryElement();
 		}
 	}

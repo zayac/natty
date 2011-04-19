@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import ru.natty.web.shared.DiffPatcher;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.shared.Parameters;
 
 public class ElementReceiver
@@ -52,14 +52,14 @@ public class ElementReceiver
 				result.applay(root);
 				diff.clear();
 				diff.add(new HTML(result.toString()));
-                ((ComplexPanelI)root).add(new ILabel(324, "id " + param.getElementId() + " succeded"));
+                ((ComplexPanelI)root).add(new ILabel(324, "id " + param.getId() + " succeded"));
 
 				pb.requestSucceeded();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				((ComplexPanelI)root).add(new ILabel(324, "query " + param.getQuery() + " failed while being requested"));
+				((ComplexPanelI)root).add(new ILabel(324, "query " + param.getVal("query") + " failed while being requested"));
 				((ComplexPanelI)root).add(new ILabel(325, "cause: " + caught.getMessage()));
 			}
 		});
@@ -77,6 +77,7 @@ public class ElementReceiver
 				base.add (root);
 				base.add (new HTML ("<h2> Received from server: </h2>"));
 				diff = new VerticalPanel();
+				diff.setStylePrimaryName("received-panel");
 				base.add (diff);
 				diff.clear();
 				diff.add (new HTML (result.toString()));
