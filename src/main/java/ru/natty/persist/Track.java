@@ -36,10 +36,14 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
-    @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name like :name"),
+    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE t.name LIKE :name"),
+    @NamedQuery(name = "Track.findByPatternLimited", query =
+						"SELECT t FROM Track t WHERE t.name LIKE :name"),
+//						"SELECT t FROM Track t WHERE t.name LIKE :name LIMIT 10 OFFSET 1"),//not working. Why??!!
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
-public class Track implements Serializable {
+public class Track implements Serializable
+{
     private static final long serialVersionUID = 1L;
     @Id
 	@SequenceGenerator(name="track_id_seq", sequenceName="track_id_seq")
@@ -125,9 +129,24 @@ public class Track implements Serializable {
 
     public static List<Track> queryByPattern (String pattern, EntityManager em)
     {
-		Query getGenres = em.createNamedQuery ("Track.findByName");
+		Query getGenres = em.createNamedQuery ("Track.findByPattern");
 		getGenres.setParameter("name", pattern);
 		List rez = getGenres.getResultList();
+		List<Track> gens = new ArrayList<Track>();
+
+		for (Object o : rez)
+			gens.add ((Track)o);
+		return gens;
+    }
+
+    public static List<Track> queryByPatternWindowed (String pattern, EntityManager em,
+													  Integer limit, Integer offset)
+    {
+		Query getTracks = em.createNamedQuery ("Track.findByPatternLimited");
+		getTracks.setParameter ("name", pattern);
+//		getTracks.setParameter ("lim", limit);
+//		getTracks.setParameter ("offset", offset);
+		List rez = getTracks.getResultList();
 		List<Track> gens = new ArrayList<Track>();
 
 		for (Object o : rez)

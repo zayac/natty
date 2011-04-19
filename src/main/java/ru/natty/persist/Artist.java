@@ -6,11 +6,13 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -31,7 +34,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
-    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
+    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE a.name like :name")})
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -89,6 +92,18 @@ public class Artist implements Serializable {
 
     public void setGenreCollection(Collection<Genre> genreCollection) {
         this.genreCollection = genreCollection;
+    }
+
+    public static List<Artist> queryByPattern (String pattern, EntityManager em)
+    {
+		Query getGenres = em.createNamedQuery ("Artist.findByPattern");
+		getGenres.setParameter("name", pattern);
+		List rez = getGenres.getResultList();
+		List<Artist> arts = new ArrayList<Artist>();
+
+		for (Object o : rez)
+			arts.add ((Artist)o);
+		return arts;
     }
 
     @Override

@@ -35,7 +35,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
-    @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name like :name")})
+    @NamedQuery(name = "Genre.findByPattern", query = "SELECT g FROM Genre g WHERE g.name like :name")})
 public class Genre implements Serializable {
     private static final long serialVersionUID = 1L;
     
@@ -106,7 +106,7 @@ public class Genre implements Serializable {
 
     public static List<Genre> queryByPattern (String pattern, EntityManager em)
     {
-		Query getGenres = em.createNamedQuery ("Genre.findByName");
+		Query getGenres = em.createNamedQuery ("Genre.findByPattern");
 		getGenres.setParameter("name", pattern);
 		List rez = getGenres.getResultList();
 		List<Genre> gens = new ArrayList<Genre>();

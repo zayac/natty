@@ -6,12 +6,15 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,6 +23,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -34,7 +38,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
-    @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
+    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE a.name like :name"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -101,8 +105,21 @@ public class Album implements Serializable {
         return trackCollection;
     }
 
-    public void setTrackCollection(Collection<Track> trackCollection) {
+    public void setTrackCollection(Collection<Track> trackCollection)
+	{
         this.trackCollection = trackCollection;
+    }
+
+    public static List<Album> queryByPattern (String pattern, EntityManager em)
+    {
+		Query getGenres = em.createNamedQuery ("Album.findByPattern");
+		getGenres.setParameter("name", pattern);
+		List rez = getGenres.getResultList();
+		List<Album> albs = new ArrayList<Album>();
+
+		for (Object o : rez)
+			albs.add ((Album)o);
+		return albs;
     }
 
     @Override

@@ -10,6 +10,26 @@
    TODO customize this sample style
    Syntax recommendation http://www.w3.org/TR/REC-CSS2/
 */
+* {
+	font-size: 105%;
+}
+
+.copyright {
+	font-size: 50%;
+	font-weight: bold;
+	font-style: oblique;
+	position: absolute;
+	right: 0%
+}
+
+.received-panel {
+	font-size: 60%;
+	background-color: #eeeeee;
+}
+
+
+
+
 .gwt-DecoratedTabBar {
 }
 
