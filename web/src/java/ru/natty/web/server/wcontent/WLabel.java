@@ -29,7 +29,7 @@ public class WLabel extends WContent
 	@Override
 	public DiffPatcher getDifferenceInt(WContent prev, boolean amputation)
 	{
-		if (null == text) return new StringDiff("my text is null!");
+		if (null == text) return new StringDiff("my text is null! It is an error!");
 		if (text.equals(((WLabel)prev).getText())) return null;
 		return new StringDiff (text);
 	}
