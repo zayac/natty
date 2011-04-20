@@ -38,7 +38,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
-    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE a.name like :name"),
+    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name)"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable {
     private static final long serialVersionUID = 1L;

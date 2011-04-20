@@ -34,7 +34,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
-    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE a.name like :name")})
+    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
