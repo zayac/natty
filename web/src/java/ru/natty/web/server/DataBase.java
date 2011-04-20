@@ -96,6 +96,11 @@ public class DataBase
 		return Track.queryByPatternWindowed (pattern, em, lim, offset);
 	}
 
+	public Track queryTrackById (Integer id)
+	{
+		return Track.queryById (id, em);
+	}
+
 	public ContentHeader.ByIdFinder getContentHeaderFinder()
 	{
 		return new ContentHeader.ByIdFinder(em);

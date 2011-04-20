@@ -112,7 +112,8 @@ INSERT INTO widget_type (id, name, classname) VALUES
 (   9, 'text cell list',	'WTextCellList'),
 (  10, 'image',				'WImage'),
 (  11, 'artist list',		'WArtistList'),
-(  12, 'album list',		'WAlbumList');
+(  12, 'album list',		'WAlbumList'),
+(  13, 'player',			'WPlayer');
 
 
 INSERT INTO gui_properties (id, parent_id, wtype, style) VALUES
@@ -126,7 +127,8 @@ INSERT INTO gui_properties (id, parent_id, wtype, style) VALUES
 (   7,	5,		8,	null),
 (   8,	0,		1,	'copyright'),
 (   9,  5,	   11,	null),
-(  10,  5,     12,  null);
+(  10,  5,     12,  null),
+(  11,  0,	   13,  null);
 
 INSERT INTO label (id, text) VALUES
 (	1,	'<h3> Hello, it is the Natty musical database</h3>'),
@@ -136,9 +138,10 @@ INSERT INTO label (id, text) VALUES
 
 INSERT INTO panel_content (panel_id, ord_number, content_id) VALUES
 (	0,	0,	1),
-(	0,	1,	2),
-(	0,	2,	5),
-(	0,	3,	8),
+(	0,	1, 11),
+(	0,	2,	2),
+(	0,	3,	5),
+(	0,	4,	8),
 (	2,	0,	3),
 (	2,	1,	4),
 (	5,	0,	6),

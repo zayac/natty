@@ -129,14 +129,21 @@ public class Track implements Serializable
 
     public static List<Track> queryByPattern (String pattern, EntityManager em)
     {
-		Query getGenres = em.createNamedQuery ("Track.findByPattern");
-		getGenres.setParameter("name", pattern);
-		List rez = getGenres.getResultList();
+		Query getTracks = em.createNamedQuery ("Track.findByPattern");
+		getTracks.setParameter("name", pattern);
+		List rez = getTracks.getResultList();
 		List<Track> gens = new ArrayList<Track>();
 
 		for (Object o : rez)
 			gens.add ((Track)o);
 		return gens;
+    }
+
+    public static Track queryById (Integer id, EntityManager em)
+    {
+		Query getTrack = em.createNamedQuery ("Track.findById");
+		getTrack.setParameter("id", id);
+		return (Track)getTrack.getSingleResult();
     }
 
     public static List<Track> queryByPatternWindowed (String pattern, EntityManager em,
