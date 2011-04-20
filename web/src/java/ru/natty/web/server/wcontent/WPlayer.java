@@ -34,7 +34,7 @@ public class WPlayer extends WContent
 	@Override
 	public DiffPatcher getDifferenceInt(WContent prev, boolean amputation)
 	{
-		assert prev instanceof WTextBox;
+		assert prev instanceof WPlayer;
 		if (url.equals(((WPlayer)prev).getUrl())) return null;
 		return new PlayerDP(url);
 	}
@@ -63,7 +63,9 @@ public class WPlayer extends WContent
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-		Track t = db.queryTrackById(Integer.parseInt(ps.getVal("Track")));
-        return new WTextBox(t.getUrl()).setStyle(id, db);
+		String trId = ps.getVal("Track");
+		if (trId.equals("")) return new WPlayer ("no track to play");
+		Track t = db.queryTrackById(Integer.parseInt(trId));
+        return new WPlayer(t.getUrl()).setStyle(id, db);
 	}
 }
