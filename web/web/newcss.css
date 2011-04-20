@@ -7,13 +7,12 @@
 */
 
 /* 
-   TODO customize this sample style
-   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
-*/
-* {
+* 
+{
 	padding: 0;
 	margin: 0;
 }
+
 
 @font-face {
   font-family: 'Droid Sans';
@@ -56,7 +55,7 @@ table { width: 100%; }
 
 .search_container
 {
-	width: 500px;
+	width: 100%;
 	text-align: center;
 }
 .search
@@ -108,12 +107,12 @@ table { width: 100%; }
         background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #dedede), color-stop(1.0, #ffffff));
 }
 
-.copyright 
-{
-	color: grey;
-	text-align: center;
-	font-size: 100%;
+.copyright {
+	font-size: 50%;
+	font-weight: bold;
 	font-style: oblique;
+	position: absolute;
+	right: 0%
 }
 
 .received-panel {
@@ -121,4 +120,223 @@ table { width: 100%; }
 	background-color: #eeeeee;
 }
 
+.genre_list
+{
+	-moz-border-radius-bottomleft: 20px;
+	-moz-border-radius-bottomright: 20px;
+	-moz-border-radius-topleft: 20px;
+	-moz-border-radius-topright: 20px;
+	-moz-box-shadow: 2px 2px 10px #888;
+	-webkit-border-bottom-left-radius: 20px;
+	-webkit-border-bottom-right-radius: 20px;
+	-webkit-border-top-left-radius: 20px;
+	-webkit-border-top-right-radius: 20px;
+	-webkit-box-shadow: 2px 2px 10px #888;
+	background-color: #f47e7d;
+	margin: 25px auto 0;
+	padding: 25px 10px;
+	text-align: center;
+	width: 260px;
+}
 
+.artist_list
+{
+        -moz-border-radius-bottomleft: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-topright: 20px;
+        -moz-box-shadow: 2px 2px 10px #888;
+        -webkit-border-bottom-left-radius: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -webkit-box-shadow: 2px 2px 10px #888;
+        background-color: #b5d045;
+        margin: 25px auto 0;
+        padding: 25px 10px;
+        text-align: center;
+        width: 260px;
+}
+
+.album_list
+{
+        -moz-border-radius-bottomleft: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-topright: 20px;
+        -moz-box-shadow: 2px 2px 10px #888;
+        -webkit-border-bottom-left-radius: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -webkit-box-shadow: 2px 2px 10px #888;
+        background-color: #fb8335;
+        margin: 25px auto 0;
+        padding: 25px 10px;
+        text-align: center;
+        width: 260px;
+}
+
+.track_list
+{
+        -moz-border-radius-bottomleft: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-topright: 20px;
+        -moz-box-shadow: 2px 2px 10px #888;
+        -webkit-border-bottom-left-radius: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -webkit-box-shadow: 2px 2px 10px #888;
+        background-color: #81c0c5;
+        margin: 25px auto 0;
+        padding: 25px 10px;
+        text-align: center;
+        width: 260px;
+}
+
+
+
+
+
+.gwt-DecoratedTabBar {
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarFirst {
+  width: 5px;  /* first tab distance from the left */
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarRest {
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem {
+  border-collapse: collapse;
+  margin-left: 6px;
+}
+
+.gwt-DecoratedTabBar .tabTopCenter {
+  padding: 0px;
+  background: #d0e4f6;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft,
+.gwt-DecoratedTabBar .tabTopRight {
+  padding: 0px;
+  zoom: 1;
+}
+
+.gwt-DecoratedTabBar .tabTopLeftInner,
+.gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft {
+  background: url(images/corner.png) no-repeat 0px -55px;
+  -background: url(images/corner_ie6.png) no-repeat 0px -55px;
+}
+
+.gwt-DecoratedTabBar .tabTopRight {
+  background: url(images/corner.png) no-repeat -6px -55px;
+  -background: url(images/corner_ie6.png) no-repeat -6px -55px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeft,
+.gwt-DecoratedTabBar .tabMiddleRight {
+  width: 6px;
+  padding: 0px;
+  background: #d0e4f6;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeftInner,
+.gwt-DecoratedTabBar .tabMiddleRightInner {
+  width: 1px;
+  height: 1px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleCenter {
+  padding: 0px 4px 2px 4px;
+  cursor: pointer;
+  cursor: hand;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  background: #d0e4f6;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopCenter {
+  background: #92c1f0;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopLeft {
+  background-position: 0px -61px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopRight {
+  background-position: -6px -61px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleLeft,
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleRight {
+  background: #92c1f0;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter {
+  cursor: default;
+  background: #92c1f0;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleCenter {
+  cursor: default;
+  color: #999999;
+}
+
+html>body .gwt-DecoratedTabBar {
+}
+
+* html .gwt-DecoratedTabBar .tabTopLeftInner,
+* html .gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.gwt-TabPanel {
+}
+
+.gwt-TabPanelBottom {
+  border-color: #92c1f0;
+  border-style: solid;
+  border-width: 3px 2px 2px;
+  overflow: hidden;
+  padding: 6px;
+}
+
+.gwt-Button {
+  margin: 0;
+  padding: 3px 5px;
+  text-decoration: none;
+  font-size: small;
+  cursor: pointer;
+  cursor: hand;
+  background: url("images/hborder.png") repeat-x 0px -27px;
+  border: 1px outset #ccc;
+}
+
+.gwt-Button:active {
+  border: 1px inset #ccc;
+}
+
+.gwt-Button:hover {
+  border-color: #9cf #69e #69e #7af;
+}
+
+.gwt-Button[disabled] {
+  cursor: default;
+  color: #888;
+}
+
+.gwt-Button[disabled]:hover {
+  border: 1px outset #ccc;
+}
