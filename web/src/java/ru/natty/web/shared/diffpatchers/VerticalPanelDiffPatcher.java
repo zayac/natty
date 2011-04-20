@@ -15,19 +15,4 @@ public class VerticalPanelDiffPatcher extends ComplexPanelDiffPatcher
 	protected IWidget create(Integer id) {
 		return new IVerticalPanel (id);
 	}
-//	@Override
-//	protected ComplexPanel newPanel(int id) {
-//		return new IVerticalPanel (id);
-//	}
-	/* Oracle SQL
-	 * #18: insert into t values(42);
-	 *		/<-- mistake
-	 *		insert into t values (43);
-	 *
-	 *	#17: delete emp
-	 *		  <-- not executed
-	 *		 / <-- executed here
-		Optimal = "and level <= 2" in connect by
-		#103, ...:	circle; CONNECT BY IS SERCLE, NO CIRCLE
-	 */
 }

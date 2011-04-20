@@ -113,13 +113,14 @@ INSERT INTO widget_type (id, name, classname) VALUES
 (  10, 'image',				'WImage'),
 (  11, 'artist list',		'WArtistList'),
 (  12, 'album list',		'WAlbumList'),
-(  13, 'player',			'WPlayer');
+(  13, 'player',			'WPlayer'),
+(  14, 'flow panel',		'WFlowPanel');
 
 
 INSERT INTO gui_properties (id, parent_id, wtype, style) VALUES
 (   0,	null,	2,	'root'),
 (   1,	0,		1,	'header'),
-(   2,	0,		7,	'search_container'),
+(   2,	0,	   14,	'search_container'),
 (   3,	2,		5,	'search'),
 (   4,	2,		6,	'search_button'),
 (   5,	0,		7,	'lists_container'),
