@@ -36,6 +36,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
+    @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
     @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE t.name LIKE :name"),
     @NamedQuery(name = "Track.findByPatternLimited", query =
 						"SELECT t FROM Track t WHERE t.name LIKE :name"),
@@ -127,6 +128,31 @@ public class Track implements Serializable
         this.artistCollection = artistCollection;
     }
 
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Track other = (Track) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
+
+    
     public static List<Track> queryByPattern (String pattern, EntityManager em)
     {
 		Query getGenres = em.createNamedQuery ("Track.findByPattern");

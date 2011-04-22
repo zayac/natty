@@ -9,6 +9,7 @@ package ru.natty.parser;
 import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Level;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -31,7 +32,8 @@ public class SMBParser implements Parser {
     private Set<Integer> parsedFiles = null;
     private final static Logger log = Logger.getLogger(SMBParser.class);
     private final static TagsCommiter commiter = TagsCommiter.getInstance();
-
+    private static Stack<SmbFile> directories = new Stack<SmbFile>();
+    
     public String getExtension(String path)
     {
         int dot = path.lastIndexOf(".");
@@ -51,42 +53,51 @@ public class SMBParser implements Parser {
             }
             this.homePath = path;
             SmbFile file = new SmbFile(homePath);
+            directories.add(file);
             log.debug("Starting to work with the file " + file.getPath());
 
-            if (file.isDirectory()) {
-                log.debug("File " + file.getPath() + " is a directory");
-                SmbFile[] filesInDirectory = file.listFiles();
-                log.debug("There are " + filesInDirectory.length + " files and directories");
-                for (int i = 0; i < filesInDirectory.length; i++) {
-                    log.debug("Parsing " + filesInDirectory[i].getPath());
-                    if (filesInDirectory[i].isDirectory()) {
+            while (!directories.empty())
+            {
+                file = directories.pop();
+                if (file.isDirectory()) {
+                    log.debug("File " + file.getPath() + " is a directory");
+                    SmbFile[] filesInDirectory = file.listFiles();
+                    log.debug("There are " + filesInDirectory.length + " files and directories");
+                    for (int i = 0; i < filesInDirectory.length; i++) {
+                        log.debug("Parsing " + filesInDirectory[i].getPath());
                         if (!parsedFiles.contains(filesInDirectory[i].hashCode())) {
-                            parse(filesInDirectory[i].getPath());
+                            directories.push(filesInDirectory[i]);
                             log.debug("Directory " + filesInDirectory[i].getPath() + " has been added into the queue to be parsed");
                         } else {
                             log.debug("Directory " + filesInDirectory[i].getPath() + " has been already parsed. Skipping");
                         }
-                    } else {
-                        if(!getExtension(filesInDirectory[i].getPath()).equalsIgnoreCase("mp3"))
+                    }
+                } else {
+                    if(!getExtension(file.getPath()).equalsIgnoreCase("mp3"))
+                    {
+                        log.debug("File " + file.getPath() + " is not an mp3 file");
+                    } else
+                    {
+                        MediaFile audiof = new MP3File(new SMBFileSource(file));
+                        log.debug("File is read successfully");
+                        try
                         {
-                            log.debug("File " + filesInDirectory[i].getPath() + " is not an mp3 file");
-                        } else
-                        {
-                            MediaFile audiof = new MP3File(new SMBFileSource(filesInDirectory[i]));
-                            log.debug("File is read successfully");
                             ID3V2Tag tag = audiof.getID3V2Tag();
                             TextEncoding.setDefaultTextEncoding(TextEncoding.ISO_8859_1);
-                            commiter.commit(filesInDirectory[i].getPath(), tag);
-                            log.debug("File " + filesInDirectory[i].getPath() + " is cached");
+                            commiter.commit(file.getPath(), tag);
+                            log.debug("File " + file.getPath() + " is cached");
+                        }
+                        catch (ID3Exception e)
+                        {
+                            log.error(e);
                         }
                     }
                 }
                 parsedFiles.add(file.hashCode());
             }
             log.debug("Parser has finished to parse");
-        } catch (ID3Exception ex) {
-            log.error(path + " " + ex);
-        } catch (SmbException ex) {
+        }
+        catch (SmbException ex) {
             log.error(path + " " + ex);
         } catch (MalformedURLException ex) {
             log.error(path + " " + ex);

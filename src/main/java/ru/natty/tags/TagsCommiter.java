@@ -330,13 +330,11 @@ public class TagsCommiter {
         it = genreCollection.entrySet().iterator();
         while(it.hasNext()) {
             Map.Entry<String, Genre> entry = (Entry<String, Genre>) it.next();
-            //log.debug(entry.getValue().getArtistCollection().toString());
             em.persist(entry.getValue());
         }
         it = artistCollection.entrySet().iterator();
         while(it.hasNext()) {
             Map.Entry<String, Artist> entry = (Entry<String, Artist>) it.next();
-            //log.debug(entry.getValue().getGenreCollection().toString());
             em.persist(entry.getValue());
         }
         it = albumCollection.entrySet().iterator();
@@ -344,7 +342,6 @@ public class TagsCommiter {
             Map.Entry<String, Album> entry = (Entry<String, Album>) it.next();
             em.persist(entry.getValue());
         }
-        System.out.println(genreCollection);
         em.getTransaction().commit();
         trackCollection.clear();
     }

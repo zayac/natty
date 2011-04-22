@@ -34,7 +34,8 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
-    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE a.name like :name")})
+    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE a.name like :name"),
+    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
 public class Artist implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -94,6 +95,30 @@ public class Artist implements Serializable {
         this.genreCollection = genreCollection;
     }
 
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Artist other = (Artist) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    
     public static List<Artist> queryByPattern (String pattern, EntityManager em)
     {
 		Query getGenres = em.createNamedQuery ("Artist.findByPattern");
