@@ -6,12 +6,104 @@
         Purpose of the stylesheet follows.
 */
 
-/* 
-   TODO customize this sample style
-   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
-*/
-* {
-	font-size: 105%;
+* 
+{
+	padding: 0;
+	margin: 0;
+}
+
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Sans'), local('DroidSans'), url('fonts/DroidSans.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'PT Sans Narrow';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PT Sans Narrow'), local('PTSans-Narrow'), url('fonts/PTSansNarrow.woff') format('woff');
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #333333;
+    background-color: #9bc5c8;
+    background-image: url('images/background.gif');
+    background-repeat: repeat-x;
+}
+
+table { width: 100%; }
+.root{	width: 100%; }
+.root tr td h1 { font-family: 'Droid Sans', arial, serif; font-size: 600%; padding: 0;}
+.root tr td h3 { font-family: 'PT Sans Narrow', arial, serif; font-size: 200%; }
+
+.root tr td { text-align: center; }
+.header
+{
+	padding: 10px;
+	color: grey;
+	width: 100%;
+}
+
+.search_container
+{
+	width: 100%;
+	text-align: center;
+}
+.search
+{
+	-moz-border-radius-bottomleft: 20px;
+	-moz-border-radius-bottomright: 20px;
+	-moz-border-radius-topleft: 20px;
+	-moz-border-radius-topright: 20px;
+	-webkit-border-bottom-left-radius: 20px;
+	-webkit-border-bottom-right-radius: 20px;
+	-webkit-border-top-left-radius: 20px;
+	-webkit-border-top-right-radius: 20px;
+	background-color: #eaeaea;
+	background: -moz-linear-gradient(top, #ffffff, #eaeaea);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffff), color-stop(1.0, #eaeaea));
+	border: 1px solid #cacaca;
+	color: #444;
+	font-size: 1.4em;
+	margin: 0 10px 25px;
+	padding: 8px 10px;
+	width: 450px;
+	text-align: center;
+}
+
+.search_button
+{
+	-moz-border-radius-bottomleft: 32px;
+	-moz-border-radius-bottomright: 32px;
+	-moz-border-radius-topleft: 32px;
+	-moz-border-radius-topright: 32px;
+	-webkit-border-bottom-left-radius: 32px;
+	-webkit-border-bottom-right-radius: 32px;
+	-webkit-border-top-left-radius: 32px;
+	-webkit-border-top-right-radius: 32px;
+	background-color: #dedede;
+	background: -moz-linear-gradient(top, #ffffff, #eaeaea);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffff), color-stop(1.0, #dedede));
+	border: 1px solid #dedede;
+	color: #484848;
+	font-size: 1em;
+	font-weight: bold;
+	padding: 10px 15px;
+	cursor: pointer;
+}
+
+.search_button:hover
+{
+        background: -moz-linear-gradient(top, #eaeaea, #ffffff);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #dedede), color-stop(1.0, #ffffff));
 }
 
 .copyright {
@@ -26,6 +118,83 @@
 	font-size: 60%;
 	background-color: #eeeeee;
 }
+
+.genre_list
+{
+	-moz-border-radius-bottomleft: 20px;
+	-moz-border-radius-bottomright: 20px;
+	-moz-border-radius-topleft: 20px;
+	-moz-border-radius-topright: 20px;
+	-moz-box-shadow: 2px 2px 10px #888;
+	-webkit-border-bottom-left-radius: 20px;
+	-webkit-border-bottom-right-radius: 20px;
+	-webkit-border-top-left-radius: 20px;
+	-webkit-border-top-right-radius: 20px;
+	-webkit-box-shadow: 2px 2px 10px #888;
+	background-color: #f47e7d;
+	margin: 25px auto 0;
+	padding: 25px 10px;
+	text-align: center;
+	width: 260px;
+}
+
+.artist_list
+{
+        -moz-border-radius-bottomleft: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-topright: 20px;
+        -moz-box-shadow: 2px 2px 10px #888;
+        -webkit-border-bottom-left-radius: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -webkit-box-shadow: 2px 2px 10px #888;
+        background-color: #b5d045;
+        margin: 25px auto 0;
+        padding: 25px 10px;
+        text-align: center;
+        width: 260px;
+}
+
+.album_list
+{
+        -moz-border-radius-bottomleft: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-topright: 20px;
+        -moz-box-shadow: 2px 2px 10px #888;
+        -webkit-border-bottom-left-radius: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -webkit-box-shadow: 2px 2px 10px #888;
+        background-color: #fb8335;
+        margin: 25px auto 0;
+        padding: 25px 10px;
+        text-align: center;
+        width: 260px;
+}
+
+.track_list
+{
+        -moz-border-radius-bottomleft: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-topright: 20px;
+        -moz-box-shadow: 2px 2px 10px #888;
+        -webkit-border-bottom-left-radius: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -webkit-box-shadow: 2px 2px 10px #888;
+        background-color: #81c0c5;
+        margin: 25px auto 0;
+        padding: 25px 10px;
+        text-align: center;
+        width: 260px;
+}
+
 
 
 

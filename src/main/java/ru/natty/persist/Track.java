@@ -36,10 +36,14 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
+<<<<<<< HEAD
     @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
     @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE t.name LIKE :name"),
+=======
+    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
+>>>>>>> 95d9f3c746f1765886d320840cdbed48997b0ca3
     @NamedQuery(name = "Track.findByPatternLimited", query =
-						"SELECT t FROM Track t WHERE t.name LIKE :name"),
+						"SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
 //						"SELECT t FROM Track t WHERE t.name LIKE :name LIMIT 10 OFFSET 1"),//not working. Why??!!
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
@@ -155,14 +159,21 @@ public class Track implements Serializable
     
     public static List<Track> queryByPattern (String pattern, EntityManager em)
     {
-		Query getGenres = em.createNamedQuery ("Track.findByPattern");
-		getGenres.setParameter("name", pattern);
-		List rez = getGenres.getResultList();
+		Query getTracks = em.createNamedQuery ("Track.findByPattern");
+		getTracks.setParameter("name", pattern);
+		List rez = getTracks.getResultList();
 		List<Track> gens = new ArrayList<Track>();
 
 		for (Object o : rez)
 			gens.add ((Track)o);
 		return gens;
+    }
+
+    public static Track queryById (Integer id, EntityManager em)
+    {
+		Query getTrack = em.createNamedQuery ("Track.findById");
+		getTrack.setParameter("id", id);
+		return (Track)getTrack.getSingleResult();
     }
 
     public static List<Track> queryByPatternWindowed (String pattern, EntityManager em,

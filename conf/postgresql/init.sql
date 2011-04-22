@@ -112,33 +112,37 @@ INSERT INTO widget_type (id, name, classname) VALUES
 (   9, 'text cell list',	'WTextCellList'),
 (  10, 'image',				'WImage'),
 (  11, 'artist list',		'WArtistList'),
-(  12, 'album list',		'WAlbumList');
+(  12, 'album list',		'WAlbumList'),
+(  13, 'player',			'WPlayer'),
+(  14, 'flow panel',		'WFlowPanel');
 
 
 INSERT INTO gui_properties (id, parent_id, wtype, style) VALUES
-(   0,	null,	2,	null),
+(   0,	null,	2,	'root'),
 (   1,	0,		1,	'header'),
-(   2,	0,		7,	null),
-(   3,	2,		5,	null),
-(   4,	2,		6,	null),
-(   5,	0,		7,	null),
-(   6,	5,		4,	null),
-(   7,	5,		8,	null),
+(   2,	0,	   14,	'search_container'),
+(   3,	2,		5,	'search'),
+(   4,	2,		6,	'search_button'),
+(   5,	0,		7,	'lists_container'),
+(   6,	5,		4,	'genre_list'),
+(   7,	5,		8,	'track_list'),
 (   8,	0,		1,	'copyright'),
-(   9,  5,	   11,	null),
-(  10,  5,     12,  null);
+(   9,  5,	   11,	'artist_list'),
+(  10,  5,     12,  'album_list'),
+(  11,  0,	   13,  'player');
 
 INSERT INTO label (id, text) VALUES
-(	1,	'<h3> Hello, it is the Natty musical database</h3>'),
+(	1,	'<h1>Natty</h1><h3>enjoying music</h3>'),
 (	3,	'search'),
 (	4,	'find'),
 (	8,	'MIPT frtk. 2011');
 
 INSERT INTO panel_content (panel_id, ord_number, content_id) VALUES
 (	0,	0,	1),
-(	0,	1,	2),
-(	0,	2,	5),
-(	0,	3,	8),
+(	0,	1, 11),
+(	0,	2,	2),
+(	0,	3,	5),
+(	0,	4,	8),
 (	2,	0,	3),
 (	2,	1,	4),
 (	5,	0,	6),

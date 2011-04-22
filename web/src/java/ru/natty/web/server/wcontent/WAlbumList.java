@@ -20,7 +20,7 @@ public class WAlbumList
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
 		WTextCellList data = new WTextCellList("Album");
-		List<Album> albums = db.queryAlbumByPattern (ps.getVal("query"));
+		List<Album> albums = db.queryAlbumByPattern ("%" + ps.getVal("query") + "%");
 
 		for (Album a : albums)
 			data.addText(new IText(a.getId(), a.getName()));

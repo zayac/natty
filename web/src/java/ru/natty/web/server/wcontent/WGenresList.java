@@ -21,7 +21,7 @@ public class WGenresList
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
 		WTextCellList data = new WTextCellList("Genre");
-		List<Genre> genres = db.queryGenreByPattern(ps.getVal("query"));
+		List<Genre> genres = db.queryGenreByPattern ("%" + ps.getVal("query") + "%");
 
 		for (Genre g : genres)
 			data.addText(new IText(g.getId(), g.getName()));

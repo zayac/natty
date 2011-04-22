@@ -19,7 +19,7 @@ public class WArtistList
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
 		WTextCellList data = new WTextCellList("Artist");
-		List<Artist> artists = db.queryArtistByPattern (ps.getVal("query"));
+		List<Artist> artists = db.queryArtistByPattern ("%" + ps.getVal("query") + "%");
 
 		for (Artist a : artists)
 			data.addText(new IText(a.getId(), a.getName()));

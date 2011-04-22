@@ -21,7 +21,7 @@ public class WTrackList
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
 		WTextCellList data = new WTextCellList("Track");
-		List<Track> tracks = db.queryTrackByPatternWindowed(ps.getVal("query"), 10, 0);
+		List<Track> tracks = db.queryTrackByPatternWindowed("%" + ps.getVal("query") + "%", 10, 0);
 
 		for (Track t : tracks)
 			data.addText(new IText(t.getId(), t.getName()));
