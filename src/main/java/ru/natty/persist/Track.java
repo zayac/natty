@@ -36,12 +36,8 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
-<<<<<<< HEAD
     @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
-    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE t.name LIKE :name"),
-=======
     @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
->>>>>>> 95d9f3c746f1765886d320840cdbed48997b0ca3
     @NamedQuery(name = "Track.findByPatternLimited", query =
 						"SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
 //						"SELECT t FROM Track t WHERE t.name LIKE :name LIMIT 10 OFFSET 1"),//not working. Why??!!
