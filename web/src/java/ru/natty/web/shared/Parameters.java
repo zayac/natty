@@ -21,6 +21,16 @@ public class Parameters implements Serializable
 		return id;
 	}
 
+	public boolean hasParam (String name)
+	{
+		return map.containsKey(name);
+	}
+
+	public String removeParam (String name)
+	{
+		return map.remove(name);
+	}
+
 	public void setId (Integer elementId)
 	{
 		this.id = elementId;
@@ -31,6 +41,11 @@ public class Parameters implements Serializable
 		String val = map.get(name);
 		if (null == val) val = "";
 		return val;
+	}
+
+	public Integer getIntVal (String name)
+	{
+		return Integer.parseInt(getVal(name));
 	}
 
 	public String setVal (String name, String val)

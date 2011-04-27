@@ -12,6 +12,7 @@ import javax.persistence.Persistence;
 import ru.natty.persist.Album;
 import ru.natty.persist.Artist;
 import ru.natty.persist.Genre;
+import ru.natty.persist.QueryList;
 import ru.natty.persist.Track;
 import ru.natty.web.persist.ContentHeader;
 import ru.natty.web.persist.GuiProperties;
@@ -25,6 +26,32 @@ import ru.natty.web.persist.WidgetType;
  */
 public class DataBase
 {
+	static public class Query<T>
+	{
+		javax.persistence.Query q;
+
+		public Query (javax.persistence.Query q)	{this.q = q;}
+
+		public T getResult()
+		{
+			return (T)q.getSingleResult();
+		}
+
+		public Query setWindow (int offset, int limit)
+		{
+			q.setFirstResult(offset);
+			q.setMaxResults(limit);
+
+			return this;
+		}
+
+		public List<T> getResults()
+		{
+			return QueryList.forQuery(q).<T>getAllResults();
+		}
+
+	}
+
     private EntityManagerFactory emf;
     private EntityManager em;
 
@@ -50,9 +77,9 @@ public class DataBase
 			em.getTransaction().commit();
 			em.close();
 		}
-        if (null != emf) emf.close();
+        //if (null != emf) emf.close();
+        //emf = null;
 		em = null;
-        emf = null;
     }
 
 	public GuiProperties queryGuiPropsById (Integer id)
@@ -71,29 +98,24 @@ public class DataBase
 		return Label.queryById (id, em);
 	}
 
-	public List<Genre> queryGenreByPattern (String pattern)
+	public Query<Genre> queryGenreByPattern (String pattern)
 	{
-		return Genre.queryByPattern (pattern, em);
+		return new Query<Genre> (Genre.getQueryByPattern (pattern, em));
 	}
 
-	public List<Artist> queryArtistByPattern (String pattern)
+	public Query<Artist> queryArtistByPattern (String pattern)
 	{
-		return Artist.queryByPattern (pattern, em);
+		return new Query<Artist> (Artist.getQueryByPattern (pattern, em));
 	}
 
-	public List<Album> queryAlbumByPattern (String pattern)
+	public Query<Album> queryAlbumByPattern (String pattern)
 	{
-		return Album.queryByPattern (pattern, em);
+		return new Query<Album> (Album.getQueryByPattern (pattern, em));
 	}
 
-	public List<Track> queryTrackByPattern (String pattern)
+	public Query<Track> queryTrackByPattern (String pattern)
 	{
-		return Track.queryByPattern (pattern, em);
-	}
-
-	public List<Track> queryTrackByPatternWindowed (String pattern, Integer lim, Integer offset)
-	{
-		return Track.queryByPatternWindowed (pattern, em, lim, offset);
+		return new Query<Track> (Track.getQueryByPattern (pattern, em));
 	}
 
 	public Track queryTrackById (Integer id)

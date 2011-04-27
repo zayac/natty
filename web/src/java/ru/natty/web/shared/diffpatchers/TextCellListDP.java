@@ -26,6 +26,7 @@ public class TextCellListDP extends DiffPatcher
 	Map<Integer, IText> changes;
 	Set<IText> creations;
 	String name;
+	Integer selected = null;
 
 	public TextCellListDP()
 	{
@@ -71,6 +72,11 @@ public class TextCellListDP extends DiffPatcher
 		this.name = name;
 	}
 
+	public void setSelected (Integer sel)
+	{
+		selected = sel;
+	}
+
 
 	@Override
 	public boolean isVoid()
@@ -83,6 +89,7 @@ public class TextCellListDP extends DiffPatcher
 	{
 		ITextCellList tcl = new ITextCellList(id, name);
 		tcl.getItems().addAll(creations);
+		tcl.selectElement(selected);
 		return tcl;
 	}
 
@@ -105,11 +112,13 @@ public class TextCellListDP extends DiffPatcher
 			}
 		}
 		items.addAll(creations);
+		((ITextCellList)w).selectElement(selected);
 	}
 
 	public boolean vital()
 	{
-		return !(creations.isEmpty() && changes.isEmpty() && deletions.isEmpty());
+		return !(creations.isEmpty() && changes.isEmpty() && deletions.isEmpty() &&
+				null == selected);
 	}
 
 	@Override
@@ -117,7 +126,8 @@ public class TextCellListDP extends DiffPatcher
 	{
 		return "TextCellList(: name=<font color = #aaca0c>" + name +
 				"</font>, creations=" + creations + ", changes=" + changes +
-				", deletions = " + deletions + ":)";
+				", deletions = " + deletions + ":)<" +
+				((null != selected) ? selected : "n/s") + ">";
 	}
 
 }

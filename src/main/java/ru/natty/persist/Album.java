@@ -40,7 +40,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name)"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
-public class Album implements Serializable {
+public class Album implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     @Id
 	@SequenceGenerator(name="album_id_seq", sequenceName="album_id_seq")
@@ -110,16 +110,16 @@ public class Album implements Serializable {
         this.trackCollection = trackCollection;
     }
 
-    public static List<Album> queryByPattern (String pattern, EntityManager em)
+    public static Query getQueryByPattern (String pattern, EntityManager em)
     {
 		Query getGenres = em.createNamedQuery ("Album.findByPattern");
 		getGenres.setParameter("name", pattern);
-		List rez = getGenres.getResultList();
-		List<Album> albs = new ArrayList<Album>();
+		return getGenres;
+    }
 
-		for (Object o : rez)
-			albs.add ((Album)o);
-		return albs;
+    public static List<Album> queryByPattern (String pattern, EntityManager em)
+    {
+		return QueryList.forQuery(getQueryByPattern(pattern, em)).<Album>getAllResults();
     }
 
     @Override

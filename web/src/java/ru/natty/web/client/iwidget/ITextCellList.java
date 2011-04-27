@@ -9,6 +9,7 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -33,23 +34,31 @@ public class ITextCellList extends IWidget
 	}
 
 	private List<IText> items;
+	private VerticalPanel panel;
+	private CellList list;
+	private SingleSelectionModel<IText> ssm;
+	private boolean reactToSelChange = true;
 
 	public ITextCellList (final Integer id, final String name) //TODO: Add selected current
 	{
-		super(id, new CellList (new ICell()));
+		super(id, new VerticalPanel());
+		panel = (VerticalPanel)getWidget();
+		list = new CellList (new ICell());
+		panel.add (list);
 
 		ListDataProvider<IText> ldp = new ListDataProvider<IText>();
 		items = ldp.getList();
 
-		ldp.addDataDisplay (((CellList)getWidget()));
+		ldp.addDataDisplay (list);
 
-		final SingleSelectionModel<IText> ssm = new SingleSelectionModel<IText>();
-		((CellList)getWidget()).setSelectionModel (ssm);
+		ssm = new SingleSelectionModel<IText>();
+		list.setSelectionModel (ssm);
 		ssm.addSelectionChangeHandler (new SelectionChangeEvent.Handler()
 			{
 				@Override
 				public void onSelectionChange(SelectionChangeEvent event)
 				{
+					if (!reactToSelChange) return;
 					ParamsBuilder.getCurrent().setVal(name, ssm.getSelectedObject().getId().toString());
 					ElementReceiver.get().queryElement();
 				}
@@ -59,5 +68,16 @@ public class ITextCellList extends IWidget
 	public List<IText> getItems()
 	{
 		return items;
+	}
+
+	public void selectElement (Integer sel)
+	{
+		reactToSelChange = false;
+		ssm.setSelected(ssm.getSelectedObject(), false);
+		if (null != sel)
+			for (IText item : items)
+				if (item.getId().equals(sel))
+					ssm.setSelected (item, true);
+		reactToSelChange = true;
 	}
 }

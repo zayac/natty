@@ -37,12 +37,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
     @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
-    @NamedQuery(name = "Track.findByPatternLimited", query =
-						"SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
-//						"SELECT t FROM Track t WHERE t.name LIKE :name LIMIT 10 OFFSET 1"),//not working. Why??!!
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
-public class Track implements Serializable
+public class Track implements Serializable, IdNamed
 {
     private static final long serialVersionUID = 1L;
     @Id
@@ -127,16 +124,18 @@ public class Track implements Serializable
         this.artistCollection = artistCollection;
     }
 
-    public static List<Track> queryByPattern (String pattern, EntityManager em)
-    {
+	public static Query getQueryByPattern (String pattern, EntityManager em)
+	{
 		Query getTracks = em.createNamedQuery ("Track.findByPattern");
 		getTracks.setParameter("name", pattern);
-		List rez = getTracks.getResultList();
-		List<Track> gens = new ArrayList<Track>();
-
-		for (Object o : rez)
-			gens.add ((Track)o);
-		return gens;
+		
+		return getTracks;
+	}
+	
+    public static List<Track> queryByPattern (String pattern, EntityManager em)
+    {
+		return QueryList.forQuery(getQueryByPattern (pattern, em)).
+										<Track>getAllResults();
     }
 
     public static Track queryById (Integer id, EntityManager em)
@@ -144,21 +143,6 @@ public class Track implements Serializable
 		Query getTrack = em.createNamedQuery ("Track.findById");
 		getTrack.setParameter("id", id);
 		return (Track)getTrack.getSingleResult();
-    }
-
-    public static List<Track> queryByPatternWindowed (String pattern, EntityManager em,
-													  Integer limit, Integer offset)
-    {
-		Query getTracks = em.createNamedQuery ("Track.findByPatternLimited");
-		getTracks.setParameter ("name", pattern);
-//		getTracks.setParameter ("lim", limit);
-//		getTracks.setParameter ("offset", offset);
-		List rez = getTracks.getResultList();
-		List<Track> gens = new ArrayList<Track>();
-
-		for (Object o : rez)
-			gens.add ((Track)o);
-		return gens;
     }
 
     @Override

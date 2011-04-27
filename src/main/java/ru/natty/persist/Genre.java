@@ -36,7 +36,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
     @NamedQuery(name = "Genre.findByPattern", query = "SELECT g FROM Genre g WHERE UPPER(g.name) like UPPER(:name)")})
-public class Genre implements Serializable {
+public class Genre implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -102,20 +102,19 @@ public class Genre implements Serializable {
     public void setArtistCollection(Collection<Artist> artistCollection) {
         this.artistCollection = artistCollection;
     }
-
-
-    public static List<Genre> queryByPattern (String pattern, EntityManager em)
+	
+    public static Query getQueryByPattern (String pattern, EntityManager em)
     {
 		Query getGenres = em.createNamedQuery ("Genre.findByPattern");
 		getGenres.setParameter("name", pattern);
-		List rez = getGenres.getResultList();
-		List<Genre> gens = new ArrayList<Genre>();
-
-		for (Object o : rez)
-			gens.add ((Genre)o);
-		return gens;
+		return getGenres;
     }
 
+    public static List<Genre> queryByPattern (String pattern, EntityManager em)
+    {
+		return QueryList.forQuery(getQueryByPattern(pattern, em)).<Genre>getAllResults();
+    }
+	
     @Override
     public String toString() {
         return "ru.natty.persist.Genre[id=" + id + "]"+getName()+" "+super.hashCode();

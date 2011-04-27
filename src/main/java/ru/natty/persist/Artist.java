@@ -35,7 +35,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
     @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
-public class Artist implements Serializable {
+public class Artist implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     @Id
 	@SequenceGenerator(name="artist_id_seq", sequenceName="artist_id_seq")
@@ -94,18 +94,18 @@ public class Artist implements Serializable {
         this.genreCollection = genreCollection;
     }
 
-    public static List<Artist> queryByPattern (String pattern, EntityManager em)
+    public static Query getQueryByPattern (String pattern, EntityManager em)
     {
-		Query getGenres = em.createNamedQuery ("Artist.findByPattern");
-		getGenres.setParameter("name", pattern);
-		List rez = getGenres.getResultList();
-		List<Artist> arts = new ArrayList<Artist>();
-
-		for (Object o : rez)
-			arts.add ((Artist)o);
-		return arts;
+		Query getArtists = em.createNamedQuery ("Artist.findByPattern");
+		getArtists.setParameter("name", pattern);
+		return getArtists;
     }
 
+    public static List<Artist> queryByPattern (String pattern, EntityManager em)
+    {
+		return QueryList.forQuery(getQueryByPattern (pattern, em)).<Artist>getAllResults();
+    }
+	
     @Override
     public String toString() {
         return "ru.natty.persist.Artist[id=" + id + "]";

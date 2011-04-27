@@ -1,0 +1,1 @@
+../../../../../../src/main/java/ru/natty/persist/IdNamed.java
