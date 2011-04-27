@@ -9,7 +9,6 @@ import ru.natty.persist.Album;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.PersistToIText;
 import ru.natty.web.server.WContentCreator;
-import ru.natty.web.shared.IText;
 import ru.natty.web.shared.Parameters;
 
 /**
@@ -20,17 +19,12 @@ public class WAlbumList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-//		WTextCellList data = new WTextCellList("Album");
-////		List<Album> albums = db.queryAlbumByPattern ("%" + ps.getVal("query") + "%");
-//		List<Album> albums = db.queryAlbumByPattern (ps.getVal("query")).getResults();
-//
-//		for (Album a : albums)
-//			data.addText(new IText(a.getId(), a.getName()));
-//
-//        return data.setStyle(id, db);
-//
-		return WTextCellList.make (id, ps, db, creator, "Album",
-								   db.queryAlbumByPattern (ps.getVal("query")),
+		DataBase.Query<Album> q = db.queryAlbumByPattern
+								   (DataBase.transformWordsToPattern(ps.getVal("query")));
+		if (ps.hasParam ("Genre"))
+			q = db.queryAlbumByGenre (ps.getIntVal ("Genre"));
+
+		return WTextCellList.make (id, ps, db, creator, "Album", q,
 								   new PersistToIText());
 	}
 

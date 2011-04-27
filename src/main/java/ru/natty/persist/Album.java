@@ -39,6 +39,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name)"),
+    @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
@@ -112,9 +113,16 @@ public class Album implements Serializable, IdNamed {
 
     public static Query getQueryByPattern (String pattern, EntityManager em)
     {
-		Query getGenres = em.createNamedQuery ("Album.findByPattern");
-		getGenres.setParameter("name", pattern);
-		return getGenres;
+		Query getAlbums = em.createNamedQuery ("Album.findByPattern");
+		getAlbums.setParameter("name", pattern);
+		return getAlbums;
+    }
+
+    public static Query getQueryByGenre (Integer genre, EntityManager em)
+    {
+		Query getAlbums = em.createNamedQuery ("Album.findByGenre");
+		getAlbums.setParameter("genre", genre);
+		return getAlbums;
     }
 
     public static List<Album> queryByPattern (String pattern, EntityManager em)

@@ -34,12 +34,12 @@ public class WTextCellList extends WContent
 	String name;
 	Map<Integer, IText> items;
 	Integer selected = null;
+	Integer start = 0;
 
 	public WTextCellList (String name)
 	{
 		this.name = name;
 		this.items = new HashMap<Integer, IText>();
-		this.selected = null;
 	}
 
 	public WTextCellList (String name, Map<Integer, IText> items)
@@ -47,7 +47,6 @@ public class WTextCellList extends WContent
 		this.name = name;
 		this.items = new HashMap<Integer, IText>();
 		this.items.putAll(items);
-		this.selected = null;
 	}
 
 	public void addText (IText t)
@@ -58,6 +57,11 @@ public class WTextCellList extends WContent
 	public void setSelection (Integer sel)
 	{
 		this.selected = sel;
+	}
+
+	public void setStart (Integer start)
+	{
+		this.start = start;
 	}
 
 	public void addTexts (Collection<? extends IText> col)
@@ -93,6 +97,9 @@ public class WTextCellList extends WContent
 		else
 			if (selected != null)
 				dp.setSelected (selected);
+
+		dp.setStart(start);//Even if starts differ, but all rest is the same
+							//assume it as the same
 			
 		if (dp.vital())
 			return dp;
@@ -106,6 +113,7 @@ public class WTextCellList extends WContent
 		for (Map.Entry<Integer, IText> entry: items.entrySet())
 			dp.addCreation(entry.getValue());
 		dp.setSelected (selected);
+		dp.setStart(start);
 		return dp;
 	}
 
@@ -136,13 +144,20 @@ public class WTextCellList extends WContent
 								 String name, DataBase.Query<T> query,
 								 Translator<? super T> trans)
 	{
+		Integer start = 0;
+		if (ps.hasParam(name + ".start"))
+			start = ps.getIntVal(name + ".start");
+
 		WTextCellList tcl = new WTextCellList (name);
-		query.setWindow (0, MAXIMUM_ITEMS);
+		query.setWindow (start, MAXIMUM_ITEMS);
 		List<IText> items = trans.translate (query.getResults());
 		tcl.addTexts (items);
 
-		if (ps.hasParam(name))
-			tcl.setSelection(ps.getIntVal(name));
+		if (ps.hasParam (name))
+			tcl.setSelection (ps.getIntVal (name));
+		
+		tcl.setStart(start);
+
 
         return tcl.setStyle (id, db);
 	}

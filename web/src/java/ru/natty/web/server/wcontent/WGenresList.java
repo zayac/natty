@@ -21,16 +21,9 @@ public class WGenresList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-//		WTextCellList data = new WTextCellList("Genre");
-//		List<Genre> genres = db.queryGenreByPattern (ps.getVal("query")).getResults();
-////		List<Genre> genres = db.queryGenreByPattern ("%" + ps.getVal("query") + "%");
-//
-//		for (Genre g : genres)
-//			data.addText(new IText(g.getId(), g.getName()));
-//
-//        return data.setStyle(id, db);
 		return WTextCellList.make (id, ps, db, creator, "Genre",
-								   db.queryGenreByPattern (ps.getVal("query")),
+								   db.queryGenreByPattern
+								   (DataBase.transformWordsToPattern(ps.getVal("query"))),
 								   new PersistToIText());
 	}
 }

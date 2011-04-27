@@ -107,10 +107,18 @@ public class DataBase
 	{
 		return new Query<Artist> (Artist.getQueryByPattern (pattern, em));
 	}
+	public Query<Artist> queryArtistByGenreAndPattern (Integer genre, String pattern)
+	{
+		return new Query<Artist> (Artist.getQueryByGenreAndPattern(genre, pattern, em));
+	}
 
 	public Query<Album> queryAlbumByPattern (String pattern)
 	{
 		return new Query<Album> (Album.getQueryByPattern (pattern, em));
+	}
+	public Query<Album> queryAlbumByGenre (Integer genre)
+	{
+		return new Query<Album> (Album.getQueryByGenre (genre, em));
 	}
 
 	public Query<Track> queryTrackByPattern (String pattern)
@@ -131,5 +139,10 @@ public class DataBase
 	public List<PanelContents> queryPanelContentsById (Integer id)
 	{
 		return PanelContents.queryById(id, em);
+	}
+
+	public static String transformWordsToPattern (String word)
+	{
+		return "%" + word.replace(' ', '%') + "%";
 	}
 }

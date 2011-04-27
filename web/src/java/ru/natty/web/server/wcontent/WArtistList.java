@@ -19,16 +19,13 @@ public class WArtistList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-//		WTextCellList data = new WTextCellList("Artist");
-////		List<Artist> artists = db.queryArtistByPattern ("%" + ps.getVal("query") + "%");
-//		List<Artist> artists = db.queryArtistByPattern (ps.getVal("query")).getResults();
-//
-//		for (Artist a : artists)
-//			data.addText(new IText(a.getId(), a.getName()));
-//
-//        return data.setStyle(id, db);
-		return WTextCellList.make (id, ps, db, creator, "Artist",
-								   db.queryArtistByPattern (ps.getVal("query")),
+		DataBase.Query<Artist> q = db.queryArtistByPattern
+								   (DataBase.transformWordsToPattern(ps.getVal("query")));
+		if (ps.hasParam ("Genre"))
+			q = db.queryArtistByGenreAndPattern (ps.getIntVal ("Genre"),
+												DataBase.transformWordsToPattern(ps.getVal("query")));
+
+		return WTextCellList.make (id, ps, db, creator, "Artist", q,
 								   new PersistToIText());
 	}
 }

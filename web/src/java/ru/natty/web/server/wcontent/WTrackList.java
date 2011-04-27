@@ -19,7 +19,8 @@ public class WTrackList
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
 		return WTextCellList.make (id, ps, db, creator, "Track",
-								   db.queryTrackByPattern (ps.getVal("query")),
+								   db.queryTrackByPattern 
+								   (DataBase.transformWordsToPattern(ps.getVal("query"))),
 								   new PersistToIText());
 	}
 }

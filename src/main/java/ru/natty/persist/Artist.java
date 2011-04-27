@@ -34,6 +34,11 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
+    //@NamedQuery(name = "Artist.findByGenre", query = "SELECT a FROM Artist a JOIN a.genreCollection g WHERE g.id = :genre"),
+    @NamedQuery(name = "Artist.findByGenreAndPattern", query = "SELECT a FROM Artist a"
+															+ " JOIN a.genreCollection g"
+															+ " WHERE g.id = :genre AND"
+															+ " UPPER(a.name) like UPPER(:name)"),
     @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
 public class Artist implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
@@ -97,6 +102,14 @@ public class Artist implements Serializable, IdNamed {
     public static Query getQueryByPattern (String pattern, EntityManager em)
     {
 		Query getArtists = em.createNamedQuery ("Artist.findByPattern");
+		getArtists.setParameter("name", pattern);
+		return getArtists;
+    }
+
+    public static Query getQueryByGenreAndPattern (Integer genre, String pattern, EntityManager em)
+    {
+		Query getArtists = em.createNamedQuery ("Artist.findByGenreAndPattern");
+		getArtists.setParameter("genre", genre);
 		getArtists.setParameter("name", pattern);
 		return getArtists;
     }

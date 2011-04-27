@@ -27,6 +27,7 @@ public class TextCellListDP extends DiffPatcher
 	Set<IText> creations;
 	String name;
 	Integer selected = null;
+	Integer start = 0;
 
 	public TextCellListDP()
 	{
@@ -77,6 +78,10 @@ public class TextCellListDP extends DiffPatcher
 		selected = sel;
 	}
 
+	public void setStart (Integer start)
+	{
+		this.start = start;
+	}
 
 	@Override
 	public boolean isVoid()
@@ -90,6 +95,7 @@ public class TextCellListDP extends DiffPatcher
 		ITextCellList tcl = new ITextCellList(id, name);
 		tcl.getItems().addAll(creations);
 		tcl.selectElement(selected);
+		tcl.setStart (start);
 		return tcl;
 	}
 
@@ -113,6 +119,7 @@ public class TextCellListDP extends DiffPatcher
 		}
 		items.addAll(creations);
 		((ITextCellList)w).selectElement(selected);
+		((ITextCellList)w).setStart (start);
 	}
 
 	public boolean vital()
