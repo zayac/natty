@@ -38,6 +38,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
+    @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
     @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name)"),
     @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
@@ -123,6 +124,28 @@ public class Album implements Serializable, IdNamed {
 		Query getAlbums = em.createNamedQuery ("Album.findByGenre");
 		getAlbums.setParameter("genre", genre);
 		return getAlbums;
+	}
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Album other = (Album) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 
     public static List<Album> queryByPattern (String pattern, EntityManager em)

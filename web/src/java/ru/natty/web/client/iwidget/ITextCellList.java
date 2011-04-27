@@ -45,7 +45,7 @@ public class ITextCellList extends IWidget
 	private SingleSelectionModel<IText> ssm;
 	private boolean reactToSelChange = true;
 
-	public ITextCellList (final Integer id, final String name) //TODO: Add selected current
+	public ITextCellList (final Integer id, final String name)
 	{
 		super(id, new VerticalPanel());
 		panel = (VerticalPanel)getWidget();

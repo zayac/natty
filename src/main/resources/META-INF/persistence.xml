@@ -9,7 +9,7 @@
     <properties>
       <property name="toplink.jdbc.user" value="nattyuser"/>
       <property name="toplink.jdbc.password" value="usernatty"/>
-      <property name="toplink.jdbc.url" value="jdbc:postgresql://maxwell.campus.mipt.ru:5432/natty/public"/>
+      <property name="toplink.jdbc.url" value="jdbc:postgresql://93.175.1.101:5432/natty/public"/>
       <property name="toplink.jdbc.driver" value="org.postgresql.Driver"/>
     </properties>
   </persistence-unit>

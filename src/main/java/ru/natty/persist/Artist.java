@@ -39,6 +39,7 @@ import javax.persistence.Table;
 															+ " JOIN a.genreCollection g"
 															+ " WHERE g.id = :genre AND"
 															+ " UPPER(a.name) like UPPER(:name)"),
+    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name"),
     @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
 public class Artist implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
@@ -117,6 +118,28 @@ public class Artist implements Serializable, IdNamed {
     public static List<Artist> queryByPattern (String pattern, EntityManager em)
     {
 		return QueryList.forQuery(getQueryByPattern (pattern, em)).<Artist>getAllResults();
+    }
+	
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Artist other = (Artist) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 	
     @Override
