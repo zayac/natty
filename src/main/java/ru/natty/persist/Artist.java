@@ -6,7 +6,6 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -86,7 +85,7 @@ public class Artist implements Serializable, IdNamed {
         this.name = name.replaceAll("\u0000", "");
     }
 
-    public Collection<Track> getTrackCollection() {
+    public Set<Track> getTrackCollection() {
         return trackCollection;
     }
 
@@ -94,7 +93,7 @@ public class Artist implements Serializable, IdNamed {
         this.trackCollection = trackCollection;
     }
 
-    public Collection<Genre> getGenreCollection() {
+    public Set<Genre> getGenreCollection() {
         return genreCollection;
     }
 
@@ -122,13 +121,9 @@ public class Artist implements Serializable, IdNamed {
 		return QueryList.forQuery(getQueryByPattern (pattern, em)).<Artist>getAllResults();
     }
 	
-
-
-
     @Override
     public int hashCode() {
         int hash = 5;
-        //hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
         hash = 47 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
@@ -142,9 +137,6 @@ public class Artist implements Serializable, IdNamed {
             return false;
         }
         final Artist other = (Artist) obj;
-        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-        //    return false;
-        //}
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }

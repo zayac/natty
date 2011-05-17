@@ -8,19 +8,11 @@ package ru.natty.parser;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import org.apache.log4j.Logger;
-import org.blinkenlights.jid3.ID3Exception;
-import org.blinkenlights.jid3.ID3Tag;
-import org.blinkenlights.jid3.MP3File;
-import org.blinkenlights.jid3.MediaFile;
-import org.blinkenlights.jid3.io.TextEncoding;
-import org.blinkenlights.jid3.v1.ID3V1Tag;
-import org.blinkenlights.jid3.v2.ID3V2Tag;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -36,8 +28,6 @@ import ru.natty.tags.TagsCommiter;
  */
 public class LocalParser implements Parser {
     private String homePath = null;
-    //private HashMap<String, ID3V2Tag> files = null;
-    //private ArrayDeque<SmbFile> queue = null;
     private Set<Integer> parsedFiles = null;
     private final static Logger log = Logger.getLogger(SMBParser.class);
     private final static TagsCommiter commiter = TagsCommiter.getInstance();
@@ -74,13 +64,8 @@ public class LocalParser implements Parser {
                 File[] filesInDirectory = file.listFiles();
                 log.debug("There are " + filesInDirectory.length + " files and directories");
                 for (int i = 0; i < filesInDirectory.length; i++) {
-                    //log.debug("Parsing " + filesInDirectory[i].getPath());
-                    //if (!parsedFiles.contains(filesInDirectory[i].hashCode())) {
-                        directories.push(filesInDirectory[i]);
-                        log.debug("Directory " + filesInDirectory[i].getPath() + " has been added into the queue to be parsed");
-                    //} else {
-                    //    log.debug("Directory " + filesInDirectory[i].getPath() + " has been already parsed. Skipping");
-                    //}
+                    directories.push(filesInDirectory[i]);
+                    log.debug("Directory " + filesInDirectory[i].getPath() + " has been added into the queue to be parsed");
                 }
             } else {
                 if(!getExtension(file.getPath()).equalsIgnoreCase("mp3"))
@@ -94,28 +79,19 @@ public class LocalParser implements Parser {
                         log.debug("File is read successfully");
                         Tag tag = audiof.getTag();
                         commiter.commit(file.getPath().replaceFirst(prefix, ""), tag);
-//                            for(int i = 0; i < tag.length; i++)
-//                            {
-//                                if (tag[i] instanceof ID3V1Tag)
-//                                {
-//                                    commiter.commit(file.getPath().replaceFirst(prefix, ""), (ID3V1Tag) tag[i]);
-//                                }
-//                            }
-                        //TextEncoding.setDefaultTextEncoding(TextEncoding.ISO_8859_1);
-                        //commiter.commit(file.getPath(), tag);
                         log.debug("File " + file.getPath() + " is cached");
                     }
                     catch (CannotReadException ex)
                     {
-                        java.util.logging.Logger.getLogger(LocalParser.class.getName()).log(Level.SEVERE, null,ex);
+                        log.error("Can't read tag. " + ex);
                     } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(LocalParser.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error("IOException. " + ex);
                     } catch (TagException ex) {
-                        java.util.logging.Logger.getLogger(LocalParser.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error("Tag parsing exception. " + ex);
                     } catch (ReadOnlyFileException ex) {
-                        java.util.logging.Logger.getLogger(LocalParser.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error("Read only file." + ex);
                     } catch (InvalidAudioFrameException ex) {
-                        java.util.logging.Logger.getLogger(LocalParser.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error("Invalide audio fram exception. " + ex);
                     }
                 }
             }

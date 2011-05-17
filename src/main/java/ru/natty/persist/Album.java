@@ -6,7 +6,6 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -96,7 +95,7 @@ public class Album implements Serializable, IdNamed {
         this.year = year;
     }
 
-    public Collection<Genre> getGenreCollection() {
+    public Set<Genre> getGenreCollection() {
         return genreCollection;
     }
 
@@ -104,7 +103,7 @@ public class Album implements Serializable, IdNamed {
         this.genreCollection = genreCollection;
     }
 
-    public Collection<Track> getTrackCollection() {
+    public Set<Track> getTrackCollection() {
         return trackCollection;
     }
 
@@ -147,9 +146,6 @@ public class Album implements Serializable, IdNamed {
             return false;
         }
         final Album other = (Album) obj;
-        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-        //    return false;
-        //}
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }

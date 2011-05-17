@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Level;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import org.apache.log4j.Logger;
@@ -20,9 +19,6 @@ import org.blinkenlights.jid3.MediaFile;
 import org.blinkenlights.jid3.io.TextEncoding;
 import org.blinkenlights.jid3.v1.ID3V1Tag;
 import org.blinkenlights.jid3.v2.ID3V2Tag;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.Tag;
 import ru.natty.tags.TagsCommiter;
 
 /**
@@ -31,8 +27,6 @@ import ru.natty.tags.TagsCommiter;
  */
 public class SMBParser implements Parser {
     private String homePath = null;
-    //private HashMap<String, ID3V2Tag> files = null;
-    //private ArrayDeque<SmbFile> queue = null;
     private Set<Integer> parsedFiles = null;
     private final static Logger log = Logger.getLogger(SMBParser.class);
     private final static TagsCommiter commiter = TagsCommiter.getInstance();

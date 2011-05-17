@@ -28,11 +28,6 @@ import ru.natty.persist.Track;
  * @author zayac
  */
 public class TagsCommiter {
-//    private Map<String, ID3V2Tag> tagCollection = null;
-//    private HashMap<String, Genre> genres = null;
-//    private HashMap<String, Artist> artists= null;
-//    private HashMap<String, Album> albums = null;
-//    private HashMap<String, Track> tracks = null;
 
     private EntityManagerFactory emf = null;
     private EntityManager em = null;

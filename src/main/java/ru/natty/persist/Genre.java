@@ -6,7 +6,6 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +80,7 @@ public class Genre implements Serializable, IdNamed {
         this.name = name.replaceAll("\u0000", "");
     }
 
-    public Collection<Album> getAlbumCollection() {
+    public Set<Album> getAlbumCollection() {
         return albumCollection;
     }
 
@@ -89,7 +88,7 @@ public class Genre implements Serializable, IdNamed {
         this.albumCollection = albumCollection;
     }
 
-    public Collection<Track> getTrackCollection() {
+    public Set<Track> getTrackCollection() {
         return trackCollection;
     }
 
@@ -97,7 +96,7 @@ public class Genre implements Serializable, IdNamed {
         this.trackCollection = trackCollection;
     }
 
-    public Collection<Artist> getArtistCollection() {
+    public Set<Artist> getArtistCollection() {
         return artistCollection;
     }
 

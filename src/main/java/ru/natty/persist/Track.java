@@ -102,7 +102,7 @@ public class Track implements Serializable, IdNamed
         this.url = url.replaceAll("\u0000", "");
     }
 
-    public Collection<Album> getAlbumCollection() {
+    public Set<Album> getAlbumCollection() {
         return albumCollection;
     }
 
@@ -110,7 +110,7 @@ public class Track implements Serializable, IdNamed
         this.albumCollection = albumCollection;
     }
 
-    public Collection<Genre> getGenreCollection() {
+    public Set<Genre> getGenreCollection() {
         return genreCollection;
     }
 
@@ -118,7 +118,7 @@ public class Track implements Serializable, IdNamed
         this.genreCollection = genreCollection;
     }
 
-    public Collection<Artist> getArtistCollection() {
+    public Set<Artist> getArtistCollection() {
         return artistCollection;
     }
 
@@ -155,14 +155,13 @@ public class Track implements Serializable, IdNamed
     }
 
 
+    public static Query getQueryByPattern (String pattern, EntityManager em)
+    {
+            Query getTracks = em.createNamedQuery ("Track.findByPattern");
+            getTracks.setParameter("name", pattern);
 
-	public static Query getQueryByPattern (String pattern, EntityManager em)
-	{
-		Query getTracks = em.createNamedQuery ("Track.findByPattern");
-		getTracks.setParameter("name", pattern);
-		
-		return getTracks;
-	}
+            return getTracks;
+    }
 	
     public static List<Track> queryByPattern (String pattern, EntityManager em)
     {
