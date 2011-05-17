@@ -10,6 +10,13 @@ CREATE TABLE artist
     name        varchar(255) not null
 );
 
+CREATE TABLE album
+(
+    id          serial CONSTRAINT id_pr_album primary key,
+    name        varchar(255) not null,
+    year        date
+);
+
 CREATE TABLE artists_genres
 (
     artist_id  	integer references artist(id) on delete cascade,
@@ -17,18 +24,11 @@ CREATE TABLE artists_genres
     CONSTRAINT pr_pair_art_gen primary key (artist_id, genre_id)
 );
 
-CREATE TABLE artists_albums
+CREATE TABLE albums_artists
 (
-    artist_id   integer references artist(id) on delete cascade,
-    album_id    integer references genre(id) on delete restrict,
-    CONSTRAINT pr_pair_art_alb primary key (artist_id, album_id)
-);
-
-CREATE TABLE album
-(
-    id          serial CONSTRAINT id_pr_album primary key,
-    name        varchar(255) not null,
-    year        date
+    album_id    integer references album(id) on delete cascade,
+    artist_id   integer references artist(id) on delete restrict,
+    CONSTRAINT pr_pair_alb_art primary key (album_id, artist_id)
 );
 
 CREATE TABLE albums_genres

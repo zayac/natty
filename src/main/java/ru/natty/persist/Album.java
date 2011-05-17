@@ -62,7 +62,7 @@ public class Album implements Serializable, IdNamed {
     private Set<Genre> genreCollection;
     @JoinTable(name = "albums_artists", joinColumns = {
         @JoinColumn(name = "album_id", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "artists_id", referencedColumnName = "id")})  
+        @JoinColumn(name = "artist_id", referencedColumnName = "id")})  
     @ManyToMany(cascade= CascadeType.REFRESH)
     private Set<Artist> artistCollection;
     @JoinTable(name = "tracks_albums", joinColumns = {
