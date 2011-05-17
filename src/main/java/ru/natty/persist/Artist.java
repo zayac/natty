@@ -62,7 +62,7 @@ public class Artist implements Serializable, IdNamed {
         @JoinColumn(name = "genre_id", referencedColumnName = "id")})
     @ManyToMany
     private Set<Genre> genreCollection;
-    @ManyToMany(mappedBy="albumCollection")
+    @ManyToMany(mappedBy="artistCollection")
     private Set<Album> albumCollection;
 
     public Artist() {
