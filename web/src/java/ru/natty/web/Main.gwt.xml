@@ -4,6 +4,7 @@
 
 <module>
     <inherits name="com.google.gwt.user.User"/>
+	<inherits name="org.miller.gwt.Sound"/>
 
     <!-- Inherit the default GWT style sheet. You can change -->
     <!-- the theme of your GWT application by uncommenting -->

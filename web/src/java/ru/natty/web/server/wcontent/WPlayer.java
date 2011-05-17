@@ -31,24 +31,31 @@ public class WPlayer extends WContent
 		return url;
 	}
 
+	public String getRelativeUrl()
+	{
+		if (url.length() > 21)
+			return "music/" + url;//.substring(21);
+		return url;
+	}
+
 	@Override
 	public DiffPatcher getDifferenceInt(WContent prev, boolean amputation)
 	{
 		assert prev instanceof WPlayer;
 		if (url.equals(((WPlayer)prev).getUrl())) return null;
-		return new PlayerDP(url);
+		return new PlayerDP(getRelativeUrl());
 	}
 
 	@Override
 	public DiffPatcher getAllContentInt()
 	{
-		return new PlayerDP (url);
+		return new PlayerDP (getRelativeUrl());
 	}
 
 	@Override
 	public WContent copyInt()
 	{
-		return new WPlayer (url);
+		return new WPlayer (getRelativeUrl());
 	}
 
 	@Override
