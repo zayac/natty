@@ -14,16 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import oracle.toplink.essentials.exceptions.DatabaseException;
+import javax.persistence.*;
 import org.apache.log4j.Logger;
-import org.blinkenlights.jid3.ID3Exception;
-import org.blinkenlights.jid3.v2.ID3V2Tag;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import ru.natty.persist.Album;
 import ru.natty.persist.Artist;
 import ru.natty.persist.Genre;
@@ -49,7 +43,7 @@ public class TagsCommiter {
     private HashMap<String, Artist>artistCollection = null;
     private HashMap<String, Album>albumCollection = null;
     private final static int BUFFER_SIZE = 100;
-
+    private final static int COLLECTION_SIZE = 5000;
     protected TagsCommiter()
     {
         emf = Persistence.createEntityManagerFactory("natty");
@@ -130,37 +124,70 @@ public class TagsCommiter {
         }
     }
 
-
-    public void commit(String path, ID3V2Tag tag)
+    public Integer getYear(byte[] raw)
     {
-        Date year;
+        if(raw.length >= 20)
+        {
+            String source = new String(raw);
+            String ret = "";
+            ret += source.charAt(13);
+            ret += source.charAt(15);
+            ret += source.charAt(17);
+            ret += source.charAt(19);
+            return Integer.parseInt(ret);
+        }
+        return null;
+    }
+    
+    public void commit(String path, Tag tag)
+    {
+        Logger.getLogger("org.jaudiotagger.tag").setLevel(org.apache.log4j.Level.OFF);
+        Date year = null;
         Boolean trackExists = false;
         Boolean genreExists = false;
         Boolean artistExists = false;
         Boolean albumExists = false;
-
+        
         try {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(tag.getYear(), 0, 1);
-            year = calendar.getTime();
-            log.debug("Year: " + year.toString());
+            if (tag != null && !tag.isEmpty() && tag.getFirstField(FieldKey.YEAR) != null && !tag.getFirstField(FieldKey.YEAR).isEmpty() && getYear(tag.getFirstField(FieldKey.YEAR).getRawContent()) != null)
+            {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(getYear(tag.getFirstField(FieldKey.YEAR).getRawContent()), 0, 1);
+                year = calendar.getTime();
+                log.debug("Year: " + year.toString());
+            }
+            else 
+                year = null;
+        } catch (UnsupportedEncodingException ex) {
+            log.debug("Unsupported Encoding. "  + ex);
+            year = null;
         } catch (NullPointerException ex)
         {
-             log.debug("Can't get track. " + ex);
+            log.debug("Can't get year. <" + tag.getFirstField(FieldKey.YEAR).toString().trim() + ">" + ex);
             year = null;
-        } catch(ID3Exception ex)
+        } catch (NumberFormatException ex)
         {
-            log.debug("Can't get track. " + ex);
+            log.debug("Can't get year. <" + tag.getFirstField(FieldKey.YEAR).toString().trim() + ">" + ex);   
             year = null;
         }
-
+        
+        //String json = HTTPRequestPoster.sendGetRequest("http://ws.audioscrobbler.com/2.0/", "format=json&method=track.search&track=Wind&api_key=b25b959554ed76058ac220b7b2e0a026");
+        //log.debug(json);
+        //RemoteFinder rem = new RemoteFinder();
+        //rem.findTrack(tag);
+        //if(true)
+        //    return;
+        
+        
         Track tr;
         try {
             tr = new Track();
-            if (tag.getTitle() != null)
+            if (tag.getFirst(FieldKey.TITLE) != null)
             {
-                String str = tag.getTitle();
-                tr.setName(tag.getTitle());
+                String str = tag.getFirst(FieldKey.TITLE);
+                tr.setName(tag.getFirst(FieldKey.TITLE));
+                if (tr.getName().length() > 255)
+                    tr.setName(tr.getName().substring(0, 255));
             log.debug(tr.getName());
             }else
                 tr = null;
@@ -194,13 +221,16 @@ public class TagsCommiter {
                 trackCollection.put(tr.getName(), tr);
         }
 
-
+        
         Genre gen;
         try {
             gen = new Genre();
-            if (tag.getGenre() != null)
+            if (tag.getFirst(FieldKey.GENRE) != null)
             {
-                gen.setName(tag.getGenre());
+                gen.setName(tag.getFirst(FieldKey.GENRE));
+                if (gen.getName().length() > 255)
+                    gen.setName(gen.getName().substring(0, 255));
+                
                 log.debug("Genre: " + gen.getName());
                 Genre tmpGenre;
                 log.debug("Genre contains; " + gen.getName() + " " + genreCollection.containsKey(gen.getName()));
@@ -227,9 +257,11 @@ public class TagsCommiter {
         Artist art;
         try {
             art = new Artist();
-            if (tag.getArtist() != null)
+            if (tag.getFirst(FieldKey.ARTIST) != null)
             {
-                art.setName(tag.getArtist());
+                art.setName(tag.getFirst(FieldKey.ARTIST));
+                if (art.getName().length() > 255)
+                    art.setName(art.getName().substring(0, 255));                
                 Artist tmpArtist;
                 if (artistCollection.containsKey(art.getName()))
                     art = artistCollection.get((art.getName()));
@@ -253,9 +285,11 @@ public class TagsCommiter {
         Album alb;
         try {
             alb = new Album();
-            if (tag.getAlbum() != null)
+            if (tag.getFirst(FieldKey.ALBUM) != null)
             {
-                alb.setName(tag.getAlbum());
+                alb.setName(tag.getFirst(FieldKey.ALBUM));
+                if (alb.getName().length() > 255)
+                    alb.setName(alb.getName().substring(0, 255));
                 Album tmpAlbum;
                 if (albumCollection.containsKey(alb.getName()))
                     alb = albumCollection.get((alb.getName()));
@@ -318,9 +352,6 @@ public class TagsCommiter {
     }
 
     private void sendToDB() {
-
-
-
         em.getTransaction().begin();
         Iterator it = trackCollection.entrySet().iterator();
         while(it.hasNext()) {
@@ -344,5 +375,8 @@ public class TagsCommiter {
         }
         em.getTransaction().commit();
         trackCollection.clear();
+        albumCollection.clear();
+        artistCollection.clear();
+        genreCollection.clear();
     }
 }

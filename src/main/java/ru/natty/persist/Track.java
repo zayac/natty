@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
     @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
-    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
+    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE :name"),
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable, IdNamed
@@ -56,11 +57,11 @@ public class Track implements Serializable, IdNamed
     @Column(name = "url")
     private String url;
     @ManyToMany(mappedBy="trackCollection")
-    private Collection<Album> albumCollection;
+    private Set<Album> albumCollection;
     @ManyToMany(mappedBy="trackCollection")
-    private Collection<Genre> genreCollection;
+    private Set<Genre> genreCollection;
     @ManyToMany(mappedBy="trackCollection")
-    private Collection<Artist> artistCollection;
+    private Set<Artist> artistCollection;
 
     public Track() {
         albumCollection = new HashSet<Album>();
@@ -105,7 +106,7 @@ public class Track implements Serializable, IdNamed
         return albumCollection;
     }
 
-    public void setAlbumCollection(Collection<Album> albumCollection) {
+    public void setAlbumCollection(Set<Album> albumCollection) {
         this.albumCollection = albumCollection;
     }
 
@@ -113,7 +114,7 @@ public class Track implements Serializable, IdNamed
         return genreCollection;
     }
 
-    public void setGenreCollection(Collection<Genre> genreCollection) {
+    public void setGenreCollection(Set<Genre> genreCollection) {
         this.genreCollection = genreCollection;
     }
 
@@ -121,8 +122,18 @@ public class Track implements Serializable, IdNamed
         return artistCollection;
     }
 
-    public void setArtistCollection(Collection<Artist> artistCollection) {
+    public void setArtistCollection(Set<Artist> artistCollection) {
         this.artistCollection = artistCollection;
+    }
+
+
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
     }
 
     @Override
@@ -134,18 +145,15 @@ public class Track implements Serializable, IdNamed
             return false;
         }
         final Track other = (Track) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + (this.name != null ? this.name.hashCode() : 0);
-        return hash;
-    }
 
 
 	public static Query getQueryByPattern (String pattern, EntityManager em)
@@ -171,7 +179,7 @@ public class Track implements Serializable, IdNamed
 
     @Override
     public String toString() {
-        return "ru.natty.persist.Track[id=" + id + "]";
+        return "ru.natty.persist.Track[id=" + id + "]"+getName()+" "+super.hashCode();
     }
 
 }

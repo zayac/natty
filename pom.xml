@@ -14,12 +14,33 @@
       <layout>legacy</layout>
     </repository>
     <repository>
+      <id>maven2-repository.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
       <id>JBOSS</id>
       <name>JBoss Repository</name>
       <url>http://repository.jboss.org/maven2/</url>
     </repository>
+    <repository>
+      <id>EclipseLink Repo</id>
+      <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+    </repository>
   </repositories>
   <dependencies>
+      <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>eclipselink</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>1.7.1</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -30,31 +51,21 @@
       <artifactId>persistence-api</artifactId>
       <version>1.0</version>
     </dependency>
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>6.0</version>
-    </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>toplink.essentials</groupId>
       <artifactId>toplink-essentials</artifactId>
       <version>2.0-35</version>
-    </dependency>
+    </dependency>-->
     <dependency>
        <groupId>org.blinkenlights.jid3</groupId>
        <artifactId>JID3</artifactId>
        <version>0.46</version>
     </dependency>
-    <!--<dependency>
-      <groupId>org.jaudiotagger</groupId>
+    <dependency>
+      <groupId>org</groupId>
       <artifactId>jaudiotagger</artifactId>
-      <version>1.0.8</version>
-    </dependency>-->
-    <!--<dependency>
-      <groupId>commons-vfs</groupId>
-      <artifactId>commons-vfs</artifactId>
-      <version>1.0</version>
-    </dependency>-->
+      <version>2.0.4-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>jcifs</groupId>
       <artifactId>jcifs</artifactId>
@@ -65,6 +76,18 @@
       <artifactId>log4j</artifactId>
       <version>1.2.12</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>javax.persistence</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
   <build>

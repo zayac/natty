@@ -18,7 +18,11 @@ import org.blinkenlights.jid3.ID3Exception;
 import org.blinkenlights.jid3.MP3File;
 import org.blinkenlights.jid3.MediaFile;
 import org.blinkenlights.jid3.io.TextEncoding;
+import org.blinkenlights.jid3.v1.ID3V1Tag;
 import org.blinkenlights.jid3.v2.ID3V2Tag;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.Tag;
 import ru.natty.tags.TagsCommiter;
 
 /**
@@ -33,7 +37,6 @@ public class SMBParser implements Parser {
     private final static Logger log = Logger.getLogger(SMBParser.class);
     private final static TagsCommiter commiter = TagsCommiter.getInstance();
     private static Stack<SmbFile> directories = new Stack<SmbFile>();
-    
     public String getExtension(String path)
     {
         int dot = path.lastIndexOf(".");
@@ -59,6 +62,7 @@ public class SMBParser implements Parser {
             while (!directories.empty())
             {
                 file = directories.pop();
+                log.debug("Directory status: " + file.isDirectory());
                 if (file.isDirectory()) {
                     log.debug("File " + file.getPath() + " is a directory");
                     SmbFile[] filesInDirectory = file.listFiles();
@@ -78,19 +82,19 @@ public class SMBParser implements Parser {
                         log.debug("File " + file.getPath() + " is not an mp3 file");
                     } else
                     {
-                        MediaFile audiof = new MP3File(new SMBFileSource(file));
-                        log.debug("File is read successfully");
-                        try
-                        {
-                            ID3V2Tag tag = audiof.getID3V2Tag();
-                            TextEncoding.setDefaultTextEncoding(TextEncoding.ISO_8859_1);
-                            commiter.commit(file.getPath(), tag);
-                            log.debug("File " + file.getPath() + " is cached");
-                        }
-                        catch (ID3Exception e)
-                        {
-                            log.error(e);
-                        }
+//                        AudioFile audiof = AudioFileIO.read(file);
+//                        log.debug("File is read successfully");
+//                        try
+//                        {
+//                            log.debug("File is read successfully");
+//                            Tag tag = audiof.getTag();
+//                            commiter.commit(file.getPath(), tag);
+//                            log.debug("File " + file.getPath() + " is cached");
+//                        }
+//                        catch (ID3Exception e)
+//                        {
+//                            log.error(e);
+//                        }
                     }
                 }
                 parsedFiles.add(file.hashCode());

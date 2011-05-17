@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
     @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name"),
-    @NamedQuery(name = "Genre.findByPattern", query = "SELECT g FROM Genre g WHERE UPPER(g.name) like UPPER(:name)")})
+    @NamedQuery(name = "Genre.findByPattern", query = "SELECT g FROM Genre g WHERE UPPER(g.name) like :name")})
 public class Genre implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     
@@ -48,14 +49,14 @@ public class Genre implements Serializable, IdNamed {
     @Column(name = "name")
     private String name;
     @ManyToMany(mappedBy="genreCollection")
-    private Collection<Album> albumCollection;
+    private Set<Album> albumCollection;
     @JoinTable(name = "tracks_genres", joinColumns = {
         @JoinColumn(name = "genre_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "track_id", referencedColumnName = "id")})
-    @ManyToMany
-    private Collection<Track> trackCollection;
+    @ManyToMany(cascade= CascadeType.REFRESH)
+    private Set<Track> trackCollection;
     @ManyToMany(mappedBy="genreCollection")
-    private Collection<Artist> artistCollection;
+    private Set<Artist> artistCollection;
 
     public Genre() {
         trackCollection = new HashSet<Track>();
@@ -84,7 +85,7 @@ public class Genre implements Serializable, IdNamed {
         return albumCollection;
     }
 
-    public void setAlbumCollection(Collection<Album> albumCollection) {
+    public void setAlbumCollection(Set<Album> albumCollection) {
         this.albumCollection = albumCollection;
     }
 
@@ -92,7 +93,7 @@ public class Genre implements Serializable, IdNamed {
         return trackCollection;
     }
 
-    public void setTrackCollection(Collection<Track> trackCollection) {
+    public void setTrackCollection(Set<Track> trackCollection) {
         this.trackCollection = trackCollection;
     }
 
@@ -100,7 +101,7 @@ public class Genre implements Serializable, IdNamed {
         return artistCollection;
     }
 
-    public void setArtistCollection(Collection<Artist> artistCollection) {
+    public void setArtistCollection(Set<Artist> artistCollection) {
         this.artistCollection = artistCollection;
     }
 	
@@ -115,11 +116,14 @@ public class Genre implements Serializable, IdNamed {
     {
 		return QueryList.forQuery(getQueryByPattern(pattern, em)).<Genre>getAllResults();
     }
-	
+
+
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 71 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 71 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
 
@@ -132,6 +136,9 @@ public class Genre implements Serializable, IdNamed {
             return false;
         }
         final Genre other = (Genre) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }

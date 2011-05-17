@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,7 +40,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
-    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name)"),
+    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like :name"),
     @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable, IdNamed {
@@ -57,13 +58,13 @@ public class Album implements Serializable, IdNamed {
     @JoinTable(name = "albums_genres", joinColumns = {
         @JoinColumn(name = "album_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "genre_id", referencedColumnName = "id")})
-    @ManyToMany
-    private Collection<Genre> genreCollection;
+    @ManyToMany(cascade= CascadeType.REFRESH)
+    private Set<Genre> genreCollection;
     @JoinTable(name = "tracks_albums", joinColumns = {
         @JoinColumn(name = "album_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "track_id", referencedColumnName = "id")})
     @ManyToMany
-    private Collection<Track> trackCollection;
+    private Set<Track> trackCollection;
 
     public Album() {
         trackCollection = new HashSet<Track>();
@@ -99,7 +100,7 @@ public class Album implements Serializable, IdNamed {
         return genreCollection;
     }
 
-    public void setGenreCollection(Collection<Genre> genreCollection) {
+    public void setGenreCollection(Set<Genre> genreCollection) {
         this.genreCollection = genreCollection;
     }
 
@@ -107,7 +108,7 @@ public class Album implements Serializable, IdNamed {
         return trackCollection;
     }
 
-    public void setTrackCollection(Collection<Track> trackCollection)
+    public void setTrackCollection(Set<Track> trackCollection)
 	{
         this.trackCollection = trackCollection;
     }
@@ -126,10 +127,14 @@ public class Album implements Serializable, IdNamed {
 		return getAlbums;
 	}
 
+
+
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
+        int hash = 5;
+        //hash = 41 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 41 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
 
@@ -142,6 +147,9 @@ public class Album implements Serializable, IdNamed {
             return false;
         }
         final Album other = (Album) obj;
+        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        //    return false;
+        //}
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
@@ -155,7 +163,7 @@ public class Album implements Serializable, IdNamed {
 
     @Override
     public String toString() {
-        return "ru.natty.persist.Album[id=" + id + "]";
+        return "ru.natty.persist.Album[id=" + id + "]"+getName()+" "+super.hashCode();
     }
 
 }
