@@ -1,4 +1,4 @@
-CREATE TABLE genre
+﻿CREATE TABLE genre
 (
     id          serial CONSTRAINT id_pr_genre primary key,
     name        varchar(255) not null
@@ -18,11 +18,11 @@ CREATE TABLE artists_genres
 );
 
 CREATE TABLE artists_albums
-{
+(
     artist_id   integer references artist(id) on delete cascade,
-    genre_id    integer references genre(id) on delete restrict,
+    album_id    integer references genre(id) on delete restrict,
     CONSTRAINT pr_pair_art_alb primary key (artist_id, album_id)
-};
+);
 
 CREATE TABLE album
 (
