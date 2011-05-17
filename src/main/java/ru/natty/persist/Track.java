@@ -45,7 +45,7 @@ public class Track implements Serializable, IdNamed
 {
     private static final long serialVersionUID = 1L;
     @Id
-	@SequenceGenerator(name="track_id_seq", sequenceName="track_id_seq")
+	@SequenceGenerator(name="track_id_seq", sequenceName="track_id_seq", allocationSize=1)
 	@GeneratedValue(generator="track_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
@@ -110,7 +110,7 @@ public class Track implements Serializable, IdNamed
         this.albumCollection = albumCollection;
     }
 
-    public Set<Genre> getGenreCollection() {
+    public Collection<Genre> getGenreCollection() {
         return genreCollection;
     }
 
@@ -155,13 +155,14 @@ public class Track implements Serializable, IdNamed
     }
 
 
-    public static Query getQueryByPattern (String pattern, EntityManager em)
-    {
-            Query getTracks = em.createNamedQuery ("Track.findByPattern");
-            getTracks.setParameter("name", pattern);
 
-            return getTracks;
-    }
+	public static Query getQueryByPattern (String pattern, EntityManager em)
+	{
+		Query getTracks = em.createNamedQuery ("Track.findByPattern");
+		getTracks.setParameter("name", pattern);
+		
+		return getTracks;
+	}
 	
     public static List<Track> queryByPattern (String pattern, EntityManager em)
     {

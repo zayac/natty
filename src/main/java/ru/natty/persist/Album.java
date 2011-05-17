@@ -6,6 +6,7 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,7 +46,7 @@ import javax.persistence.TemporalType;
 public class Album implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     @Id
-	@SequenceGenerator(name="album_id_seq", sequenceName="album_id_seq")
+	@SequenceGenerator(name="album_id_seq", sequenceName="album_id_seq", allocationSize=1)
 	@GeneratedValue(generator="album_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
@@ -56,9 +57,14 @@ public class Album implements Serializable, IdNamed {
     private Date year;
     @JoinTable(name = "albums_genres", joinColumns = {
         @JoinColumn(name = "album_id", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "genre_id", referencedColumnName = "id")})
+        @JoinColumn(name = "genre_id", referencedColumnName = "id")})  
     @ManyToMany(cascade= CascadeType.REFRESH)
     private Set<Genre> genreCollection;
+    @JoinTable(name = "albums_artists", joinColumns = {
+        @JoinColumn(name = "album_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "artists_id", referencedColumnName = "id")})  
+    @ManyToMany(cascade= CascadeType.REFRESH)
+    private Set<Artist> artistCollection;
     @JoinTable(name = "tracks_albums", joinColumns = {
         @JoinColumn(name = "album_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "track_id", referencedColumnName = "id")})
@@ -68,6 +74,7 @@ public class Album implements Serializable, IdNamed {
     public Album() {
         trackCollection = new HashSet<Track>();
         genreCollection = new HashSet<Genre>();
+        artistCollection = new HashSet<Artist>();
     }
 
     public Album(String name) {
@@ -103,6 +110,14 @@ public class Album implements Serializable, IdNamed {
         this.genreCollection = genreCollection;
     }
 
+    public Set<Artist> getArtistCollection() {
+        return artistCollection;
+    }
+
+    public void setArtistCollection(Set<Artist> artistCollection) {
+        this.artistCollection = artistCollection;
+    }
+    
     public Set<Track> getTrackCollection() {
         return trackCollection;
     }
@@ -146,6 +161,9 @@ public class Album implements Serializable, IdNamed {
             return false;
         }
         final Album other = (Album) obj;
+        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        //    return false;
+        //}
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }

@@ -28,7 +28,6 @@ import ru.natty.persist.Track;
  * @author zayac
  */
 public class TagsCommiter {
-
     private EntityManagerFactory emf = null;
     private EntityManager em = null;
     private final static Logger log = Logger.getLogger(TagsCommiter.class);
@@ -37,8 +36,7 @@ public class TagsCommiter {
     private HashMap<String, Genre>genreCollection = null;
     private HashMap<String, Artist>artistCollection = null;
     private HashMap<String, Album>albumCollection = null;
-    private final static int BUFFER_SIZE = 100;
-    private final static int COLLECTION_SIZE = 5000;
+    private final static int BUFFER_SIZE = 1000;
     protected TagsCommiter()
     {
         emf = Persistence.createEntityManagerFactory("natty");
@@ -47,8 +45,6 @@ public class TagsCommiter {
         genreCollection = new HashMap<String, Genre>();
         artistCollection = new HashMap<String, Artist>();
         albumCollection = new HashMap<String, Album>();
-        //fileCollection = new LinkedList<MusicFileCollection>();
-        //org.blinkenlights.jid3.io.TextEncoding.setDefaultTextEncoding(TextEncoding.ISO_8859_1);
     }
 
     private static class SingletonHolder
@@ -166,14 +162,8 @@ public class TagsCommiter {
             year = null;
         }
         
-        //String json = HTTPRequestPoster.sendGetRequest("http://ws.audioscrobbler.com/2.0/", "format=json&method=track.search&track=Wind&api_key=b25b959554ed76058ac220b7b2e0a026");
-        //log.debug(json);
-        //RemoteFinder rem = new RemoteFinder();
-        //rem.findTrack(tag);
-        //if(true)
-        //    return;
         
-        
+  
         Track tr;
         try {
             tr = new Track();
@@ -214,8 +204,7 @@ public class TagsCommiter {
             }
             else
                 trackCollection.put(tr.getName(), tr);
-        }
-
+        }     
         
         Genre gen;
         try {
@@ -310,10 +299,20 @@ public class TagsCommiter {
         }
 
         
+        // Get info from Last.FM
+//        TagData data = RemoteFinder.findTrackName(tr.getName(), art.getName());
+//        tr.setName(data.getTitle());
+//        art.setName(data.getArtist());
+        
         if ((art != null && gen != null) && (!artistExists || !genreExists))
         {
             art.getGenreCollection().add(gen);
             gen.getArtistCollection().add(art);
+        }
+        if ((art != null && alb != null) && (!artistExists || !albumExists))
+        {
+            art.getAlbumCollection().add(alb);
+            alb.getArtistCollection().add(art);
         }
         if ((alb != null && gen != null) && (!albumExists || !genreExists)){
             alb.getGenreCollection().add(gen);

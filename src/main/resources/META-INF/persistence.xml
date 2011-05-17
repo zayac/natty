@@ -9,7 +9,7 @@
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.user" value="nattyuser"/>
       <property name="javax.persistence.jdbc.password" value="usernatty"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://93.175.1.213:5432/natty/public"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://megatron.campus.mipt.ru:5432/natty/public"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -17,6 +17,13 @@ CREATE TABLE artists_genres
     CONSTRAINT pr_pair_art_gen primary key (artist_id, genre_id)
 );
 
+CREATE TABLE artists_albums
+{
+    artist_id   integer references artist(id) on delete cascade,
+    genre_id    integer references genre(id) on delete restrict,
+    CONSTRAINT pr_pair_art_alb primary key (artist_id, album_id)
+};
+
 CREATE TABLE album
 (
     id          serial CONSTRAINT id_pr_album primary key,

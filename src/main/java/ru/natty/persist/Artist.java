@@ -6,6 +6,7 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +46,7 @@ import javax.persistence.Table;
 public class Artist implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     @Id
-	@SequenceGenerator(name="artist_id_seq", sequenceName="artist_id_seq")
+	@SequenceGenerator(name="artist_id_seq", sequenceName="artist_id_seq", allocationSize=1)
 	@GeneratedValue(generator="artist_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
@@ -61,10 +62,13 @@ public class Artist implements Serializable, IdNamed {
         @JoinColumn(name = "genre_id", referencedColumnName = "id")})
     @ManyToMany
     private Set<Genre> genreCollection;
+    @ManyToMany(mappedBy="albumCollection")
+    private Set<Album> albumCollection;
 
     public Artist() {
         trackCollection = new HashSet<Track>();
         genreCollection = new HashSet<Genre>();  
+        albumCollection = new HashSet<Album>();
     }
 
     public Artist(String name) {
@@ -101,6 +105,14 @@ public class Artist implements Serializable, IdNamed {
         this.genreCollection = genreCollection;
     }
 
+    public Set<Album> getAlbumCollection() {
+        return albumCollection;
+    }
+
+    public void setAlbumCollection(Set<Album> albumCollection) {
+        this.albumCollection = albumCollection;
+    }
+    
     public static Query getQueryByPattern (String pattern, EntityManager em)
     {
 		Query getArtists = em.createNamedQuery ("Artist.findByPattern");
@@ -121,9 +133,13 @@ public class Artist implements Serializable, IdNamed {
 		return QueryList.forQuery(getQueryByPattern (pattern, em)).<Artist>getAllResults();
     }
 	
+
+
+
     @Override
     public int hashCode() {
         int hash = 5;
+        //hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
         hash = 47 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
@@ -137,6 +153,9 @@ public class Artist implements Serializable, IdNamed {
             return false;
         }
         final Artist other = (Artist) obj;
+        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        //    return false;
+        //}
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }

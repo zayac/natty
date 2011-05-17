@@ -6,6 +6,7 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Genre implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     
     @Id
-	@SequenceGenerator(name="genre_id_seq", sequenceName="genre_id_seq")
+	@SequenceGenerator(name="genre_id_seq", sequenceName="genre_id_seq", allocationSize=1)
 	@GeneratedValue(generator="genre_id_seq",strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
@@ -80,7 +81,7 @@ public class Genre implements Serializable, IdNamed {
         this.name = name.replaceAll("\u0000", "");
     }
 
-    public Set<Album> getAlbumCollection() {
+    public Collection<Album> getAlbumCollection() {
         return albumCollection;
     }
 
@@ -88,7 +89,7 @@ public class Genre implements Serializable, IdNamed {
         this.albumCollection = albumCollection;
     }
 
-    public Set<Track> getTrackCollection() {
+    public Collection<Track> getTrackCollection() {
         return trackCollection;
     }
 
@@ -96,7 +97,7 @@ public class Genre implements Serializable, IdNamed {
         this.trackCollection = trackCollection;
     }
 
-    public Set<Artist> getArtistCollection() {
+    public Collection<Artist> getArtistCollection() {
         return artistCollection;
     }
 
