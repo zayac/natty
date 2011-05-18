@@ -19,11 +19,13 @@ public class WArtistList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-		DataBase.Query<Artist> q = db.queryArtistByPattern
-								   (DataBase.transformWordsToPattern(ps.getVal("query")));
+		DataBase.Query<Artist> q = null;
 		if (ps.hasParam ("Genre"))
 			q = db.queryArtistByGenreAndPattern (ps.getIntVal ("Genre"),
 												DataBase.transformWordsToPattern(ps.getVal("query")));
+		else
+			q = db.queryArtistByPattern
+								   (DataBase.transformWordsToPattern(ps.getVal("query")));
 
 		return WTextCellList.make (id, ps, db, creator, "Artist", q,
 								   new PersistToIText());

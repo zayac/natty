@@ -116,14 +116,35 @@ public class DataBase
 	{
 		return new Query<Album> (Album.getQueryByPattern (pattern, em));
 	}
-	public Query<Album> queryAlbumByGenre (Integer genre)
+
+	public Query<Album> queryAlbumByGenreAndPattern (Integer genre, String pattern)
 	{
-		return new Query<Album> (Album.getQueryByGenre (genre, em));
+		return new Query<Album> (Album.getQueryByGenreAndPattern (genre, pattern, em));
+	}
+
+	public Query<Album> queryAlbumByArtist (Integer artist)
+	{
+		return new Query<Album> (Album.getQueryByArtist (artist, em));
 	}
 
 	public Query<Track> queryTrackByPattern (String pattern)
 	{
 		return new Query<Track> (Track.getQueryByPattern (pattern, em));
+	}
+
+	public Query<Track> queryTrackByAlbum (Integer album)
+	{
+		return new Query<Track> (Track.getQueryByAlbum (album, em));
+	}
+
+	public Query<Track> queryTrackByArtistAndPattern (Integer artist, String pattern)
+	{
+		return new Query<Track> (Track.getQueryByArtistAndPattern (artist, pattern, em));
+	}
+
+	public Query<Track> queryTrackByGenreAndPattern (Integer genre, String pattern)
+	{
+		return new Query<Track> (Track.getQueryByGenreAndPattern (genre, pattern, em));
 	}
 
 	public Track queryTrackById (Integer id)

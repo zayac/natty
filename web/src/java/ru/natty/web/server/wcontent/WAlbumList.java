@@ -19,10 +19,15 @@ public class WAlbumList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-		DataBase.Query<Album> q = db.queryAlbumByPattern
-								   (DataBase.transformWordsToPattern(ps.getVal("query")));
-		if (ps.hasParam ("Genre"))
-			q = db.queryAlbumByGenre (ps.getIntVal ("Genre"));
+		DataBase.Query<Album> q = null;
+		if (ps.hasParam ("Artist"))
+			q = db.queryAlbumByArtist (ps.getIntVal ("Artist"));
+		else if (ps.hasParam ("Genre"))
+			q = db.queryAlbumByGenreAndPattern (ps.getIntVal ("Genre"),
+					DataBase.transformWordsToPattern(ps.getVal("query")));
+		else
+			q = db.queryAlbumByPattern (DataBase.transformWordsToPattern(ps.getVal("query")));
+		
 
 		return WTextCellList.make (id, ps, db, creator, "Album", q,
 								   new PersistToIText());
