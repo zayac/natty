@@ -96,6 +96,7 @@ public class TextCellListDP extends DiffPatcher
 		tcl.getItems().addAll(creations);
 		tcl.selectElement(selected);
 		tcl.setStart (start);
+		tcl.setHasMore();
 		return tcl;
 	}
 
@@ -120,6 +121,7 @@ public class TextCellListDP extends DiffPatcher
 		items.addAll(creations);
 		((ITextCellList)w).selectElement(selected);
 		((ITextCellList)w).setStart (start);
+		((ITextCellList)w).setHasMore();
 	}
 
 	public boolean vital()

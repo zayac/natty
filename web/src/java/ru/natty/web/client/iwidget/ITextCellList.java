@@ -27,6 +27,8 @@ import ru.natty.web.shared.IText;
  */
 public class ITextCellList extends IWidget
 {
+	static private final Integer MAXIMUM_ITEMS = 20;
+
 	static private class ICell extends AbstractCell<IText>
 	{
 		@Override
@@ -89,12 +91,22 @@ public class ITextCellList extends IWidget
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				Integer start = getStart() - list.getRowCount();
+				Integer start = getStart() - MAXIMUM_ITEMS;
 				if (start < 0) start = 0;
 				setStart (start);
 				ElementReceiver.get().queryElement();
 			}
 		});
+	}
+
+	public void setHasMore (boolean has)
+	{
+		nextB.setEnabled (has);
+	}
+
+	public void setHasMore()
+	{
+		setHasMore (items.size() >= MAXIMUM_ITEMS);
 	}
 
 	public List<IText> getItems()
@@ -115,6 +127,7 @@ public class ITextCellList extends IWidget
 
 	public void setStart (Integer start)
 	{
+		backB.setEnabled (start > 0);
 		if (start > 0)
 			ParamsBuilder.getCurrent().setVal(getStartName(), start.toString());
 		else if (ParamsBuilder.getCurrent().hasParam(getStartName()))
