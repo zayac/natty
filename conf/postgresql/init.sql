@@ -139,7 +139,7 @@ INSERT INTO gui_properties (id, parent_id, wtype, style) VALUES
 (  11,  0,	   13,  'player');
 
 INSERT INTO label (id, text) VALUES
-(	1,	'<h1>Natty</h1><h3>enjoying music</h3>'),
+(	1,	'<h1>&#9835;atty</h1><h3>enjoying music</h3>'),
 (	3,	'search'),
 (	4,	'find'),
 (	8,	'MIPT frtk. 2011');
