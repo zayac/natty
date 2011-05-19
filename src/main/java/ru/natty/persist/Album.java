@@ -29,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -70,7 +71,19 @@ public class Album implements Serializable, IdNamed {
         @JoinColumn(name = "track_id", referencedColumnName = "id")})
     @ManyToMany
     private Set<Track> trackCollection;
-
+    @Transient 
+    private Boolean beanExists = false;
+    
+    public Boolean isExists()
+    {
+        return beanExists;
+    }
+    
+    public void setExistsStatus(Boolean s)
+    {
+        beanExists = s;
+    }
+    
     public Album() {
         trackCollection = new HashSet<Track>();
         genreCollection = new HashSet<Genre>();

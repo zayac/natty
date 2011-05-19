@@ -5,6 +5,8 @@
 
 package ru.natty.parser;
 
+import java.io.IOException;
+import java.util.logging.LogManager;
 import jcifs.smb.SmbException;
 
 /**
@@ -12,7 +14,8 @@ import jcifs.smb.SmbException;
  * @author zayac
  */
 public class MainClass {
-    public static void main(String[] args) throws SmbException {
+    public static void main(String[] args) throws SmbException, IOException {
+        LogManager.getLogManager().readConfiguration();
         LocalParser musicController = new LocalParser();
         musicController.parse("/mnt/");                 
         musicController.close();

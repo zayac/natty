@@ -26,6 +26,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -57,7 +58,19 @@ public class Genre implements Serializable, IdNamed {
     private Set<Track> trackCollection;
     @ManyToMany(mappedBy="genreCollection")
     private Set<Artist> artistCollection;
-
+    @Transient 
+    private Boolean beanExists = false;
+    
+    public Boolean isExists()
+    {
+        return beanExists;
+    }
+    
+    public void setExistsStatus(Boolean s)
+    {
+        beanExists = s;
+    }
+    
     public Genre() {
         trackCollection = new HashSet<Track>();
         albumCollection = new HashSet<Album>();
