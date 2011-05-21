@@ -14,10 +14,12 @@ import ru.natty.web.client.iwidget.IWidget;
  */
 public class TextBoxDP extends DiffPatcher
 {
-	String nStr;
+	private String name;
+	private String nStr;
 
-	public TextBoxDP (String str)
+	public TextBoxDP (String name, String str)
 	{
+		this.name = name;
 		nStr = str;
 	}
 
@@ -26,13 +28,14 @@ public class TextBoxDP extends DiffPatcher
 	@Override
 	protected IWidget createNewInt (int id)
 	{
-		return new ITextBox (id, nStr);
+		return new ITextBox (id, name, nStr);
 	}
 
 	@Override
 	protected void applayInt(IWidget w)
 	{
-		((ITextBox)w).setText(nStr);
+//		((ITextBox)w).setName(name);
+//		((ITextBox)w).setText(nStr);
 	}
 
 	@Override
@@ -43,7 +46,7 @@ public class TextBoxDP extends DiffPatcher
 	
 	@Override
 	public String toString() {
-		return "<font color=#aa7777>TextBoxDP[ " + nStr + " ]</font>";
+		return "<font color=#aa7777>TextBoxDP\"" + name + "\"[ " + nStr + " ]</font>";
 	}
 
 }

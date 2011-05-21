@@ -24,7 +24,7 @@ public class IBasicButton extends IWidget
 
 			@Override
 			public void onClick(ClickEvent event) {
-				ElementReceiver.get().queryElement();
+				ElementReceiver.get().queryPage();
 //				((Button)getWidget()).setHTML ("clicked");
 			}
 		});

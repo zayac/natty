@@ -18,7 +18,10 @@ public class ElementReceiver
 	private final MainServiceAsync greetingService = GWT.create(MainService.class);
 	private IWidget root;
 	private Panel diff;
+	private Panel logp;
 	private ParamsBuilder pb = ParamsBuilder.get();
+	private boolean inProcess;
+	private boolean receiveRequested;
 
 	private static ElementReceiver instance = null;
 	private ElementReceiver() {}
@@ -31,12 +34,46 @@ public class ElementReceiver
 	
 	public void init (ComplexPanel base)
 	{
+		inProcess = false;
+		receiveRequested = false;
 		ParamsUrl.getInstance().getFromHistory(pb.getCurrent());
 		queryInit (base);
 	}
 	
-	public void queryElement()
+	private boolean onBegin()
 	{
+		if (inProcess)
+		{
+			receiveRequested = true;
+			return false;
+		}
+		inProcess = true;
+		receiveRequested = false;
+		return true;
+	}
+	
+	private void onEnd()
+	{
+		inProcess = false;
+		if (receiveRequested)
+			queryPage();
+	}
+	
+	private void requestSucceeded()
+	{
+		pb.requestSucceeded();
+		onEnd();
+	}
+	
+	private void requestFailed (String message)
+	{
+		logp.add(new HTML (message));
+		onEnd();
+	}
+	
+	public void queryPage()
+	{
+		if (onBegin()) return;
 		final Parameters param = pb.getCurrent();
 		greetingService.getDifference (param, pb.getPrev(),
 									   new AsyncCallback<DiffPatcher>() {
@@ -45,22 +82,22 @@ public class ElementReceiver
 			public void onSuccess(DiffPatcher result) {
 				if (null == result)
 				{
-					((ComplexPanelI)root).add(new ILabel(324, "diff is null!"));
-					pb.requestSucceeded();
+					//((ComplexPanelI)root).add(new ILabel(324, "diff is null!"));
+					requestSucceeded();
 					return;
 				}
 				result.applay(root);
 				diff.clear();
 				diff.add(new HTML(result.toString()));
-                ((ComplexPanelI)root).add(new ILabel(324, "id " + param.getId() + " succeded"));
+                //((ComplexPanelI)root).add(new ILabel(324, "id " + param.getId() + " succeded"));
 
-				pb.requestSucceeded();
+				requestSucceeded();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				((ComplexPanelI)root).add(new ILabel(324, "query " + param.getVal("query") + " failed while being requested"));
-				((ComplexPanelI)root).add(new ILabel(325, "cause: " + caught.getMessage()));
+				requestFailed ("query " + param.getVal("query") + " failed while being requested<br>" +
+								"cause: " + caught.getMessage());
 			}
 		});
 		//((ComplexPanelI)root).add(new ILabel(324, "get difference completed"));
@@ -68,6 +105,7 @@ public class ElementReceiver
 	
 	private void queryInit (final ComplexPanel base)
 	{
+		onBegin();
 		greetingService.getInitialContent (pb.getCurrent(),
 			new AsyncCallback<DiffPatcher>() {
 			
@@ -75,6 +113,9 @@ public class ElementReceiver
 			public void onSuccess(DiffPatcher result) {
 				root = result.createNew(0);
 				base.add (root);
+				logp = new VerticalPanel();
+				logp.setStylePrimaryName("log-panel");
+				base.add(logp);
 				base.add (new HTML ("<h2> Received from server: </h2>"));
 				diff = new VerticalPanel();
 				diff.setStylePrimaryName("received-panel");
@@ -82,13 +123,13 @@ public class ElementReceiver
 				diff.clear();
 				diff.add (new HTML (result.toString()));
 
-				pb.requestSucceeded();
+				requestSucceeded();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				base.add(new HTML ("<h1> Sorry, but there an error occured int page loading," +
-								   "with following response:" + caught.getMessage()));
+				requestFailed ("<h1> Sorry, but there an error occured int page loading," +
+								   "with following response:" + caught.getMessage() + "</h1>");
 			}
 		});
 	}

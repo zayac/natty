@@ -12,6 +12,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -40,8 +42,10 @@ public class ITextCellList extends IWidget
 
 	private List<IText> items;
 	private VerticalPanel panel;
+	private FlowPanel batPanel;
 	private Button backB;
 	private Button nextB;
+//	private Button clnB;
 	private CellList list;
 	private String name;
 	private SingleSelectionModel<IText> ssm;
@@ -51,10 +55,16 @@ public class ITextCellList extends IWidget
 	{
 		super(id, new VerticalPanel());
 		panel = (VerticalPanel)getWidget();
-		backB = new Button("prev");
+		batPanel = new FlowPanel();
+		backB = new Button("&#8593;");
 		list = new CellList (new ICell());
-		nextB = new Button("next");
-		panel.add(backB);
+		nextB = new Button("&#8595;");
+//		clnB = new Button ("&#9747;");//X
+		panel.add (batPanel);
+		batPanel.add (backB);
+//		batPanel.add (clnB);
+
+		panel.add (batPanel);
 		panel.add (list);
 		panel.add (nextB);
 
@@ -74,7 +84,7 @@ public class ITextCellList extends IWidget
 				{
 					if (!reactToSelChange) return;
 					ParamsBuilder.getCurrent().setVal (name, ssm.getSelectedObject().getId().toString());
-					ElementReceiver.get().queryElement();
+					ElementReceiver.get().queryPage();
 				}
 			});
 		nextB.addClickHandler(new ClickHandler() {
@@ -83,7 +93,7 @@ public class ITextCellList extends IWidget
 			public void onClick(ClickEvent event)
 			{
 				setStart (getStart() + list.getRowCount());
-				ElementReceiver.get().queryElement();
+				ElementReceiver.get().queryPage();
 			}
 		});
 		backB.addClickHandler(new ClickHandler() {
@@ -94,9 +104,18 @@ public class ITextCellList extends IWidget
 				Integer start = getStart() - MAXIMUM_ITEMS;
 				if (start < 0) start = 0;
 				setStart (start);
-				ElementReceiver.get().queryElement();
+				ElementReceiver.get().queryPage();
 			}
 		});
+//		clnB.addClickHandler(new ClickHandler() {
+//
+//			@Override
+//			public void onClick(ClickEvent event)
+//			{
+//				items.clear();
+//			}
+//		});
+
 	}
 
 	public void setHasMore (boolean has)

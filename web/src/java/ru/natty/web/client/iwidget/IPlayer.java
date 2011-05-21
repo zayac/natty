@@ -5,6 +5,7 @@
 
 package ru.natty.web.client.iwidget;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.Label;
 import org.miller.gwt.client.sound.Callback;
@@ -64,7 +65,7 @@ public class IPlayer extends IWidget
 			sm.destroySound(SOUND_ID);
 			snd_playing = false;
 		}
-		sm.createSound(SOUND_ID, nUrl);
+		sm.createSound(SOUND_ID, URL.encode(nUrl));
 		sm.play(SOUND_ID);
 	}
 

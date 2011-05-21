@@ -30,12 +30,12 @@ public class MainEntryPoint implements EntryPoint {
 		RootPanel.get().clear();
 		ParamsBuilder.getCurrent().setId(0);
 		ElementReceiver.get().init (RootPanel.get());
-		Label lb = new Label("main entry point entered");
+//		Label lb = new Label("main entry point entered");
 
 //		RootPanel.get().add(new IPlayer(100500, "music/Alternative/Deepfield/[2007] Achetypes And Repitition/07 - Into The Flood.mp3"));
 //		RootPanel.get().add(new IPlayer(100500, "ogn.mp3"));
 
 
-		RootPanel.get().add(lb);
+//		RootPanel.get().add(lb);
 	}
 }

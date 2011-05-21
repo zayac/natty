@@ -52,7 +52,7 @@ public class DataBase
 
 	}
 
-    private EntityManagerFactory emf;
+    static private EntityManagerFactory emf;
     private EntityManager em;
 
     DataBase()
@@ -64,21 +64,21 @@ public class DataBase
     public void startTransaction()
     {
 		finishTransaction();
-        emf = Persistence.createEntityManagerFactory("Natty.webPU");
-        em = emf.createEntityManager();
+        if (null == emf)
+			emf = Persistence.createEntityManagerFactory("Natty.webPU");
+		if (null == em)
+			em = emf.createEntityManager();
 
         em.getTransaction().begin();
     }
 
     public void finishTransaction()
     {
-		if (null != em)
+		if (null != em && em.getTransaction().isActive())
 		{
-			em.getTransaction().commit();
+			em.getTransaction().rollback();// .commit();
 			em.close();
 		}
-        //if (null != emf) emf.close();
-        //emf = null;
 		em = null;
     }
 

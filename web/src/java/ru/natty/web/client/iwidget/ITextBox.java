@@ -18,23 +18,45 @@ import ru.natty.web.client.ParamsBuilder;
  */
 public class ITextBox extends IWidget
 {
-	public ITextBox (Integer id, String text)
+	class OnKeyUp implements KeyUpHandler
+	{
+		private String targetName;
+
+		public OnKeyUp (String target)
+		{
+			targetName = target;
+		}
+		
+		public void setTarget (String ntarget)
+		{
+			targetName = ntarget;
+		}
+
+		@Override
+		public void onKeyUp(KeyUpEvent event) {
+			ParamsBuilder.getCurrent().setVal(targetName, ((TextBox) getWidget()).getText());
+			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+				ElementReceiver.get().queryPage();
+		}
+	}
+	
+	OnKeyUp myHandler;
+	
+	public ITextBox (Integer id, final String name, String text)
 	{
 		super( id, new TextBox());
 		setText(text);
+		myHandler = new OnKeyUp(name);
 
-		((TextBox)getWidget()).addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				ParamsBuilder.getCurrent().setVal("query", ((TextBox)getWidget()).getText());
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-					ElementReceiver.get().queryElement();
-			}
-		});
+		((TextBox)getWidget()).addKeyUpHandler(myHandler);
 	}
 
-	final public void setText(String nStr) {
+	final private void setText(String nStr) {
 		((TextBox)getWidget()).setText (nStr);
+	}
+	
+	private void setName (String name)
+	{
+		myHandler.setTarget(name);
 	}
 }

@@ -47,7 +47,7 @@ public class WBasicButton extends WContent
 	@Override
 	public WContent copyInt()
 	{
-		return new WTextBox (text);
+		return new WBasicButton (text);
 	}
 
 	@Override

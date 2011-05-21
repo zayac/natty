@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.shared.Parameters;
+import ru.natty.web.shared.ServerException;
 
 /**
  *
@@ -17,6 +18,6 @@ import ru.natty.web.shared.Parameters;
 @RemoteServiceRelativePath("mainservice")
 public interface MainService extends RemoteService
 {
-	public abstract DiffPatcher getInitialContent (Parameters p);
-	public abstract DiffPatcher getDifference(Parameters p, Parameters prevP);
+	public abstract DiffPatcher getInitialContent (Parameters p) throws IllegalArgumentException, ServerException;
+	public abstract DiffPatcher getDifference(Parameters p, Parameters prevP) throws IllegalArgumentException, ServerException;
 }

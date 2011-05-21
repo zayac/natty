@@ -18,36 +18,44 @@ import ru.natty.web.shared.Parameters;
  */
 public class WTextBox extends WContent
 {
+	private String name;
 	private String text;
 
-	public WTextBox (String text)
+	public WTextBox (String name, String text)
 	{
 		this.text = text;
+		this.name = name;
 	}
 	
 	public String getText()
 	{
 		return text;
 	}
+	
+	public String getName()
+	{
+		return name;
+	}
 
 	@Override
 	public DiffPatcher getDifferenceInt(WContent prev, boolean amputation)
 	{
 		assert prev instanceof WTextBox;
-		if (text.equals(((WTextBox)prev).getText())) return null;
-		return new TextBoxDP(text);
+		if (text.equals(((WTextBox)prev).getText()) &&
+			name.equals(((WTextBox)prev).getName())) return null;
+		return new TextBoxDP (name, text);
 	}
 
 	@Override
 	public DiffPatcher getAllContentInt()
 	{
-		return new TextBoxDP (text);
+		return new TextBoxDP (name, text);
 	}
 
 	@Override
 	public WContent copyInt()
 	{
-		return new WTextBox (text);
+		return new WTextBox (name, text);
 	}
 
 	@Override
@@ -62,7 +70,8 @@ public class WTextBox extends WContent
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-        Label l = db.queryLabelById(id);
-        return new WTextBox(l.getText()).setStyle(id, db);
+		String mname = "query";
+        //Label l = db.queryLabelById(id);
+        return new WTextBox (mname, ps.getVal(mname)).setStyle(id, db);
 	}
 }
