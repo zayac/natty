@@ -6,6 +6,7 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -140,33 +141,6 @@ public class Track implements Serializable, IdNamed
 
 
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Track other = (Track) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        return true;
-    }
-
-
 
 	public static Query getQueryByPattern (String pattern, EntityManager em)
 	{
@@ -190,9 +164,39 @@ public class Track implements Serializable, IdNamed
     }
 
     @Override
-    public String toString() {
-        return "ru.natty.persist.Track[id=" + id + "]"+getName()+" "+super.hashCode();
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Track other = (Track) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.year != other.year && (this.year == null || !this.year.equals(other.year))) {
+            return false;
+        }
+        return true;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 37 * hash + (this.year != null ? this.year.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "Track{" + "name=" + name + ", year=" + year + '}';
+    }
+
+
+
+
 
 }
 

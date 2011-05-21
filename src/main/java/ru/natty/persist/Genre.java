@@ -130,16 +130,6 @@ public class Genre implements Serializable, IdNamed {
 		return QueryList.forQuery(getQueryByPattern(pattern, em)).<Genre>getAllResults();
     }
 
-
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 71 * hash + (this.name != null ? this.name.hashCode() : 0);
-        return hash;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -149,9 +139,6 @@ public class Genre implements Serializable, IdNamed {
             return false;
         }
         final Genre other = (Genre) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
@@ -159,9 +146,18 @@ public class Genre implements Serializable, IdNamed {
     }
 
     @Override
-    public String toString() {
-        return "ru.natty.persist.Genre[id=" + id + "]"+getName()+" "+super.hashCode();
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
     }
+
+    @Override
+    public String toString() {
+        return "Genre{" + "name=" + name + '}';
+    }
+
+
 
 }
 

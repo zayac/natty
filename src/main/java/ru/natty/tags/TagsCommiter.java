@@ -7,18 +7,22 @@ package ru.natty.tags;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.*;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
@@ -150,27 +154,10 @@ public class TagsCommiter {
             }
             return null;
         }
-//        if(f.hasID3v2Tag())
-//        {
-//            ID3v24Tag v24tag = f.getID3v2TagAsv24();
-//            if(v24tag != null && !v24tag.isEmpty())
-//            {
-//                if(v24tag.getFirst(ID3v24Frames.FRAME_ID_YEAR) != null)
-//                {
-//                    Matcher m = yearPattern.matcher(v24tag.getFirst(ID3v24Frames.FRAME_ID_YEAR));
-//                    if(m.find())
-//                    {
-//                        calendar.set(Integer.parseInt(m.group()), 0, 1);
-//                        log.debug("Year: " + calendar.getTime());
-//                        return calendar.getTime();
-//                    }
-//                }
-//            }
-//        }
         Matcher m = yearPathPattern.matcher(path);
         if(m.find())
         {
-            calendar.set(Integer.parseInt(m.group()), 0, 1);
+            calendar.set(Integer.parseInt(m.group().substring(1, 5)), 0, 1);
             return calendar.getTime(); 
         }
         return null;
@@ -238,9 +225,9 @@ public class TagsCommiter {
                 tr.setYear(year);
             }
             Track tmp;
-            if(trackCollection.containsKey(trackNames.get(i)))
+            if(trackCollection.containsKey(tr.toString()))
             {
-                tr = trackCollection.get(trackNames.get(i));
+                tr = trackCollection.get(tr.toString());
                 tr.setExistsStatus(true);
             }else if((tmp = findTrack(tr)) != null)
             {
@@ -263,7 +250,7 @@ public class TagsCommiter {
                 List<TagField> fields = tag.getFields(FieldKey.ARTIST);
                 for(int i = 0; i < fields.size(); i++)
                 {
-                    String[] names = fields.get(i).toString().split("/|( (?i)Feat.?)|( (?i)Ft.?)");
+                    String[] names = fields.get(i).toString().split("/|( (?i)Feat.?)|( (?i)Ft.?)|( (?i)Vs.?)|( \\& )");
                     for(int j = 0; j < names.length; j++)
                     {
                         String formated = formatArtist(names[j]);
@@ -272,9 +259,9 @@ public class TagsCommiter {
                             Artist art = new Artist();
                             art.setName(formated);
                             Artist tmp;
-                            if(artistCollection.containsKey(formated))
+                            if(artistCollection.containsKey(art.toString()))
                             {
-                                art = artistCollection.get(formated);
+                                art = artistCollection.get(art.toString());
                                 art.setExistsStatus(true);
                             }
                             else if ((tmp = findArtist(art)) != null)
@@ -315,7 +302,7 @@ public class TagsCommiter {
         }catch(NumberFormatException ex)
         {
             source = source.trim();
-            return source.substring(0,1).toUpperCase() + source.substring(1).toLowerCase();
+            return WordUtils.capitalize(source.toLowerCase()).trim();
         }
         return null;
     }
@@ -340,9 +327,9 @@ public class TagsCommiter {
                         {
                             gen.setName(formated);
                             Genre tmp;
-                            if(genreCollection.containsKey(gen.getName()))
+                            if(genreCollection.containsKey(gen.toString()))
                             {
-                                gen = genreCollection.get(gen.getName());
+                                gen = genreCollection.get(gen.toString());
                                 gen.setExistsStatus(true);
                             }
                             else if ((tmp = findGenre(gen)) != null)
@@ -373,6 +360,30 @@ public class TagsCommiter {
         return ret;
     }
     
+    private String formatAlbum(String source)
+    {
+        source.replaceAll("\\(\\d+\\)", "");
+        try
+        {
+            Integer.parseInt(source);
+        }catch(NumberFormatException ex)
+        {
+            source = source.trim();
+            return WordUtils.capitalize(source.toLowerCase());
+        }
+        return null;
+    }
+    
+    public String generateAlbumString(String name, Date year, Set<Artist> artistCollection) {
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Album{" + "name=" + name + ", year=" + simpleDateformat.format(year)  + ", artistCollection=" + artistCollection + '}';
+        }
+        else
+        return "Album{" + "name=" + name + ", year=null, artistCollection=" + artistCollection + '}';
+    }
+    
     private ArrayList<Album> getAlbum(String path, MP3File f)
     {
         ArrayList<Album> ret = new ArrayList<Album>();
@@ -384,20 +395,37 @@ public class TagsCommiter {
                 List<TagField> fields = tag.getFields(FieldKey.ALBUM);
                 for(int i = 0; i < fields.size(); i++)
                 {
-                    Album alb = new Album();
-                    alb.setName(fields.get(i).toString().trim());
-                    Album tmp;
-                    if(albumCollection.containsKey(fields.get(i).toString()))
+                    String formatedAlbum = formatAlbum(fields.get(i).toString());
+                    ArrayList<Artist> artists = getArtist(path, f);
+                    if(formatedAlbum != null)
                     {
-                        alb = albumCollection.get(fields.get(i).toString());
-                        alb.setExistsStatus(true);
+                        HashSet<Artist> artCol = new HashSet<Artist>();
+                        for(int j = 0; j < artists.size(); j++)
+                            artCol.add(artists.get(j));
+                        String hashString = generateAlbumString(formatedAlbum, getYear(path, f), artCol); 
+                        log.debug("Hashstring: " + hashString);
+                        Album tmp = new Album();
+                        Album alb = new Album();
+                        alb.setName(formatedAlbum);
+                        alb.setYear(getYear(path, f));
+                        if(albumCollection.containsKey(hashString))
+                        {
+                            log.debug("Album is found is collection");
+                            alb = albumCollection.get(hashString);                            
+                            alb.setExistsStatus(true);
+                        }
+                        else if ((tmp = findAlbum(alb)) != null)
+                        {
+                            log.debug("Album is found is database");
+                            if(tmp.toString().equals(hashString))
+                            {
+                                alb = tmp;            
+                                alb.setExistsStatus(true);
+                            }
+                        }
+                        log.debug("Album added: " + alb.toString());
+                        ret.add(alb);
                     }
-                    else if ((tmp = findAlbum(alb)) != null)
-                    {
-                       alb = tmp;
-                       alb.setExistsStatus(true);
-                    }
-                    ret.add(alb);
                 }
             }
         }
@@ -444,7 +472,7 @@ public class TagsCommiter {
             for(int i = 0; i < artists.size(); i++)
                 for(int j = 0; j < albums.size(); j++)
                 {
-                    if(!artists.get(i).getAlbumCollection().contains(albums.get(j)))
+                    if(!artists.get(i).getAlbumCollection().contains(albums.get(j)) || !albums.get(j).getArtistCollection().contains(artists.get(i)))
                     {
                         if (!artists.get(i).isExists()) artists.get(i).getAlbumCollection().add(albums.get(j));
                         if (!albums.get(j).isExists()) albums.get(j).getArtistCollection().add(artists.get(i));
@@ -501,31 +529,11 @@ public class TagsCommiter {
                 }
         }
         
-        for(int i = 0; i < tracks.size(); i++) trackCollection.put(tracks.get(i).getName(), tracks.get(i));
-        for(int i = 0; i < genres.size(); i++) genreCollection.put(genres.get(i).getName(), genres.get(i));
-        for(int i = 0; i < artists.size(); i++) artistCollection.put(artists.get(i).getName(), artists.get(i));
-        for(int i = 0; i < albums.size(); i++) albumCollection.put(albums.get(i).getName(), albums.get(i));
+        for (int i = 0; i < tracks.size(); i++) trackCollection.put(tracks.get(i).toString(), tracks.get(i));
+        for (int i = 0; i < genres.size(); i++) genreCollection.put(genres.get(i).toString(), genres.get(i));
+        for (int i = 0; i < artists.size(); i++) artistCollection.put(artists.get(i).toString(), artists.get(i));
+        for (int i = 0; i < albums.size(); i++) albumCollection.put(albums.get(i).toString(), albums.get(i));
         
-        
-        String dump = "Track: { ";
-        for(int i = 0; i < tracks.size() - 1; i++)
-        {
-            dump += tracks.get(i).getName() + ", ";
-        }
-        if (!tracks.isEmpty()) dump += tracks.get(tracks.size() - 1).getName() + " }, Artist: { ";
-        for(int i = 0; i < artists.size() - 1; i++)
-        {
-            dump += artists.get(i).getName() + ", ";
-        }
-        if (!artists.isEmpty()) dump += artists.get(artists.size() - 1).getName() + " }, Album: { ";
-        for(int i = 0; i < albums.size() - 1; i++)
-        {
-            dump += albums.get(i).getName() + ", ";
-        }  
-        if (!albums.isEmpty()) dump += albums.get(albums.size() - 1).getName().toString() + " }";
-        log.info(dump);
-            
-        log.debug("Track collection size: " + trackCollection.size());
         if (trackCollection.size() == BUFFER_SIZE)
         {
             sendToDB();
@@ -540,6 +548,7 @@ public class TagsCommiter {
     }
 
     private void sendToDB() {
+        log.debug("Persisting...");
         em.getTransaction().begin();
         Iterator it = trackCollection.entrySet().iterator();
         while(it.hasNext()) {
