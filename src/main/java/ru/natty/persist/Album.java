@@ -173,16 +173,29 @@ public class Album implements Serializable, IdNamed {
 		return getAlbums;
 	}
 
-
+    public static String generateAlbumString(String name, Date year, Set<Artist> artistCollection) {
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Album{" + "name=" + name + ", year=" + simpleDateformat.format(year)  + ", artistCollection=" + artistCollection + '}';
+        }
+        else
+        return "Album{" + "name=" + name + ", year=null, artistCollection=" + artistCollection + '}';
+    }
+    
+    
     @Override
     public int hashCode() {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
         int hash = 5;
         hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 29 * hash + (this.year != null ? simpleDateformat.format(this.year).hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");       
         if (obj == null) {
             return false;
         }
@@ -190,10 +203,22 @@ public class Album implements Serializable, IdNamed {
             return false;
         }
         final Album other = (Album) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
+        if (this.year == null )
+            if(other.year != null)
+                return false;
+        if (this.year != null && other.year != null) 
+        {
+            String thYear = simpleDateformat.format(this.year);
+            String otYear = simpleDateformat.format(other.year); 
+            if ((thYear == null) ? (otYear != null) : !thYear.equals(otYear)) {
+                //log.debug(thYear + " and " + otYear +" aren't equal.");
+                return false;
+            }
         }
-        if (this.year != other.year && (this.year == null || !this.year.equals(other.year))) {
+        else if ((this.year == null && other.year != null) || (this.year != null && other.year == null))
+            return false;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            //log.debug(this.name + " and " + other.name +" aren't equal.");
             return false;
         }
         return true;

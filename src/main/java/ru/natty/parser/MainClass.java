@@ -17,7 +17,7 @@ public class MainClass {
     public static void main(String[] args) throws SmbException, IOException {
         LogManager.getLogManager().readConfiguration();
         LocalParser musicController = new LocalParser();
-        musicController.parse("/mnt/");                 
+        musicController.parse("/mnt");                 
         musicController.close();
     }
 }                                                                                                                             

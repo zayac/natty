@@ -165,6 +165,7 @@ public class Track implements Serializable, IdNamed
 
     @Override
     public boolean equals(Object obj) {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
         if (obj == null) {
             return false;
         }
@@ -175,25 +176,50 @@ public class Track implements Serializable, IdNamed
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (this.year != other.year && (this.year == null || !this.year.equals(other.year))) {
+        if (!simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year)) && (this.year == null || !simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year)))) {
             return false;
         }
+        //if (this.albumCollection != other.albumCollection && (this.albumCollection == null || !this.albumCollection.equals(other.albumCollection))) {
+        //    return false;
+        //}
+        //if (this.artistCollection != other.artistCollection && (this.artistCollection == null || !this.artistCollection.equals(other.artistCollection))) {
+        //    return false;
+        //}
         return true;
     }
 
+    
+    public static String generateTrackString(String name, Date year, Set<Album> albumCollection) {
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Track{" + "name=" + name + ", year=" + simpleDateformat.format(year) + ", albumCollection=" + albumCollection + "}";
+        }
+        else
+            return "Track{" + "name=" + name + ", year=null, albumCollection=" + albumCollection + "}";
+    }
+    
     @Override
     public int hashCode() {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
         int hash = 3;
-        hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 37 * hash + (this.year != null ? this.year.hashCode() : 0);
+        hash = 29 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 29 * hash + (this.year != null ? simpleDateformat.format(this.year).hashCode() : 0);
+        //hash = 29 * hash + (this.albumCollection != null ? this.albumCollection.hashCode() : 0);
+        //hash = 29 * hash + (this.artistCollection != null ? this.artistCollection.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "Track{" + "name=" + name + ", year=" + year + '}';
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Track{" + "name=" + name + ", year=" + simpleDateformat.format(year) + ", albumCollection=" + albumCollection + "}";
+        }
+        else
+            return "Track{" + "name=" + name + ", year=null, albumCollection=" + albumCollection + "}";
     }
-
 
 
 
