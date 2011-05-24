@@ -8,6 +8,7 @@ import ru.natty.web.server.WContentCreator;
 import ru.natty.web.shared.diffpatchers.ComplexPanelDiffPatcher;
 import ru.natty.web.shared.diffpatchers.CompositePanelDP;
 import ru.natty.web.shared.Parameters;
+import ru.natty.web.shared.ServerException;
 
 public class WComplexPanel extends WCompositePanel
 {
@@ -71,7 +72,7 @@ public class WComplexPanel extends WCompositePanel
 
 	public static WComplexPanel make (Integer id, Parameters ps,
 											 WComplexPanel billet,
-											 DataBase db, WContentCreator creator)
+											 DataBase db, WContentCreator creator) throws ServerException
 	{
 		List<PanelContents> pcs = db.queryPanelContentsById(id);
         for (PanelContents pc : pcs)
@@ -84,7 +85,7 @@ public class WComplexPanel extends WCompositePanel
 			makeCustom (Integer id, Integer contentId,
 						WContent view, Parameters ps,
 						WComplexPanel billet,
-						DataBase db, WContentCreator creator)
+						DataBase db, WContentCreator creator) throws ServerException
 	{
         List<PanelContents> contents = db.queryPanelContentsById(id);
         for (PanelContents pc : contents)

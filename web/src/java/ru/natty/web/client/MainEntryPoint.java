@@ -4,13 +4,10 @@
  */
 package ru.natty.web.client;
 
+import com.allen_sauer.gwt.log.client.DivLogger;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.miller.gwt.client.sound.Callback;
-import org.miller.gwt.client.sound.SoundManager;
-import ru.natty.web.client.iwidget.IPlayer;
 
 /**
  * Main entry point.
@@ -30,12 +27,8 @@ public class MainEntryPoint implements EntryPoint {
 		RootPanel.get().clear();
 		ParamsBuilder.getCurrent().setId(0);
 		ElementReceiver.get().init (RootPanel.get());
-//		Label lb = new Label("main entry point entered");
-
-//		RootPanel.get().add(new IPlayer(100500, "music/Alternative/Deepfield/[2007] Achetypes And Repitition/07 - Into The Flood.mp3"));
-//		RootPanel.get().add(new IPlayer(100500, "ogn.mp3"));
-
-
-//		RootPanel.get().add(lb);
+		RootPanel.get().add(Log.getLogger(DivLogger.class).getWidget());
+		Log.addLogger(Log.getLogger(DivLogger.class));
+		Log.debug("mvu haaha");
 	}
 }

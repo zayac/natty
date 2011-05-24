@@ -9,6 +9,7 @@ import ru.natty.web.server.wcontent.WCompositePanel.UnitContent;
 import ru.natty.web.server.WContentCreator;
 import ru.natty.web.shared.diffpatchers.CompositePanelDP;
 import ru.natty.web.shared.Parameters;
+import ru.natty.web.shared.ServerException;
 import ru.natty.web.shared.diffpatchers.TabPanelDP;
 
 public class WTabPanel extends WCompositePanel
@@ -76,7 +77,7 @@ public class WTabPanel extends WCompositePanel
 	}
 
 	public static WContent make (Integer id, Parameters ps,
-										 DataBase db, WContentCreator creator)
+										 DataBase db, WContentCreator creator) throws ServerException
 	{
         WTabPanel ret = new WTabPanel();
 

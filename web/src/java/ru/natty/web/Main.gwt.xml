@@ -3,8 +3,12 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
 
 <module>
-    <inherits name="com.google.gwt.user.User"/>
+	<inherits name="com.google.gwt.user.User"/>
 	<inherits name="org.miller.gwt.Sound"/>
+	
+	<!-- For development, a default of `DEBUG` is recommended -->
+	<inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
+
 
     <!-- Inherit the default GWT style sheet. You can change -->
     <!-- the theme of your GWT application by uncommenting -->
@@ -13,11 +17,11 @@
     <!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
     <!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
 
-    <entry-point class="ru.natty.web.client.MainEntryPoint"/>
+	<entry-point class="ru.natty.web.client.MainEntryPoint"/>
 
     <!-- Do not define servlets here, use web.xml -->
 
       <!-- Specify the paths for translatable code                    -->
-        <source path='client'/>
-        <source path='shared'/>
+	<source path='client'/>
+	<source path='shared'/>
 </module>
