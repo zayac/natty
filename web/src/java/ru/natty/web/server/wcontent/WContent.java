@@ -47,6 +47,8 @@ public abstract class WContent
 	protected abstract DiffPatcher getDifferenceInt (WContent prev, boolean amputation);
 	protected abstract DiffPatcher getAllContentInt();
 	protected abstract WContent copyInt();
+	@Override
+	public abstract int hashCode();
 
 
 	public boolean isNotVoid() {return true;}

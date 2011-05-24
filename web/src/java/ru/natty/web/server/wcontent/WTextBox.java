@@ -74,4 +74,10 @@ public class WTextBox extends WContent
         //Label l = db.queryLabelById(id);
         return new WTextBox (mname, ps.getVal(mname)).setStyle(id, db);
 	}
+
+	@Override
+	public int hashCode()
+	{
+		return name.hashCode();
+	}
 }

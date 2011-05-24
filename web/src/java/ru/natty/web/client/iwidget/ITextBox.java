@@ -38,6 +38,11 @@ public class ITextBox extends IWidget
 			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
 				ElementReceiver.get().queryPage();
 		}
+		
+		public int hashCode()
+		{
+			return targetName.hashCode();
+		}
 	}
 	
 	OnKeyUp myHandler;
@@ -58,5 +63,10 @@ public class ITextBox extends IWidget
 	private void setName (String name)
 	{
 		myHandler.setTarget(name);
+	}
+
+	@Override
+	public int hashCode() {
+		return myHandler.hashCode();
 	}
 }

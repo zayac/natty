@@ -48,6 +48,10 @@ abstract public class WCompositePanel extends WContent
 		
 		public abstract void bringContentTo (CompositePanelDP cpdp, Integer id);
 		public abstract UnitContent copy();
+		@Override
+		public int hashCode() {
+			return content.hashCode();
+		}
 	}
 	public Map<Integer, UnitContent> contents; 
 	
@@ -94,6 +98,15 @@ abstract public class WCompositePanel extends WContent
 		for (Map.Entry<Integer, UnitContent> e: contents.entrySet())
 			e.getValue().bringContentTo(cpdp, e.getKey());
 		return cpdp;
+	}
+	
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for (Map.Entry<Integer, UnitContent> e: contents.entrySet())
+			hash ^= e.getValue().hashCode();
+		return hash;
 	}
 	
 	abstract protected WCompositePanel makeMe();

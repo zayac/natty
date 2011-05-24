@@ -163,4 +163,12 @@ public class ITextCellList extends IWidget
 					ssm.setSelected (item, true);
 		reactToSelChange = true;
 	}
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for (IText item : items)
+			hash ^= item.hashCode();
+		return hash;
+	}
 }

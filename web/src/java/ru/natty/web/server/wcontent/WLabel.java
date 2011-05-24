@@ -55,6 +55,11 @@ public class WLabel extends WContent
 	public String toString() {
 		return "WLabelContent [text=" + text + "]";
 	}
+	
+	@Override
+	public int hashCode() {
+		return text.hashCode();
+	}
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{

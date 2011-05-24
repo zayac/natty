@@ -24,6 +24,11 @@ public class IText implements Serializable
 	public Integer getId() {
 		return id;
 	}
+	
+	public int hashCode()
+	{
+		return text.hashCode()^id.hashCode();
+	}
 
 	public String getText()
 	{
@@ -36,12 +41,6 @@ public class IText implements Serializable
 	{
 		this.id = id;
 		this.text = text;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return id;
 	}
 
 	@Override

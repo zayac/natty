@@ -57,6 +57,11 @@ public class WImage extends WContent
 	{
 		return false;
 	}
+	
+	@Override
+	public int hashCode() {
+		return url.hashCode();
+	}
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{

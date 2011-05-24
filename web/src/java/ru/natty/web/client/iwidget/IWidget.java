@@ -5,7 +5,7 @@ import java.util.Iterator;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class IWidget extends Composite implements Identified 
+public abstract class IWidget extends Composite implements Identified 
 {
 	private Integer id;
 	
@@ -19,6 +19,9 @@ public class IWidget extends Composite implements Identified
 	{
 		return id;
 	}
+
+	@Override
+	abstract public int hashCode();
 
 	@Override
 	public void setStylePrimaryName(String style)

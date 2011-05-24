@@ -59,6 +59,11 @@ public class WBasicButton extends WContent
 	public String toString() {
 		return "WBasicButtonContent\"" + text + "\"";
 	}
+	
+	@Override
+	public int hashCode() {
+		return text.hashCode();
+	}
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{

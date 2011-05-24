@@ -31,4 +31,9 @@ public class IStreak extends IWidget {
 		return (IWidget)((SimplePanel)getWidget()).getWidget();
 	}
 
+	@Override
+	public int hashCode() {
+		return getContent().hashCode();
+	}
+
 }

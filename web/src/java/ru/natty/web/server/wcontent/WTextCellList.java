@@ -7,10 +7,8 @@ package ru.natty.web.server.wcontent;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import ru.natty.web.server.DataBase;
 import ru.natty.web.server.WContentCreator;
 import ru.natty.web.shared.IText;
@@ -160,5 +158,14 @@ public class WTextCellList extends WContent
 
 
         return tcl.setStyle (id, db);
+	}
+
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for (Map.Entry<Integer, IText> item : items.entrySet())
+			hash ^= item.getValue().hashCode();
+		return hash;
 	}
 }

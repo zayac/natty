@@ -4,6 +4,7 @@
  */
 package ru.natty.web.client;
 
+import com.allen_sauer.gwt.log.client.ConsoleLogger;
 import com.allen_sauer.gwt.log.client.DivLogger;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -27,8 +28,6 @@ public class MainEntryPoint implements EntryPoint {
 		RootPanel.get().clear();
 		ParamsBuilder.getCurrent().setId(0);
 		ElementReceiver.get().init (RootPanel.get());
-		RootPanel.get().add(Log.getLogger(DivLogger.class).getWidget());
-		Log.addLogger(Log.getLogger(DivLogger.class));
-		Log.debug("mvu haaha");
+		Log.debug("llog mess");
 	}
 }

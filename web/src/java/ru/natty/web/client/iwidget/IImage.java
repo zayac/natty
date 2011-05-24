@@ -22,4 +22,9 @@ public class IImage extends IWidget
 	{
 		((Image)getWidget()).setUrl(nUrl);
 	}
+
+	@Override
+	public int hashCode() {
+		return ((Image)getWidget()).getUrl().hashCode();
+	}
 }

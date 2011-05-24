@@ -33,4 +33,9 @@ public class WVoid extends WContent {
 	{
 		return new WVoid();
 	}
+
+	@Override
+	public int hashCode() {
+		return 0;
+	}
 }

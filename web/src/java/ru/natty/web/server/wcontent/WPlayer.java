@@ -6,8 +6,8 @@
 package ru.natty.web.server.wcontent;
 
 import ru.natty.persist.Track;
-import ru.natty.web.persist.Label;
 import ru.natty.web.server.DataBase;
+import ru.natty.web.server.MyLog;
 import ru.natty.web.server.WContentCreator;
 import ru.natty.web.shared.Parameters;
 import ru.natty.web.shared.diffpatchers.DiffPatcher;
@@ -67,9 +67,15 @@ public class WPlayer extends WContent
 	public String toString() {
 		return "WPlayer:\"" + url + "\"";
 	}
+	
+	@Override
+	public int hashCode() {
+		return url.hashCode();
+	}
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
+		MyLog.fine("making player");
 		String trId = ps.getVal("Track");
 		if (trId.equals("")) return new WPlayer ("no track to play");
 		Track t = db.queryTrackById(Integer.parseInt(trId));

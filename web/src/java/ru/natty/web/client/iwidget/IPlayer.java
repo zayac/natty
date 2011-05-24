@@ -69,4 +69,9 @@ public class IPlayer extends IWidget
 		sm.play(SOUND_ID);
 	}
 
+	@Override
+	public int hashCode() {
+		return url.hashCode();
+	}
+
 }

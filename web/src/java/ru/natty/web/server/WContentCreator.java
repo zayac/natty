@@ -43,6 +43,9 @@ public class WContentCreator
 											DataBase.class, WContentCreator.class);
 			return (WContent)make.invoke (null, id, ps, db, this);
 		}
+		catch (InvocationTargetException ex) {
+			throw new ServerException (ex.toString() + "{" + ex.getCause().toString() + "} on " + id);
+		}
 		catch (Exception ex) {
 			throw new ServerException (ex.toString() + " on " + id);
 		}

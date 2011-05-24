@@ -12,4 +12,9 @@ public class IVoid extends IWidget {
 	{
 		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		return 0;
+	}
 }

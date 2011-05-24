@@ -1,5 +1,6 @@
 package ru.natty.web.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import ru.natty.web.client.iwidget.ILabel;
 import ru.natty.web.client.iwidget.IWidget;
 import ru.natty.web.client.iwidget.ComplexPanelI;
@@ -9,6 +10,7 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import ru.natty.web.client.iwidget.IVerticalPanel;
 
 import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.shared.Parameters;
@@ -18,7 +20,6 @@ public class ElementReceiver
 	private final MainServiceAsync greetingService = GWT.create(MainService.class);
 	private IWidget root;
 	private Panel diff;
-	private Panel logp;
 	private ParamsBuilder pb = ParamsBuilder.get();
 	private boolean inProcess;
 	private boolean receiveRequested;
@@ -37,7 +38,13 @@ public class ElementReceiver
 		inProcess = false;
 		receiveRequested = false;
 		ParamsUrl.getInstance().getFromHistory(pb.getCurrent());
-		queryInit (base);
+		IVerticalPanel container = new IVerticalPanel (0);
+		base.add (container);
+		base.add (new HTML ("<h2> Received from server: </h2>"));
+		diff = new VerticalPanel();
+		diff.setStylePrimaryName ("received-panel");
+		base.add (diff);
+		queryInit (container);
 	}
 	
 	private boolean onBegin()
@@ -59,20 +66,28 @@ public class ElementReceiver
 			queryPage();
 	}
 	
-	private void requestSucceeded()
+	private void requestSucceeded (DiffPatcher result, Integer id)
 	{
+		diff.clear();
+		if (null != result)
+			diff.add (new HTML (result.toString()));
+		else
+			diff.add (new HTML ("diff is null"));
+		
+		Log.debug("id " + id + " succeeded"); 
 		pb.requestSucceeded();
 		onEnd();
 	}
 	
-	private void requestFailed (String message)
+	private void requestFailed (Throwable caught, String message)
 	{
-		logp.add(new HTML (message));
+		Log.error ("query (" + message + ") filed with:" + caught.getMessage());
 		onEnd();
 	}
 	
 	public void queryPage()
 	{
+		Log.trace ("querying page");
 		if (onBegin()) return;
 		final Parameters param = pb.getCurrent();
 		greetingService.getDifference (param, pb.getPrev(),
@@ -82,29 +97,25 @@ public class ElementReceiver
 			public void onSuccess(DiffPatcher result) {
 				if (null == result)
 				{
-					//((ComplexPanelI)root).add(new ILabel(324, "diff is null!"));
-					requestSucceeded();
+					requestSucceeded (result, param.getId());
 					return;
 				}
 				result.applay(root);
-				diff.clear();
-				diff.add(new HTML(result.toString()));
-                //((ComplexPanelI)root).add(new ILabel(324, "id " + param.getId() + " succeded"));
 
-				requestSucceeded();
+				requestSucceeded (result, param.getId());
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				requestFailed ("query " + param.getVal("query") + " failed while being requested<br>" +
-								"cause: " + caught.getMessage());
+				requestFailed (caught, param.getVal("query") + ", " + param.getId());
 			}
 		});
-		//((ComplexPanelI)root).add(new ILabel(324, "get difference completed"));
+		Log.trace ("query for " + param.getVal("query") + "sent");
 	}
 	
-	private void queryInit (final ComplexPanel base)
+	private void queryInit (final ComplexPanelI base)
 	{
+		Log.trace ("querying");
 		onBegin();
 		greetingService.getInitialContent (pb.getCurrent(),
 			new AsyncCallback<DiffPatcher>() {
@@ -113,25 +124,16 @@ public class ElementReceiver
 			public void onSuccess(DiffPatcher result) {
 				root = result.createNew(0);
 				base.add (root);
-				logp = new VerticalPanel();
-				logp.setStylePrimaryName("log-panel");
-				base.add(logp);
-				base.add (new HTML ("<h2> Received from server: </h2>"));
-				diff = new VerticalPanel();
-				diff.setStylePrimaryName("received-panel");
-				base.add (diff);
-				diff.clear();
-				diff.add (new HTML (result.toString()));
 
-				requestSucceeded();
+				requestSucceeded (result, pb.getCurrent().getId());
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				requestFailed ("<h1> Sorry, but there an error occured int page loading," +
-								   "with following response:" + caught.getMessage() + "</h1>");
+				requestFailed (caught, "initial request " + pb.getCurrent().getId());
 			}
 		});
+		Log.trace ("init for " + pb.getCurrent().getId() + " sent");
 	}
 
 }

@@ -1,15 +1,12 @@
 package ru.natty.web.client.iwidget;
 
-import java.util.Iterator;
-
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.Widget;
 import ru.natty.web.client.ElementReceiver;
 import ru.natty.web.client.ParamsBuilder;
 
-public class ITabPanel extends IWidget implements Iterable<IWidget>
+public class ITabPanel extends IAggregatingWidget
 {
 	protected class OnChange implements SelectionHandler<Integer>
 	{
@@ -42,18 +39,6 @@ public class ITabPanel extends IWidget implements Iterable<IWidget>
 		tp.selectTab(index);
 		queryAllowed = true;
 	}
-	
-	@Override
-	public Iterator<IWidget> iterator() {
-		return new IWidget.IteratorAdapter<IWidget, Widget> (((TabPanel)getWidget()).iterator(),
-				new WidgetConverter<IWidget, Widget>() {
-
-					@Override
-					public IWidget convert(Widget w) {
-						return (IWidget)w;
-					}
-				});
-	}
 
 	public int getWidgetCount() {
 		return ((TabPanel)getWidget()).getWidgetCount();
@@ -64,6 +49,7 @@ public class ITabPanel extends IWidget implements Iterable<IWidget>
 	}
 
 	public void insert(IWidget w, String tabText, Integer beforeIndex) {
-		((TabPanel)getWidget()).insert(new IStreak(w), tabText, beforeIndex);
+		((TabPanel)getWidget()).insert (new IStreak(w), tabText, beforeIndex);
 	}
+
 }

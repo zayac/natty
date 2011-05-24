@@ -34,4 +34,9 @@ public class IBasicButton extends IWidget
 	{
 		((Button)getWidget()).setHTML (nStr);
 	}
+
+	@Override
+	public int hashCode() {
+		return ((Button)getWidget()).getHTML().hashCode();
+	}
 }

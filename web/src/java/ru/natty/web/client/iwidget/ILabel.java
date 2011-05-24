@@ -10,4 +10,9 @@ public class ILabel extends IWidget
 	public void setText(String nStr) {
 		((Label)getWidget()).setText(nStr);
 	}
+
+	@Override
+	public int hashCode() {
+		return ((Label)getWidget()).getText().hashCode();
+	}
 }

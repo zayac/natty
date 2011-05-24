@@ -30,13 +30,13 @@
     </repository>
   </repositories>
   <dependencies>
-    <dependency>
+		  <!--    <dependency>
       <groupId>de.umass.lastfm</groupId>
       <artifactId>lastfm</artifactId>
       <version>0.1.0</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/jar/last.fm-bindings-0.1.0.jar</systemPath>
-    </dependency>
+	</dependency>-->
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>eclipselink</artifactId>
