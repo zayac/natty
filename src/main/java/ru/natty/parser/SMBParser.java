@@ -52,7 +52,6 @@ public class SMBParser implements Parser {
             SmbFile file = new SmbFile(homePath);
             directories.add(file);
             log.debug("Starting to work with the file " + file.getPath());
-
             while (!directories.empty())
             {
                 file = directories.pop();

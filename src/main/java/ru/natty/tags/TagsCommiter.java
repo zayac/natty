@@ -6,18 +6,32 @@
 package ru.natty.tags;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.persistence.*;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
+import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagField;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.id3.ID3v1Tag;
+import org.jaudiotagger.tag.id3.ID3v24Frames;
+import org.jaudiotagger.tag.id3.ID3v24Tag;
 import ru.natty.persist.Album;
 import ru.natty.persist.Artist;
 import ru.natty.persist.Genre;
@@ -31,12 +45,12 @@ public class TagsCommiter {
     private EntityManagerFactory emf = null;
     private EntityManager em = null;
     private final static Logger log = Logger.getLogger(TagsCommiter.class);
-    //private LinkedList<MusicFileCollection> fileCollection = null;
     private HashMap<String, Track>trackCollection = null;
     private HashMap<String, Genre>genreCollection = null;
     private HashMap<String, Artist>artistCollection = null;
     private HashMap<String, Album>albumCollection = null;
     private final static int BUFFER_SIZE = 1000;
+    
     protected TagsCommiter()
     {
         emf = Persistence.createEntityManagerFactory("natty");
@@ -114,230 +128,409 @@ public class TagsCommiter {
             return null;
         }
     }
-
-    public Integer getYear(byte[] raw)
+    
+    private Date getYear(String path, MP3File f)
     {
-        if(raw.length >= 20)
+        Pattern yearPattern = Pattern.compile("(19|20)\\d\\d");
+        Pattern yearPathPattern = Pattern.compile("\\[(19|20)\\d\\d\\]");
+        Calendar calendar = Calendar.getInstance();
+        String year = null;
+        if(f.hasID3v1Tag())
         {
-            String source = new String(raw);
-            String ret = "";
-            ret += source.charAt(13);
-            ret += source.charAt(15);
-            ret += source.charAt(17);
-            ret += source.charAt(19);
-            return Integer.parseInt(ret);
+            ID3v1Tag tag = f.getID3v1Tag();
+            if(tag != null && !tag.isEmpty())
+            {
+                if(tag.getFirstYear() != null)
+                {
+                    Matcher m = yearPattern.matcher(tag.getFirstYear());
+                    if(m.find())
+                    {
+                        log.debug("'" + m.group() + "'");
+                        calendar.set(Integer.parseInt(m.group()), 0, 1);
+                        log.debug("Year: " + calendar.getTime());
+                        return calendar.getTime();
+                    }
+                }
+            }
+            return null;
+        }
+        Matcher m = yearPathPattern.matcher(path);
+        if(m.find())
+        {
+            calendar.set(Integer.parseInt(m.group().substring(1, 5)), 0, 1);
+            return calendar.getTime(); 
+        }
+        return null;
+    }   
+    
+    private String formatArtist(String source)
+    {
+        source.replaceAll("\\(\\d+\\)", "");
+        try
+        {
+            Integer.parseInt(source);
+        }catch(NumberFormatException ex)
+        {
+            source = source.trim();
+            return source;
+        }
+        return null; 
+    }
+    
+    private ArrayList<String> getTrackName(String path, MP3File f)
+    {
+        ArrayList<String> ret = new ArrayList<String>();
+        if(f.hasID3v1Tag())
+        {
+            ID3v1Tag tag = f.getID3v1Tag();
+            if(tag != null && !tag.isEmpty())
+            {
+                List<TagField> fields = tag.getFields(FieldKey.TITLE);
+                for(int i = 0; i < fields.size(); i++)
+                {
+                    ret.add(fields.get(i).toString());
+                }
+            }
+        }
+        return ret;
+    }
+    
+    
+    private ArrayList<Track> getTrack(String path, MP3File f)
+    {
+        ArrayList<Track> ret = new ArrayList<Track>();
+        if(f.hasID3v1Tag())
+        {
+            ID3v1Tag tag = f.getID3v1Tag();
+            if(tag != null && !tag.isEmpty())
+            {
+                List<TagField> fields = tag.getFields(FieldKey.TITLE);
+                for(int i = 0; i < fields.size(); i++)
+                {
+                    String formatedTrack = formatTrack(fields.get(i).toString());
+                    log.debug(formatedTrack);
+                    ArrayList<Artist> artists = getArtist(path, f);
+                    ArrayList<Album> albums = getAlbum(path, f);
+                    if(formatedTrack != null)
+                    {
+                        HashSet<Artist> artCol = new HashSet<Artist>();
+                        HashSet<Album> albCol = new HashSet<Album>();
+                        for(int j = 0; j < artists.size(); j++)
+                            artCol.add(artists.get(j));
+                        for(int j = 0; j < albums.size(); j++)
+                            albCol.add(albums.get(j));
+                        String hashString = Track.generateTrackString(formatedTrack, getYear(path, f), albCol); 
+                        log.debug("Hashstring: " + hashString);
+                        Track tmp = new Track();
+                        Track tr = new Track();
+                        tr.setName(formatedTrack);
+                        tr.setYear(getYear(path, f));
+                        tr.setUrl(path);
+                        if(trackCollection.containsKey(hashString))
+                        {
+                            log.debug("Track is found is collection");
+                            tr = trackCollection.get(hashString);                            
+                            tr.setExistsStatus(true);
+                        }
+                        else if ((tmp = findTrack(tr)) != null)
+                        {
+                            log.debug("Track is found in database");
+                            if(tmp.toString().equals(hashString))
+                            {
+                                tr = tmp;            
+                                tr.setExistsStatus(true);
+                            }
+                        }
+                        log.debug("Track added: " + tr.toString());
+                        ret.add(tr);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+    
+    private ArrayList<Artist> getArtist(String path, MP3File f)
+    {
+        ArrayList<Artist> ret = new ArrayList<Artist>();
+        if(f.hasID3v1Tag())
+        {
+            ID3v1Tag tag = f.getID3v1Tag();
+            if(tag != null && !tag.isEmpty())
+            {
+                List<TagField> fields = tag.getFields(FieldKey.ARTIST);
+                for(int i = 0; i < fields.size(); i++)
+                {
+                    String[] names = fields.get(i).toString().split("/|( (?i)Feat.?)|( (?i)Ft.?)|( (?i)Vs.?)|( \\& )");
+                    HashSet<String> parsedNames = new HashSet<String>();
+                    for(int j = 0; j < names.length; j++)
+                    {
+                        if(!parsedNames.contains(names[j]))
+                        {
+                            String formated = formatArtist(names[j]);
+                            if (formated != null)
+                            {
+                                Artist art = new Artist();
+                                art.setName(formated);
+                                Artist tmp;
+                                if(artistCollection.containsKey(art.toString()))
+                                {
+                                    art = artistCollection.get(art.toString());
+                                    art.setExistsStatus(true);
+                                }
+                                else if ((tmp = findArtist(art)) != null)
+                                {
+                                    art = tmp;
+                                    art.setExistsStatus(true);
+                                }
+                                ret.add(art);
+                            }
+                            parsedNames.add(names[j]);
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+    
+    private String formatGenre(String source)
+    {
+        source = source.replaceAll("\\(\\d+\\)", "");
+        try
+        {
+            Integer.parseInt(source);
+        }catch(NumberFormatException ex)
+        {
+            source = source.trim();
+            return WordUtils.capitalize(source.toLowerCase()).trim();
         }
         return null;
     }
     
-    public void commit(String path, Tag tag)
+    private ArrayList<Genre> getGenre(String path, MP3File f)
     {
-        Logger.getLogger("org.jaudiotagger.tag").setLevel(org.apache.log4j.Level.OFF);
-        Date year = null;
-        Boolean trackExists = false;
-        Boolean genreExists = false;
-        Boolean artistExists = false;
-        Boolean albumExists = false;
-        
-        try {
-            if (tag != null && !tag.isEmpty() && tag.getFirstField(FieldKey.YEAR) != null && !tag.getFirstField(FieldKey.YEAR).isEmpty() && getYear(tag.getFirstField(FieldKey.YEAR).getRawContent()) != null)
-            {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(getYear(tag.getFirstField(FieldKey.YEAR).getRawContent()), 0, 1);
-                year = calendar.getTime();
-                log.debug("Year: " + year.toString());
-            }
-            else 
-                year = null;
-        } catch (UnsupportedEncodingException ex) {
-            log.debug("Unsupported Encoding. "  + ex);
-            year = null;
-        } catch (NullPointerException ex)
+        ArrayList<Genre> ret = new ArrayList<Genre>();
+        if(f.hasID3v1Tag())
         {
-            log.debug("Can't get year. <" + tag.getFirstField(FieldKey.YEAR).toString().trim() + ">" + ex);
-            year = null;
-        } catch (NumberFormatException ex)
-        {
-            log.debug("Can't get year. <" + tag.getFirstField(FieldKey.YEAR).toString().trim() + ">" + ex);   
-            year = null;
-        }
-        
-        
-  
-        Track tr;
-        try {
-            tr = new Track();
-            if (tag.getFirst(FieldKey.TITLE) != null)
+            ID3v1Tag tag = f.getID3v1Tag();
+            if(tag != null && !tag.isEmpty())
             {
-                String str = tag.getFirst(FieldKey.TITLE);
-                tr.setName(tag.getFirst(FieldKey.TITLE));
-                if (tr.getName().length() > 255)
-                    tr.setName(tr.getName().substring(0, 255));
-            log.debug(tr.getName());
-            }else
-                tr = null;
-        } catch(NullPointerException ex) {
-            log.debug("Track is null");
-            tr = null;
-        }
-
-        if (tr != null)
-        {
-            try {
-                tr.setUrl(path);
-            } catch (NullPointerException ex)
-            {
-                log.debug("Track url is null");
-                tr.setUrl(null);
-            }
-            tr.setYear(year);
-            Track tmpTrack;
-            log.debug("Track " + tr.getName() + " exists: " + trackExists);
-            if (trackCollection.containsKey(tr.getName()))
-            {
-                tr = trackCollection.get((tr.getName()));
-            }
-            else if ((tmpTrack  = findTrack(tr)) != null)
-            {
-                tr = tmpTrack;
-                trackExists = true;
-            }
-            else
-                trackCollection.put(tr.getName(), tr);
-        }     
-        
-        Genre gen;
-        try {
-            gen = new Genre();
-            if (tag.getFirst(FieldKey.GENRE) != null)
-            {
-                gen.setName(tag.getFirst(FieldKey.GENRE));
-                if (gen.getName().length() > 255)
-                    gen.setName(gen.getName().substring(0, 255));
-                
-                log.debug("Genre: " + gen.getName());
-                Genre tmpGenre;
-                log.debug("Genre contains; " + gen.getName() + " " + genreCollection.containsKey(gen.getName()));
-                if (genreCollection.containsKey(gen.getName()))
-                    gen = genreCollection.get((gen.getName()));
-                else if ((tmpGenre  = findGenre(gen)) != null)
+                List<TagField> fields = tag.getFields(FieldKey.GENRE);
+                for(int i = 0; i < fields.size(); i++)
                 {
-                    gen = tmpGenre;
-                    genreExists = true;
+                    String[] genres = fields.get(i).toString().split("/");
+                    HashSet<String> parsedGenres = new HashSet<String>();
+                    for(int j = 0; j < genres.length; j++)
+                    {
+                        if(!parsedGenres.contains(genres[j]))
+                        {
+                            Genre gen = new Genre();
+                            String formated = formatGenre(genres[j]);
+                            if(formated != null)
+                            {
+                                gen.setName(formated);
+                                Genre tmp;
+                                if(genreCollection.containsKey(gen.toString()))
+                                {
+                                    gen = genreCollection.get(gen.toString());
+                                    gen.setExistsStatus(true);
+                                }
+                                else if ((tmp = findGenre(gen)) != null)
+                                {
+                                    gen = tmp;
+                                    gen.setExistsStatus(true);
+                                }
+                                ret.add(gen);
+                            }
+                            parsedGenres.add(genres[j]);
+                        }
+                    }
                 }
-                else
-                {
-                    log.debug("Putting new genre " + gen.getName());
-                    genreCollection.put(gen.getName(), gen);
-                }
-
-            }else
-                gen = null;
-        } catch(NullPointerException ex) {
-            log.debug("Genre is null");
-            gen = null;
-        }
-
-        Artist art;
-        try {
-            art = new Artist();
-            if (tag.getFirst(FieldKey.ARTIST) != null)
-            {
-                art.setName(tag.getFirst(FieldKey.ARTIST));
-                if (art.getName().length() > 255)
-                    art.setName(art.getName().substring(0, 255));                
-                Artist tmpArtist;
-                if (artistCollection.containsKey(art.getName()))
-                    art = artistCollection.get((art.getName()));
-                else if ((tmpArtist = findArtist(art)) != null)
-                {
-                    art = tmpArtist;
-                    artistExists = true;
-                }
-                else
-                {
-                    log.debug("Putting new artist " + art.getName() + "...");
-                    artistCollection.put(art.getName(), art);
-                }
-            }else
-                art = null;
-        } catch(NullPointerException ex) {
-            log.debug("Artist is null");
-            art = null;
-        }
-
-        Album alb;
-        try {
-            alb = new Album();
-            if (tag.getFirst(FieldKey.ALBUM) != null)
-            {
-                alb.setName(tag.getFirst(FieldKey.ALBUM));
-                if (alb.getName().length() > 255)
-                    alb.setName(alb.getName().substring(0, 255));
-                Album tmpAlbum;
-                if (albumCollection.containsKey(alb.getName()))
-                    alb = albumCollection.get((alb.getName()));
-                else if ((tmpAlbum = findAlbum(alb)) != null)
-                {
-                    alb = tmpAlbum;
-                    albumExists = true;
-                }
-                else
-                    albumCollection.put(alb.getName(), alb);
             }
-            else
-                alb = null;
-        } catch (NullPointerException ex)
-        {
-            log.debug("Album is null");
-            alb = null;
         }
-        if (alb != null)
+        return ret;
+    }
+    
+    private String formatTrack(String source)
+    {
+        source = source.replaceAll(" *\\d?\\d *- *", "");
+        try
         {
-            alb.setYear(year);
-            albumExists = findAlbum(alb) != null;
+            Integer.parseInt(source);
+        }catch(NumberFormatException ex)
+        {
+            source = source.trim();
+            return WordUtils.capitalize(source.toLowerCase());
+        }
+        return null;
+    }
+    
+    private String formatAlbum(String source)
+    {
+        source = source.replaceAll("\\(\\d+\\)", "");
+        try
+        {
+            Integer.parseInt(source);
+        }catch(NumberFormatException ex)
+        {
+            source = source.trim();
+            return WordUtils.capitalize(source.toLowerCase());
+        }
+        return null;
+    }
+    
+    
+
+    
+    private ArrayList<Album> getAlbum(String path, MP3File f)
+    {
+        ArrayList<Album> ret = new ArrayList<Album>();
+        if(f.hasID3v1Tag())
+        {
+            ID3v1Tag tag = f.getID3v1Tag();
+            if(tag != null && !tag.isEmpty())
+            {
+                List<TagField> fields = tag.getFields(FieldKey.ALBUM);
+                for(int i = 0; i < fields.size(); i++)
+                {
+                    String formatedAlbum = formatAlbum(fields.get(i).toString());
+                    ArrayList<Artist> artists = getArtist(path, f);
+                    if(formatedAlbum != null)
+                    {
+                        HashSet<Artist> artCol = new HashSet<Artist>();
+                        for(int j = 0; j < artists.size(); j++)
+                            artCol.add(artists.get(j));
+                        String hashString = Album.generateAlbumString(formatedAlbum, getYear(path, f), artCol); 
+                        //log.debug("Hashstring: " + hashString);
+                        Album tmp = new Album();
+                        Album alb = new Album();
+                        alb.setName(formatedAlbum);
+                        alb.setYear(getYear(path, f));
+                        if(albumCollection.containsKey(hashString))
+                        {
+                            //log.debug("Album is found is collection");
+                            alb = albumCollection.get(hashString);                            
+                            alb.setExistsStatus(true);
+                        }
+                        else if ((tmp = findAlbum(alb)) != null)
+                        {
+                            //log.debug("Album is found is database");
+                            if(tmp.toString().equals(hashString))
+                            {
+                                alb = tmp;            
+                                alb.setExistsStatus(true);
+                            }
+                        }
+                        //log.debug("Album added: " + alb.toString());
+                        ret.add(alb);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+    
+    
+    public void commit(String path, MP3File f)
+    {
+        ArrayList<Track> tracks = getTrack(path, f);
+        ArrayList<Genre> genres = getGenre(path, f);
+        ArrayList<Album> albums = getAlbum(path, f);
+        ArrayList<Artist> artists = getArtist(path, f);
+
+        if (!artists.isEmpty() && !genres.isEmpty())
+        {
+            for(int i = 0; i < artists.size(); i++)
+                for(int j = 0; j < genres.size(); j++)
+                {
+                    if(!artists.get(i).getGenreCollection().contains(genres.get(j)))
+                    {
+                        if (!artists.get(i).isExists()) artists.get(i).getGenreCollection().add(genres.get(j));
+                        if (!genres.get(j).isExists()) genres.get(j).getArtistCollection().add(artists.get(i));
+                    }
+                }
         }
 
-        
-        // Get info from Last.FM
-//        TagData data = RemoteFinder.findTrackName(tr.getName(), art.getName());
-//        tr.setName(data.getTitle());
-//        art.setName(data.getArtist());
-        
-        if ((art != null && gen != null) && (!artistExists || !genreExists))
+        if (!artists.isEmpty() && !albums.isEmpty())
         {
-            art.getGenreCollection().add(gen);
-            gen.getArtistCollection().add(art);
+            for(int i = 0; i < artists.size(); i++)
+                for(int j = 0; j < albums.size(); j++)
+                {
+                    if(!artists.get(i).getAlbumCollection().contains(albums.get(j)) || !albums.get(j).getArtistCollection().contains(artists.get(i)))
+                    {
+                        if (!artists.get(i).isExists()) artists.get(i).getAlbumCollection().add(albums.get(j));
+                        if (!albums.get(j).isExists()) albums.get(j).getArtistCollection().add(artists.get(i));
+                    }
+                }
         }
-        if ((art != null && alb != null) && (!artistExists || !albumExists))
+    
+        if (!genres.isEmpty() && !albums.isEmpty())
         {
-            art.getAlbumCollection().add(alb);
-            alb.getArtistCollection().add(art);
+            for(int i = 0; i < genres.size(); i++)
+                for(int j = 0; j < albums.size(); j++)
+                {
+                    if(!genres.get(i).getAlbumCollection().contains(albums.get(j)))
+                    {
+                        if (!genres.get(i).isExists()) genres.get(i).getAlbumCollection().add(albums.get(j));
+                        if (!albums.get(j).isExists()) albums.get(j).getGenreCollection().add(genres.get(i));
+                    }
+                }
         }
-        if ((alb != null && gen != null) && (!albumExists || !genreExists)){
-            alb.getGenreCollection().add(gen);
-            gen.getAlbumCollection().add(alb);
+                 log.debug("PING");   
+        if (!tracks.isEmpty() && !albums.isEmpty())
+        {
+            for(int i = 0; i < tracks.size(); i++)
+                for(int j = 0; j < albums.size(); j++)
+                {
+                    if(!tracks.get(i).getAlbumCollection().contains(albums.get(j)))
+                    {
+                        if (!tracks.get(i).isExists()) tracks.get(i).getAlbumCollection().add(albums.get(j));
+                        if (!albums.get(j).isExists()) albums.get(j).getTrackCollection().add(tracks.get(i));
+                    }
+                }
         }
-        if ((tr != null && alb != null ) && (!albumExists || !trackExists)) {
-            alb.getTrackCollection().add(tr);
-            tr.getAlbumCollection().add(alb);
+        
+        if (!tracks.isEmpty() && !genres.isEmpty())
+        {
+            for(int i = 0; i < tracks.size(); i++)
+                for(int j = 0; j < genres.size(); j++)
+                {
+                   if(!tracks.get(i).getGenreCollection().contains(genres.get(j)))
+                   {            
+                        if (!tracks.get(i).isExists()) tracks.get(i).getGenreCollection().add(genres.get(j));
+                        if (!genres.get(j).isExists()) genres.get(j).getTrackCollection().add(tracks.get(i));
+                   }
+                }
         }
-        if ((tr != null && art != null) && (!artistExists || !trackExists)) {
-            art.getTrackCollection().add(tr);
-            tr.getArtistCollection().add(art);
+        if (!tracks.isEmpty() && !artists.isEmpty())
+        {
+            for(int i = 0; i < tracks.size(); i++)
+                for(int j = 0; j < artists.size(); j++)
+                {
+                   if(!tracks.get(i).getArtistCollection().contains(artists.get(j)))
+                   {                       
+                        if (!tracks.get(i).isExists()) tracks.get(i).getArtistCollection().add(artists.get(j));
+                        if (!artists.get(j).isExists()) artists.get(j).getTrackCollection().add(tracks.get(i));
+                   }
+                }
         }
-        if ((tr != null && gen != null) && (!genreExists || !trackExists)) {
-            gen.getTrackCollection().add(tr);
-            tr.getGenreCollection().add(gen);
+        
+        for (int i = 0; i < tracks.size(); i++) 
+        {
+            log.debug(tracks.get(i).toString());
+            trackCollection.put(tracks.get(i).toString(), tracks.get(i));
         }
-
+        for (int i = 0; i < genres.size(); i++) genreCollection.put(genres.get(i).toString(), genres.get(i));
+        for (int i = 0; i < artists.size(); i++) artistCollection.put(artists.get(i).toString(), artists.get(i));
+        for (int i = 0; i < albums.size(); i++) albumCollection.put(albums.get(i).toString(), albums.get(i));
         log.debug("Track collection size: " + trackCollection.size());
         if (trackCollection.size() == BUFFER_SIZE)
         {
             sendToDB();
         }
     }
-
+    
     public void close()
     {
         sendToDB();
@@ -346,6 +539,7 @@ public class TagsCommiter {
     }
 
     private void sendToDB() {
+        log.debug("Persisting...");
         em.getTransaction().begin();
         Iterator it = trackCollection.entrySet().iterator();
         while(it.hasNext()) {
@@ -368,6 +562,7 @@ public class TagsCommiter {
             em.persist(entry.getValue());
         }
         em.getTransaction().commit();
+        
         trackCollection.clear();
         albumCollection.clear();
         artistCollection.clear();

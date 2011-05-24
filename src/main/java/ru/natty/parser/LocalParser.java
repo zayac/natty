@@ -18,6 +18,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import ru.natty.tags.TagsCommiter;
@@ -43,8 +44,15 @@ public class LocalParser implements Parser {
     {
         commiter.close();
     }
+    
     public void parse(String path)
     {
+        parse(path, "");
+    }
+    
+    public void parse(String path, String newPrefix)
+    {
+        
         prefix = path;
         if (path == null) {
             log.error("Home path for parsing is not set");
@@ -75,10 +83,9 @@ public class LocalParser implements Parser {
                 {
                     try
                     {
-                        AudioFile audiof = AudioFileIO.read(file);
+                        MP3File audiof = (MP3File) AudioFileIO.read(file);
                         log.debug("File is read successfully");
-                        Tag tag = audiof.getTag();
-                        commiter.commit(file.getPath().replaceFirst(prefix, ""), tag);
+                        commiter.commit(file.getPath().replaceFirst(prefix, newPrefix), audiof);
                         log.debug("File " + file.getPath() + " is cached");
                     }
                     catch (CannotReadException ex)
@@ -104,7 +111,5 @@ public class LocalParser implements Parser {
     {
         parsedFiles = new HashSet<Integer> ();
         log.debug("LocalMusicParser() has been called");
-        //jcifs.Config.setProperty("jcifs.encoding", "ASCII");
-        //jcifs.Config.setProperty("jcifs.smb.client.useUnicode", "false");
     }
 }

@@ -26,6 +26,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -34,13 +35,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "artist")
 @NamedQueries({
+//    @NamedQuery(name = "AlbumArtist.findByName", query = "SELECT Artist.name, Album.name FROM Artist " +
+//                                                            "INNER JOIN albums_artists ON Artist.id = albums_artists.artist_id " +
+//                                                            "INNER JOIN Album ON albums_artists.album_id = Album.id " + 
+//                                                            "WHERE Artist.name = :artist_name AND Album.name = :album_name"),
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
-    //@NamedQuery(name = "Artist.findByGenre", query = "SELECT a FROM Artist a JOIN a.genreCollection g WHERE g.id = :genre"),
     @NamedQuery(name = "Artist.findByGenreAndPattern", query = "SELECT a FROM Artist a"
-															+ " JOIN a.genreCollection g"
-															+ " WHERE g.id = :genre AND"
-															+ " UPPER(a.name) like :name"),
+                                                                    + " JOIN a.genreCollection g"
+                                                                    + " WHERE g.id = :genre AND"
+                                                                    + " UPPER(a.name) like :name"),
     @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
     //@NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
 public class Artist implements Serializable, IdNamed {
@@ -64,7 +68,19 @@ public class Artist implements Serializable, IdNamed {
     private Set<Genre> genreCollection;
     @ManyToMany(mappedBy="artistCollection")
     private Set<Album> albumCollection;
-
+    @Transient 
+    private Boolean beanExists = false;
+    
+    public Boolean isExists()
+    {
+        return beanExists;
+    }
+    
+    public void setExistsStatus(Boolean s)
+    {
+        beanExists = s;
+    }
+    
     public Artist() {
         trackCollection = new HashSet<Track>();
         genreCollection = new HashSet<Genre>();  
@@ -132,16 +148,10 @@ public class Artist implements Serializable, IdNamed {
     {
 		return QueryList.forQuery(getQueryByPattern (pattern, em)).<Artist>getAllResults();
     }
-	
-
-
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        //hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 47 * hash + (this.name != null ? this.name.hashCode() : 0);
-        return hash;
+    public String toString() {
+        return "Artist{" + "name=" + name + '}';
     }
 
     @Override
@@ -153,19 +163,19 @@ public class Artist implements Serializable, IdNamed {
             return false;
         }
         final Artist other = (Artist) obj;
-        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-        //    return false;
-        //}
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
         return true;
     }
-	
+
     @Override
-    public String toString() {
-        return "ru.natty.persist.Artist[id=" + id + "]"+getName()+" "+super.hashCode();
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
     }
+	
 
 }
 

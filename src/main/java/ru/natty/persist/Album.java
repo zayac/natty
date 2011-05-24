@@ -6,6 +6,7 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,6 +30,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -37,6 +40,10 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "album")
 @NamedQueries({
+//    @NamedQuery(name = "AlbumArtist.findByName", query = "SELECT Artist.name, Album.name FROM Artist " +
+//                                                    "INNER JOIN albums_artists ON Artist.id = albums_artists.artist_id " +
+//                                                    "INNER JOIN Album ON albums_artists.album_id = Album.id " + 
+//                                                    "WHERE Artist.name = :artist_name AND Album.name = :album_name"),
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
@@ -44,6 +51,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable, IdNamed {
+    private final static Logger log = Logger.getLogger(Album.class);
     private static final long serialVersionUID = 1L;
     @Id
 	@SequenceGenerator(name="album_id_seq", sequenceName="album_id_seq", allocationSize=1)
@@ -70,7 +78,31 @@ public class Album implements Serializable, IdNamed {
         @JoinColumn(name = "track_id", referencedColumnName = "id")})
     @ManyToMany
     private Set<Track> trackCollection;
-
+    @Transient 
+    private Boolean beanExists = false;
+//    @Transient
+//    private Artist artist = null;
+//    
+//    public void setArtist(Artist art)
+//    {
+//        artist = art;
+//    }
+//    
+//    public Artist getArtist()
+//    {
+//        return artist;
+//    }
+    
+    public Boolean isExists()
+    {
+        return beanExists;
+    }
+    
+    public void setExistsStatus(Boolean s)
+    {
+        beanExists = s;
+    }
+    
     public Album() {
         trackCollection = new HashSet<Track>();
         genreCollection = new HashSet<Genre>();
@@ -141,19 +173,29 @@ public class Album implements Serializable, IdNamed {
 		return getAlbums;
 	}
 
-
-
-
+    public static String generateAlbumString(String name, Date year, Set<Artist> artistCollection) {
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Album{" + "name=" + name + ", year=" + simpleDateformat.format(year)  + ", artistCollection=" + artistCollection + '}';
+        }
+        else
+        return "Album{" + "name=" + name + ", year=null, artistCollection=" + artistCollection + '}';
+    }
+    
+    
     @Override
     public int hashCode() {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
         int hash = 5;
-        //hash = 41 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 41 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 29 * hash + (this.year != null ? simpleDateformat.format(this.year).hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");       
         if (obj == null) {
             return false;
         }
@@ -161,24 +203,47 @@ public class Album implements Serializable, IdNamed {
             return false;
         }
         final Album other = (Album) obj;
-        //if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-        //    return false;
-        //}
+        if (this.year == null )
+            if(other.year != null)
+                return false;
+        if (this.year != null && other.year != null) 
+        {
+            String thYear = simpleDateformat.format(this.year);
+            String otYear = simpleDateformat.format(other.year); 
+            if ((thYear == null) ? (otYear != null) : !thYear.equals(otYear)) {
+                //log.debug(thYear + " and " + otYear +" aren't equal.");
+                return false;
+            }
+        }
+        else if ((this.year == null && other.year != null) || (this.year != null && other.year == null))
+            return false;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            //log.debug(this.name + " and " + other.name +" aren't equal.");
             return false;
         }
         return true;
     }
 
     public static List<Album> queryByPattern (String pattern, EntityManager em)
-    {
-		return QueryList.forQuery(getQueryByPattern(pattern, em)).<Album>getAllResults();
+    {  
+        return QueryList.forQuery(getQueryByPattern(pattern, em)).<Album>getAllResults();
     }
 
     @Override
     public String toString() {
-        return "ru.natty.persist.Album[id=" + id + "]"+getName()+" "+super.hashCode();
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Album{" + "name=" + name + ", year=" + simpleDateformat.format(year)  + ", artistCollection=" + artistCollection + '}';
+        }
+        else
+        return "Album{" + "name=" + name + ", year=null, artistCollection=" + artistCollection + '}';
     }
+    
+
+
+
+
 
 }
 

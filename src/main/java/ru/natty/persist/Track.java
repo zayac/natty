@@ -6,6 +6,7 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,6 +28,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -62,7 +64,18 @@ public class Track implements Serializable, IdNamed
     private Set<Genre> genreCollection;
     @ManyToMany(mappedBy="trackCollection")
     private Set<Artist> artistCollection;
-
+    @Transient 
+    private Boolean beanExists = false;
+    
+    public Boolean isExists()
+    {
+        return beanExists;
+    }
+    
+    public void setExistsStatus(Boolean s)
+    {
+        beanExists = s;
+    }
     public Track() {
         albumCollection = new HashSet<Album>();
         artistCollection = new HashSet<Artist>();
@@ -128,33 +141,6 @@ public class Track implements Serializable, IdNamed
 
 
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Track other = (Track) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        return true;
-    }
-
-
 
 	public static Query getQueryByPattern (String pattern, EntityManager em)
 	{
@@ -178,9 +164,65 @@ public class Track implements Serializable, IdNamed
     }
 
     @Override
-    public String toString() {
-        return "ru.natty.persist.Track[id=" + id + "]"+getName()+" "+super.hashCode();
+    public boolean equals(Object obj) {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Track other = (Track) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        if (!simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year)) && (this.year == null || !simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year)))) {
+            return false;
+        }
+        //if (this.albumCollection != other.albumCollection && (this.albumCollection == null || !this.albumCollection.equals(other.albumCollection))) {
+        //    return false;
+        //}
+        //if (this.artistCollection != other.artistCollection && (this.artistCollection == null || !this.artistCollection.equals(other.artistCollection))) {
+        //    return false;
+        //}
+        return true;
     }
+
+    
+    public static String generateTrackString(String name, Date year, Set<Album> albumCollection) {
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Track{" + "name=" + name + ", year=" + simpleDateformat.format(year) + ", albumCollection=" + albumCollection + "}";
+        }
+        else
+            return "Track{" + "name=" + name + ", year=null, albumCollection=" + albumCollection + "}";
+    }
+    
+    @Override
+    public int hashCode() {
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+        int hash = 3;
+        hash = 29 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 29 * hash + (this.year != null ? simpleDateformat.format(this.year).hashCode() : 0);
+        //hash = 29 * hash + (this.albumCollection != null ? this.albumCollection.hashCode() : 0);
+        //hash = 29 * hash + (this.artistCollection != null ? this.artistCollection.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        if (year != null)
+        {
+            SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+            return "Track{" + "name=" + name + ", year=" + simpleDateformat.format(year) + ", albumCollection=" + albumCollection + "}";
+        }
+        else
+            return "Track{" + "name=" + name + ", year=null, albumCollection=" + albumCollection + "}";
+    }
+
+
+
 
 }
 
