@@ -39,12 +39,12 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
-    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name)"),
+    @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like UPPER(:name) ORDER BY a.id"),
     @NamedQuery(name = "Album.findByGenreAndPattern", query = "SELECT a FROM Album a "
-												  + "JOIN a.genreCollection g WHERE g.id = :genre AND UPPER(a.name) like UPPER(:name)"),
+												  + "JOIN a.genreCollection g WHERE g.id = :genre AND UPPER(a.name) like UPPER(:name) ORDER BY a.id"),
     @NamedQuery(name = "Album.findByArtist", query = "SELECT a FROM Album a "
-												  + "JOIN a.artistCollection ar WHERE ar.id = :artist"),
-    @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
+												  + "JOIN a.artistCollection ar WHERE ar.id = :artist ORDER BY a.id"),
+    @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre ORDER BY a.id"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;

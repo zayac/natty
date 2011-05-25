@@ -9,7 +9,7 @@ public class IHorizontalPanel extends IComplexPanel
 	}
 	
 	@Override
-	public void insert(IWidget w, int beforeIndex) {
+	public void insertInt (IWidget w, int beforeIndex) {
 		((HorizontalPanel)getWidget()).insert(w, beforeIndex);
 	}
 }

@@ -34,13 +34,13 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
-    //@NamedQuery(name = "Artist.findByGenre", query = "SELECT a FROM Artist a JOIN a.genreCollection g WHERE g.id = :genre"),
+    //@NamedQuery(name = "Artist.findByGenre", query = "SELECT a FROM Artist a JOIN a.genreCollection g WHERE g.id = :genre ORDER BY a.id"),
     @NamedQuery(name = "Artist.findByGenreAndPattern", query = "SELECT a FROM Artist a"
 															+ " JOIN a.genreCollection g"
 															+ " WHERE g.id = :genre AND"
-															+ " UPPER(a.name) like UPPER(:name)"),
-    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name"),
-    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
+															+ " UPPER(a.name) like UPPER(:name) ORDER BY a.id"),
+    @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name ORDER BY a.id"),
+    @NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name) ORDER BY a.id")})
 public class Artist implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     @Id

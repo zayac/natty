@@ -45,7 +45,7 @@ public class Parameters implements Serializable
 
 	public Integer getIntVal (String name)
 	{
-		return Integer.parseInt(getVal(name));
+		return Integer.parseInt (getVal(name));
 	}
 
 	public String setVal (String name, String val)
@@ -59,6 +59,13 @@ public class Parameters implements Serializable
 		ret.id = id;
 		ret.map.putAll(map);
 		return ret;
+	}
+	
+	public void copy (Parameters from)
+	{
+		id = from.id;
+		map.clear();
+		map.putAll (from.map);
 	}
 
 	@Override

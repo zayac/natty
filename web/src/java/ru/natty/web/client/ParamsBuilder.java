@@ -5,6 +5,7 @@
 
 package ru.natty.web.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import ru.natty.web.shared.Parameters;
 
 /**
@@ -18,6 +19,7 @@ public class ParamsBuilder
 
 	private Parameters last = new Parameters();
 	private Parameters current = new Parameters();
+	private Parameters sent = new Parameters();
 
 	public static ParamsBuilder get()
 	{
@@ -34,10 +36,17 @@ public class ParamsBuilder
 	{
 		return get().last;
 	}
+	
+	public void holdCurrent()
+	{
+		sent = current.copy();
+	}
 
 	public void requestSucceeded()
 	{
-		ParamsUrl.getInstance().putIntoHistory(current);
-		last = current.copy();
+		
+		Log.debug ("id  succeeded, with params - " + sent);
+		ParamsUrl.getInstance().putIntoHistory(sent);
+		last = sent.copy();
 	}
 }

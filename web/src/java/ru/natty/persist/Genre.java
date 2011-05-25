@@ -36,7 +36,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findById", query = "SELECT g FROM Genre g WHERE g.id = :id"),
     @NamedQuery(name = "Genre.findByName", query = "SELECT g FROM Genre g WHERE g.name = :name"),
-    @NamedQuery(name = "Genre.findByPattern", query = "SELECT g FROM Genre g WHERE UPPER(g.name) like UPPER(:name)")})
+    @NamedQuery(name = "Genre.findByPattern", query = "SELECT g FROM Genre g WHERE UPPER(g.name) like UPPER(:name) ORDER BY g.id")})
 public class Genre implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     

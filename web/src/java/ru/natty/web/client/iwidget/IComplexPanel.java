@@ -23,30 +23,15 @@ public abstract class IComplexPanel extends IAggregatingWidget implements Comple
 	}
 
 	@Override
-	public abstract void insert(IWidget w, int beforeIndex);
+	public final void insert(IWidget w, int beforeIndex)
+	{
+		insertInt(new IStreak(w), beforeIndex);
+	}
+	
+	protected abstract void insertInt(IWidget w, int beforeIndex);
 
 	@Override
 	public void add(IWidget w) {
-		((ComplexPanel)getWidget()).add(w);
+		((ComplexPanel)getWidget()).add (new IStreak(w));
 	}
-//	@Override
-//	public Iterator<IWidget> iterator() {
-//		return new IWidget.IteratorAdapter<IWidget, Widget> (((ComplexPanel)getWidget()).iterator(),
-//				new WidgetConverter<IWidget, Widget>() {
-//
-//					@Override
-//					public IWidget convert(Widget w) {
-//						return (IWidget)w;
-//					}
-//				});
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		int hash = 0;
-//		Iterator<IWidget> iter = iterator();
-//		while (iter.hasNext())
-//			hash ^= iter.next().hashCode();
-//		return hash;
-//	}
 }

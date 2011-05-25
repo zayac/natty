@@ -116,4 +116,12 @@ public class WContentCreator
 			throw new ServerException ("invoc targ ex: " + ex.getCause().getMessage());
 		}
     }
+	
+	public WContent createContent (Parameters ps) throws ServerException
+	{
+			db.startTransaction();
+			WContent cont = getContent (ps.getId(), ps);
+			db.finishTransaction();
+			return cont;
+	}
 }

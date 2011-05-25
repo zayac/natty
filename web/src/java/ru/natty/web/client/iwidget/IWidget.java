@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 
 public abstract class IWidget extends Composite implements Identified 
 {
@@ -12,8 +13,9 @@ public abstract class IWidget extends Composite implements Identified
 	public IWidget (Integer id, Widget w)
 	{
 		this.id = id;
-		initWidget(w);
+		initWidget (w);
 	}
+	
 	@Override
 	final public Integer getId()
 	{
@@ -22,11 +24,21 @@ public abstract class IWidget extends Composite implements Identified
 
 	@Override
 	abstract public int hashCode();
+	
+	public void ensureCorrectness (DiffPatcher dp)
+	{
+		//do nothing in general case
+	}
 
 	@Override
 	public void setStylePrimaryName(String style)
 	{
-		getWidget().setStylePrimaryName(style);
+		getWidget().setStylePrimaryName (style);
+	}
+	
+	public boolean isAggregating()
+	{
+		return false;
 	}
 	
 	public boolean isStreak()
@@ -61,7 +73,7 @@ public abstract class IWidget extends Composite implements Identified
 
 		@Override
 		public GoalType next() {
-			return trans.convert(iter.next());//(IWidget)iter.next();
+			return trans.convert (iter.next());//(IWidget)iter.next();
 		}
 
 		@Override

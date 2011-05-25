@@ -4,9 +4,12 @@
  */
 package ru.natty.web.client.iwidget;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.Iterator;
+import ru.natty.web.shared.diffpatchers.CompositePanelDP;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 
 /**
  *
@@ -29,6 +32,22 @@ public abstract class IAggregatingWidget extends IWidget implements Iterable<IWi
 						return (IWidget)w;
 					}
 				});
+	}
+	
+	@Override
+	public boolean isAggregating()
+	{
+		return true;
+	}
+	
+	@Override
+	public void ensureCorrectness (DiffPatcher dp)
+	{
+		Log.debug("checking correctness(aggr): " + getId());
+		if (dp.getRezHash() == hashCode())
+			return;
+		else
+			((CompositePanelDP)dp).ensureCorrectness (this);
 	}
 
 	@Override

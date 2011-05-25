@@ -4,12 +4,11 @@
  */
 
 package ru.natty.web.server.wcontent;
-import java.util.List;
 import ru.natty.persist.Artist;
 import ru.natty.web.server.DataBase;
+import ru.natty.web.server.MyLog;
 import ru.natty.web.server.PersistToIText;
 import ru.natty.web.server.WContentCreator;
-import ru.natty.web.shared.IText;
 import ru.natty.web.shared.Parameters;
 /**
  *
@@ -19,6 +18,7 @@ public class WArtistList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
+		MyLog.finest("making artlist:" + ps.getVal("query"));
 		DataBase.Query<Artist> q = null;
 		if (ps.hasParam ("Genre"))
 			q = db.queryArtistByGenreAndPattern (ps.getIntVal ("Genre"),

@@ -19,7 +19,7 @@ public class IFlowPanel extends IComplexPanel
 	}
 
 	@Override
-	public void insert(IWidget w, int beforeIndex) {
+	protected void insertInt (IWidget w, int beforeIndex) {
 		((FlowPanel)getWidget()).insert(w, beforeIndex);
 	}
 }

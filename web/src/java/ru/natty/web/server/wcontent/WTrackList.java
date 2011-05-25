@@ -7,6 +7,7 @@ package ru.natty.web.server.wcontent;
 
 import ru.natty.persist.Track;
 import ru.natty.web.server.DataBase;
+import ru.natty.web.server.MyLog;
 import ru.natty.web.server.PersistToIText;
 import ru.natty.web.server.WContentCreator;
 import ru.natty.web.shared.Parameters;
@@ -19,6 +20,7 @@ public class WTrackList
 {
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
+		MyLog.fine("making track list: " + ps.getVal("query"));
 		DataBase.Query<Track> q = null;
 		if (ps.hasParam ("Album"))
 			q = db.queryTrackByAlbum (ps.getIntVal ("Album"));
@@ -30,6 +32,7 @@ public class WTrackList
 										DataBase.transformWordsToPattern(ps.getVal("query")));
 		else
 			q = db.queryTrackByPattern (DataBase.transformWordsToPattern(ps.getVal("query")));
+
 		return WTextCellList.make (id, ps, db, creator, "Track", q, new PersistToIText());
 	}
 }

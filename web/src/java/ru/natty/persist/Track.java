@@ -37,12 +37,12 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
     @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
-    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name)"),
-    @NamedQuery(name = "Track.findByAlbum", query = "SELECT t FROM Track t JOIN t.albumCollection a WHERE a.id = :album"),
+    @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE UPPER(:name) ORDER BY t.id"),
+    @NamedQuery(name = "Track.findByAlbum", query = "SELECT t FROM Track t JOIN t.albumCollection a WHERE a.id = :album ORDER BY t.id"),
     @NamedQuery(name = "Track.findByArtistAndPattern", query = "SELECT t FROM Track t JOIN t.artistCollection a"
-															+ " WHERE a.id = :artist AND UPPER(t.name) LIKE UPPER(:name)"),
+															+ " WHERE a.id = :artist AND UPPER(t.name) LIKE UPPER(:name) ORDER BY t.id"),
     @NamedQuery(name = "Track.findByGenreAndPattern", query = "SELECT t FROM Track t JOIN t.genreCollection g"
-															+ " WHERE g.id = :genre AND UPPER(t.name) LIKE UPPER(:name)"),
+															+ " WHERE g.id = :genre AND UPPER(t.name) LIKE UPPER(:name) ORDER BY t.id"),
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable, IdNamed

@@ -1,6 +1,9 @@
 package ru.natty.web.client.iwidget;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.SimplePanel;
+import ru.natty.web.client.ElementReceiver;
+import ru.natty.web.shared.diffpatchers.DiffPatcher;
 
 public class IStreak extends IWidget {
 
@@ -19,11 +22,30 @@ public class IStreak extends IWidget {
 		return getContent().isVoid();
 	}
 	
-	public void alterContent (IWidget w)
+	public final void alterContent (IWidget w)
 	{
 		if (!w.getId().equals(getId())) throw new RuntimeException("attempt to push an Iwidget with different id!");
 		((SimplePanel)getWidget()).clear();
 		((SimplePanel)getWidget()).add(w);
+	}
+	
+	@Override
+	public void ensureCorrectness (DiffPatcher dp)
+	{
+		Log.debug("checking correctness: " + getId() + "My hash = " + hashCode() + 
+				" target_hash " + dp.getRezHash());
+		if (getContent().isAggregating())
+		{
+			getContent().ensureCorrectness(dp);
+			return;
+		}
+		if (dp.getRezHash() == hashCode())
+		{
+			Log.debug("they are equals, returning");
+			return;
+		}
+		else
+			ElementReceiver.get().queryInit(this);
 	}
 	
 	public IWidget getContent()

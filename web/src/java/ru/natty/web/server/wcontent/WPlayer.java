@@ -75,7 +75,6 @@ public class WPlayer extends WContent
 
 	public static WContent make (Integer id, Parameters ps, DataBase db, WContentCreator creator)
 	{
-		MyLog.fine("making player");
 		String trId = ps.getVal("Track");
 		if (trId.equals("")) return new WPlayer ("no track to play");
 		Track t = db.queryTrackById(Integer.parseInt(trId));

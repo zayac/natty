@@ -31,12 +31,18 @@ public abstract class WContent
 
 	public final DiffPatcher getDifference (WContent prev, boolean amputation)
 	{
-		return applayStyle(getDifferenceInt(prev, amputation));
+		DiffPatcher ret = applayStyle (getDifferenceInt (prev, amputation));
+		if (null != ret) ret.setRezHash (hashCode());
+		return ret;
 	}
+	
 	public final DiffPatcher getAllContent()
 	{
-		return applayStyle(getAllContentInt());
+		DiffPatcher ret = applayStyle(getAllContentInt());
+		if (null != ret) ret.setRezHash (hashCode());
+		return ret;
 	}
+	
 	public final WContent copy()
 	{
 		WContent inst = copyInt();

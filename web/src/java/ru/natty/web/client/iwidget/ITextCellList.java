@@ -11,9 +11,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -45,6 +46,7 @@ public class ITextCellList extends IWidget
 	private FlowPanel batPanel;
 	private Button backB;
 	private Button nextB;
+//	private Label elems;
 //	private Button clnB;
 	private CellList list;
 	private String name;
@@ -59,9 +61,11 @@ public class ITextCellList extends IWidget
 		backB = new Button("&#8593;");
 		list = new CellList (new ICell());
 		nextB = new Button("&#8595;");
+//		elems = new Label();
 //		clnB = new Button ("&#9747;");//X
 		panel.add (batPanel);
 		batPanel.add (backB);
+//		batPanel.add (elems);
 //		batPanel.add (clnB);
 
 		panel.add (batPanel);
@@ -107,6 +111,16 @@ public class ITextCellList extends IWidget
 				ElementReceiver.get().queryPage();
 			}
 		});
+		
+//		Timer tt = new Timer() {
+//
+//			@Override
+//			public void run() {
+//				elems.setText ("els:" + items.size());
+//			}
+//		};
+//		tt.scheduleRepeating(800);
+//		tt.run();
 //		clnB.addClickHandler(new ClickHandler() {
 //
 //			@Override

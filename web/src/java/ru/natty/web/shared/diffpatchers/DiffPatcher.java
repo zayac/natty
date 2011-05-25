@@ -6,7 +6,7 @@ import ru.natty.web.client.iwidget.IWidget;
 public abstract class DiffPatcher implements Serializable
 {
 	private String style;
-	
+	private int rezHash;
 	
 	private IWidget applayStyle (IWidget w)
 	{
@@ -27,10 +27,21 @@ public abstract class DiffPatcher implements Serializable
 	abstract public boolean isVoid();
 	abstract protected IWidget createNewInt (int id);
 	abstract protected void applayInt (IWidget w);
-
+	
 	public void setStyle (String st)
 	{
 		style = st;
+	}
+
+	public int getRezHash()
+	{
+		return rezHash;
+	}
+
+	public DiffPatcher setRezHash (int rezHash)
+	{
+		this.rezHash = rezHash;
+		return this;
 	}
 	
 	abstract public String toString();

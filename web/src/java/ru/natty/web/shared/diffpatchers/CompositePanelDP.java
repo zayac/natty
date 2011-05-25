@@ -1,5 +1,6 @@
 package ru.natty.web.shared.diffpatchers;
 
+import com.allen_sauer.gwt.log.client.Log;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import ru.natty.web.client.iwidget.IAggregatingWidget;
 
 import ru.natty.web.client.iwidget.IStreak;
 import ru.natty.web.client.iwidget.IVoid;
@@ -102,6 +104,21 @@ public abstract class CompositePanelDP extends DiffPatcher
 		
 		finalInitialization(w);
 	}
+	
+	public void ensureCorrectness (IAggregatingWidget w)
+	{
+		Iterator<IWidget> iter = w.iterator();
+		while (iter.hasNext())
+		{
+			IWidget child = iter.next();
+			Log.debug("try to check corr: " + child.getId());
+			DiffPatcher dp = changes.get(child.getId());
+			//if (null == dp) dp = creations.
+			if (null != dp)
+				child.ensureCorrectness (dp);
+		}
+	}
+			
 	
 	public boolean vital()
 	{

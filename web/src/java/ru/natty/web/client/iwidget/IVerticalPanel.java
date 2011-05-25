@@ -10,7 +10,7 @@ public class IVerticalPanel extends IComplexPanel
 	}
 	
 	@Override
-	public void insert(IWidget w, int beforeIndex) {
+	public void insertInt (IWidget w, int beforeIndex) {
 		((VerticalPanel)getWidget()).insert(w, beforeIndex);
 	}
 }

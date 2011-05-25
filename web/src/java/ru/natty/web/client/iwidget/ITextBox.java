@@ -35,7 +35,7 @@ public class ITextBox extends IWidget
 		@Override
 		public void onKeyUp(KeyUpEvent event) {
 			ParamsBuilder.getCurrent().setVal(targetName, ((TextBox) getWidget()).getText());
-			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+			//if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
 				ElementReceiver.get().queryPage();
 		}
 		

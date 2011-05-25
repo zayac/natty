@@ -1,16 +1,15 @@
 package ru.natty.web.client;
 
 import com.allen_sauer.gwt.log.client.Log;
-import ru.natty.web.client.iwidget.ILabel;
 import ru.natty.web.client.iwidget.IWidget;
-import ru.natty.web.client.iwidget.ComplexPanelI;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import ru.natty.web.client.iwidget.IVerticalPanel;
+import ru.natty.web.client.iwidget.IStreak;
+import ru.natty.web.client.iwidget.IVoid;
 
 import ru.natty.web.shared.diffpatchers.DiffPatcher;
 import ru.natty.web.shared.Parameters;
@@ -38,7 +37,7 @@ public class ElementReceiver
 		inProcess = false;
 		receiveRequested = false;
 		ParamsUrl.getInstance().getFromHistory(pb.getCurrent());
-		IVerticalPanel container = new IVerticalPanel (0);
+		IStreak container = new IStreak (new IVoid(0));
 		base.add (container);
 		base.add (new HTML ("<h2> Received from server: </h2>"));
 		diff = new VerticalPanel();
@@ -47,13 +46,14 @@ public class ElementReceiver
 		queryInit (container);
 	}
 	
-	private boolean onBegin()
+	private boolean onBegin (boolean update_when_possible)
 	{
 		if (inProcess)
 		{
-			receiveRequested = true;
+			receiveRequested = update_when_possible;
 			return false;
 		}
+		pb.holdCurrent();
 		inProcess = true;
 		receiveRequested = false;
 		return true;
@@ -74,7 +74,6 @@ public class ElementReceiver
 		else
 			diff.add (new HTML ("diff is null"));
 		
-		Log.debug("id " + id + " succeeded"); 
 		pb.requestSucceeded();
 		onEnd();
 	}
@@ -87,43 +86,47 @@ public class ElementReceiver
 	
 	public void queryPage()
 	{
-		Log.trace ("querying page");
-		if (onBegin()) return;
 		final Parameters param = pb.getCurrent();
+		param.setId(0);
+		Log.debug ("querying page " + param.toString());
+		if (!onBegin (true)) return;
 		greetingService.getDifference (param, pb.getPrev(),
 									   new AsyncCallback<DiffPatcher>() {
 			
 			@Override
-			public void onSuccess(DiffPatcher result) {
-				if (null == result)
-				{
-					requestSucceeded (result, param.getId());
-					return;
-				}
-				result.applay(root);
-
+			public void onSuccess (DiffPatcher result) {
+				if (null != result)
+					result.applay (root);
+				
 				requestSucceeded (result, param.getId());
+				
+//				if (null != result) root.ensureCorrectness (result);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				requestFailed (caught, param.getVal("query") + ", " + param.getId());
+				requestFailed (caught, param.getVal ("query") + ", " + param.getId());
 			}
 		});
-		Log.trace ("query for " + param.getVal("query") + "sent");
+		Log.debug ("query for " + param.getVal("query") + " sent");
 	}
 	
-	private void queryInit (final ComplexPanelI base)
+	public void queryInit (final IStreak base)
 	{
-		Log.trace ("querying");
-		onBegin();
-		greetingService.getInitialContent (pb.getCurrent(),
+		Log.debug ("querying id:" + base.getId());
+		final Parameters param = pb.getCurrent();
+		param.setId (base.getId());
+		
+		if (!onBegin (true)) return;
+		greetingService.getInitialContent (param,
 			new AsyncCallback<DiffPatcher>() {
 			
 			@Override
-			public void onSuccess(DiffPatcher result) {
-				root = result.createNew(0);
-				base.add (root);
+			public void onSuccess (DiffPatcher result) {
+				//root = ;
+				base.alterContent (result.createNew (param.getId()));
+				if (param.getId().equals(0)) 
+					root = base.getContent();
 
 				requestSucceeded (result, pb.getCurrent().getId());
 			}
@@ -133,7 +136,7 @@ public class ElementReceiver
 				requestFailed (caught, "initial request " + pb.getCurrent().getId());
 			}
 		});
-		Log.trace ("init for " + pb.getCurrent().getId() + " sent");
+		Log.debug ("init for " + pb.getCurrent().getId() + " sent");
 	}
 
 }
