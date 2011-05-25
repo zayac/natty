@@ -46,6 +46,7 @@ public class ITextCellList extends IWidget
 	private FlowPanel batPanel;
 	private Button backB;
 	private Button nextB;
+	private Button unsel;
 //	private Label elems;
 //	private Button clnB;
 	private CellList list;
@@ -63,8 +64,10 @@ public class ITextCellList extends IWidget
 		nextB = new Button("&#8595;");
 //		elems = new Label();
 //		clnB = new Button ("&#9747;");//X
+		unsel = new Button ("unselect");
 		panel.add (batPanel);
 		batPanel.add (backB);
+		batPanel.add (unsel);
 //		batPanel.add (elems);
 //		batPanel.add (clnB);
 
@@ -112,6 +115,16 @@ public class ITextCellList extends IWidget
 			}
 		});
 		
+		unsel.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				ParamsBuilder.getCurrent().removeParam(name);
+				ElementReceiver.get().queryPage();
+			}
+		});
+		
 //		Timer tt = new Timer() {
 //
 //			@Override
@@ -121,6 +134,7 @@ public class ITextCellList extends IWidget
 //		};
 //		tt.scheduleRepeating(800);
 //		tt.run();
+		
 //		clnB.addClickHandler(new ClickHandler() {
 //
 //			@Override
