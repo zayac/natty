@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
     @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
     @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like :name"),
     @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
+    //@NamedQuery(name = "Album.findByNameYearAndArtist", query = "SELECT a FROM (Album a  LEFT JOIN albums_artists b ON a.id=b.album_id) LEFT JOIN artist c ON c.id=b.artist_id WHERE a.name=:name AND a.year=:year AND c.name=:artist"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable, IdNamed {
     private final static Logger log = Logger.getLogger(Album.class);

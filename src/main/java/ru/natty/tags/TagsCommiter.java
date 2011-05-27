@@ -85,6 +85,7 @@ public class TagsCommiter {
         }
     }
 
+    
     public Artist findArtist(Artist art)
     {
         String artName = art.getName();
@@ -99,6 +100,99 @@ public class TagsCommiter {
         }
     }
 
+    public Track findTrack(Track tr, HashSet<Album> alb, HashSet<Artist> art)
+    {
+        String trName = tr.getName();
+        Date trYear = tr.getYear();
+        Iterator<Artist> artists = art.iterator();
+        Iterator<Album> albums = alb.iterator();        
+        try{
+            Boolean allAlbums = false;
+            Boolean allArtists = false;
+            Query q = em.createQuery("SELECT a FROM (Track a  LEFT JOIN tracks_albums b ON a.id=b.track_id) LEFT JOIN Album c ON c.id=b.album_id WHERE a.name=:name AND a.year=:year AND c.name=:album")
+                    .setParameter("name", trName.replaceAll("\u0000", ""))
+                    .setParameter("year", trYear)
+                    .setParameter("album", albums.next().getName().replaceAll("\u0000", ""));
+            List<Track> list = q.getResultList();
+            Iterator<Track> tr_it = list.iterator();
+            while(tr_it.hasNext())
+            {
+                Track currentTr = tr_it.next();
+                Set<Album> currentCol = currentTr.getAlbumCollection();
+                if(alb.size() == list.size())
+                {
+                    Iterator<Album> alb_it = alb.iterator();
+                    allAlbums = true;
+                    while(alb_it.hasNext())
+                    {
+                        if(!currentCol.contains(alb_it.next()))
+                        {
+                            allAlbums = false;
+                            break;
+                        }
+                    }
+                    Iterator<Artist> art_it = art.iterator();
+                    Set<Artist> currentColArt = currentTr.getArtistCollection();
+                    allArtists = true;
+                    while(art_it.hasNext())
+                    {
+                        if(!currentColArt.contains(art_it.next()))
+                        {
+                            allArtists = false;
+                            break;
+                        }
+                    }
+                    if(allAlbums && allArtists)
+                        return currentTr;
+                }
+            }
+            return null;
+        }catch(NoResultException ex)
+        {
+            return null;
+        }
+    }
+    
+    public Album findAlbum(Album alb, HashSet<Artist> art)
+    {
+        String albName = alb.getName();
+        Date albYear = alb.getYear();
+        Iterator<Artist> first = art.iterator();
+        try{
+            Boolean allArtists = false;
+            Query q = em.createQuery("SELECT a FROM (Album a  LEFT JOIN albums_artists b ON a.id=b.album_id) LEFT JOIN artist c ON c.id=b.artist_id WHERE a.name=:name AND a.year=:year AND c.name=:artist")
+                    .setParameter("name", albName.replaceAll("\u0000", ""))
+                    .setParameter("year", albYear)
+                    .setParameter("artist", first.next().getName().replaceAll("\u0000", ""));
+            List<Album> list = q.getResultList();
+            Iterator<Album> alb_it = list.iterator();
+            while(alb_it.hasNext())
+            {
+                Album currentAlb = alb_it.next();
+                Set<Artist> currentCol = currentAlb.getArtistCollection();
+                if(art.size() == list.size())
+                {
+                    Iterator<Artist> art_it = art.iterator();
+                    allArtists = true;
+                    while(art_it.hasNext())
+                    {
+                        if(!currentCol.contains(art_it.next()))
+                        {
+                            allArtists = false;
+                            break;
+                        }
+                    }
+                    if(allArtists)
+                        return currentAlb;
+                }
+            }
+            return null;
+        }catch(NoResultException ex)
+        {
+            return null;
+        }
+    }
+    
     public Album findAlbum(Album alb)
     {
         String albName = alb.getName();
@@ -402,7 +496,6 @@ public class TagsCommiter {
                         for(int j = 0; j < artists.size(); j++)
                             artCol.add(artists.get(j));
                         String hashString = Album.generateAlbumString(formatedAlbum, getYear(path, f), artCol); 
-                        //log.debug("Hashstring: " + hashString);
                         Album tmp = new Album();
                         Album alb = new Album();
                         alb.setName(formatedAlbum);
