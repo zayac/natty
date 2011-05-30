@@ -109,7 +109,7 @@ public class TagsCommiter {
         try{
             Boolean allAlbums = false;
             Boolean allArtists = false;
-            Query q = em.createQuery("SELECT a FROM (Track a  LEFT JOIN tracks_albums b ON a.id=b.track_id) LEFT JOIN Album c ON c.id=b.album_id WHERE a.name=:name AND a.year=:year AND c.name=:album")
+            Query q = em.createQuery("SELECT a FROM Track a, Album b WHERE a.name=:name AND a.year=:year AND b.name=:album")
                     .setParameter("name", trName.replaceAll("\u0000", ""))
                     .setParameter("year", trYear)
                     .setParameter("album", albums.next().getName().replaceAll("\u0000", ""));
@@ -119,7 +119,7 @@ public class TagsCommiter {
             {
                 Track currentTr = tr_it.next();
                 Set<Album> currentCol = currentTr.getAlbumCollection();
-                if(alb.size() == list.size())
+                if(alb.size() == currentCol.size())
                 {
                     Iterator<Album> alb_it = alb.iterator();
                     allAlbums = true;
@@ -160,7 +160,7 @@ public class TagsCommiter {
         Iterator<Artist> first = art.iterator();
         try{
             Boolean allArtists = false;
-            Query q = em.createQuery("SELECT a FROM (Album a  LEFT JOIN albums_artists b ON a.id=b.album_id) LEFT JOIN artist c ON c.id=b.artist_id WHERE a.name=:name AND a.year=:year AND c.name=:artist")
+            Query q = em.createQuery("SELECT a FROM Album a, Artist b WHERE a.name=:name AND a.year=:year AND b.name=:artist")
                     .setParameter("name", albName.replaceAll("\u0000", ""))
                     .setParameter("year", albYear)
                     .setParameter("artist", first.next().getName().replaceAll("\u0000", ""));
@@ -169,8 +169,10 @@ public class TagsCommiter {
             while(alb_it.hasNext())
             {
                 Album currentAlb = alb_it.next();
+                log.debug(currentAlb.getName());
                 Set<Artist> currentCol = currentAlb.getArtistCollection();
-                if(art.size() == list.size())
+                log.debug(art.size() + " " + currentCol.size());
+                if(art.size() == currentCol.size())
                 {
                     Iterator<Artist> art_it = art.iterator();
                     allArtists = true;
@@ -183,7 +185,9 @@ public class TagsCommiter {
                         }
                     }
                     if(allArtists)
+                    {
                         return currentAlb;
+                    }
                 }
             }
             return null;
@@ -329,11 +333,8 @@ public class TagsCommiter {
                         else if ((tmp = findTrack(tr)) != null)
                         {
                             log.debug("Track is found in database");
-                            if(tmp.toString().equals(hashString))
-                            {
-                                tr = tmp;            
-                                tr.setExistsStatus(true);
-                            }
+                            tr = tmp;            
+                            tr.setExistsStatus(true);
                         }
                         log.debug("Track added: " + tr.toString());
                         ret.add(tr);
@@ -502,18 +503,15 @@ public class TagsCommiter {
                         alb.setYear(getYear(path, f));
                         if(albumCollection.containsKey(hashString))
                         {
-                            //log.debug("Album is found is collection");
+                            log.debug("Album is found in collection");
                             alb = albumCollection.get(hashString);                            
                             alb.setExistsStatus(true);
                         }
-                        else if ((tmp = findAlbum(alb)) != null)
+                        else if ((tmp = findAlbum(alb, artCol)) != null)
                         {
-                            //log.debug("Album is found is database");
-                            if(tmp.toString().equals(hashString))
-                            {
-                                alb = tmp;            
-                                alb.setExistsStatus(true);
-                            }
+                            log.debug("Album is found in database");
+                            alb = tmp;            
+                            alb.setExistsStatus(true);
                         }
                         //log.debug("Album added: " + alb.toString());
                         ret.add(alb);
