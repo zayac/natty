@@ -30,6 +30,7 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v1Tag;
+import org.jaudiotagger.tag.id3.ID3v24FieldKey;
 import org.jaudiotagger.tag.id3.ID3v24Frames;
 import org.jaudiotagger.tag.id3.ID3v24Tag;
 import ru.natty.persist.Album;
@@ -233,14 +234,14 @@ public class TagsCommiter {
         Pattern yearPathPattern = Pattern.compile("\\[(19|20)\\d\\d\\]");
         Calendar calendar = Calendar.getInstance();
         String year = null;
-        if(f.hasID3v1Tag())
+        if(f.hasID3v2Tag())
         {
-            ID3v1Tag tag = f.getID3v1Tag();
+            ID3v24Tag tag = f.getID3v2TagAsv24();
             if(tag != null && !tag.isEmpty())
             {
-                if(tag.getFirstYear() != null)
+                if(tag.getFirst(ID3v24FieldKey.YEAR) != null)
                 {
-                    Matcher m = yearPattern.matcher(tag.getFirstYear());
+                    Matcher m = yearPattern.matcher(tag.getFirst(ID3v24FieldKey.YEAR) );
                     if(m.find())
                     {
                         log.debug("'" + m.group() + "'");
@@ -278,9 +279,9 @@ public class TagsCommiter {
     private ArrayList<String> getTrackName(String path, MP3File f)
     {
         ArrayList<String> ret = new ArrayList<String>();
-        if(f.hasID3v1Tag())
+        if(f.hasID3v2Tag())
         {
-            ID3v1Tag tag = f.getID3v1Tag();
+            ID3v24Tag tag = f.getID3v2TagAsv24();
             if(tag != null && !tag.isEmpty())
             {
                 List<TagField> fields = tag.getFields(FieldKey.TITLE);
@@ -297,9 +298,9 @@ public class TagsCommiter {
     private ArrayList<Track> getTrack(String path, MP3File f)
     {
         ArrayList<Track> ret = new ArrayList<Track>();
-        if(f.hasID3v1Tag())
+        if(f.hasID3v2Tag())
         {
-            ID3v1Tag tag = f.getID3v1Tag();
+            ID3v24Tag tag = f.getID3v2TagAsv24();
             if(tag != null && !tag.isEmpty())
             {
                 List<TagField> fields = tag.getFields(FieldKey.TITLE);
@@ -348,9 +349,9 @@ public class TagsCommiter {
     private ArrayList<Artist> getArtist(String path, MP3File f)
     {
         ArrayList<Artist> ret = new ArrayList<Artist>();
-        if(f.hasID3v1Tag())
+        if(f.hasID3v2Tag())
         {
-            ID3v1Tag tag = f.getID3v1Tag();
+            ID3v24Tag tag = f.getID3v2TagAsv24();
             if(tag != null && !tag.isEmpty())
             {
                 List<TagField> fields = tag.getFields(FieldKey.ARTIST);
@@ -406,9 +407,9 @@ public class TagsCommiter {
     private ArrayList<Genre> getGenre(String path, MP3File f)
     {
         ArrayList<Genre> ret = new ArrayList<Genre>();
-        if(f.hasID3v1Tag())
+        if(f.hasID3v2Tag())
         {
-            ID3v1Tag tag = f.getID3v1Tag();
+            ID3v24Tag tag = f.getID3v2TagAsv24();
             if(tag != null && !tag.isEmpty())
             {
                 List<TagField> fields = tag.getFields(FieldKey.GENRE);
@@ -481,9 +482,9 @@ public class TagsCommiter {
     private ArrayList<Album> getAlbum(String path, MP3File f)
     {
         ArrayList<Album> ret = new ArrayList<Album>();
-        if(f.hasID3v1Tag())
+        if(f.hasID3v2Tag())
         {
-            ID3v1Tag tag = f.getID3v1Tag();
+            ID3v24Tag tag = f.getID3v2TagAsv24();
             if(tag != null && !tag.isEmpty())
             {
                 List<TagField> fields = tag.getFields(FieldKey.ALBUM);
