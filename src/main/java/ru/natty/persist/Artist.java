@@ -70,6 +70,8 @@ public class Artist implements Serializable, IdNamed {
     private Set<Album> albumCollection;
     @Transient 
     private Boolean beanExists = false;
+    @Transient 
+    private final Integer STRING_LENGTH = 255;
     
     public Boolean isExists()
     {
@@ -90,6 +92,8 @@ public class Artist implements Serializable, IdNamed {
     public Artist(String name) {
         this();
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Integer getId() {
@@ -103,6 +107,8 @@ public class Artist implements Serializable, IdNamed {
 
     public void setName(String name) {
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Set<Track> getTrackCollection() {

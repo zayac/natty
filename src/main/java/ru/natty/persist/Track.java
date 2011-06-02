@@ -42,6 +42,8 @@ import javax.persistence.Transient;
     @NamedQuery(name = "Track.findByName", query = "SELECT t FROM Track t WHERE t.name = :name"),
     @NamedQuery(name = "Track.findByPattern", query = "SELECT t FROM Track t WHERE UPPER(t.name) LIKE :name"),
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
+    @NamedQuery(name = "Track.findByNameAndYear", query = "SELECT t FROM Track t WHERE t.name = :name AND t.year = :year"),    
+    @NamedQuery(name = "Track.findByNameAndNullYear", query = "SELECT t FROM Track t WHERE t.name = :name AND t.year IS NULL"),       
     //@NamedQuery(name = "Track.findByNameYearAndAlbum", query = "SELECT a FROM (Track a  LEFT JOIN tracks_albums b ON a.id=b.track_id) LEFT JOIN Album c ON c.id=b.album_id WHERE a.name=:name AND a.year=:year AND c.name=:album"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable, IdNamed
@@ -67,6 +69,8 @@ public class Track implements Serializable, IdNamed
     private Set<Artist> artistCollection;
     @Transient 
     private Boolean beanExists = false;
+    @Transient 
+    private final Integer STRING_LENGTH = 255;
     
     public Boolean isExists()
     {
@@ -86,6 +90,8 @@ public class Track implements Serializable, IdNamed
     public Track(String name) {
         this();
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Integer getId() {
@@ -98,6 +104,8 @@ public class Track implements Serializable, IdNamed
 
     public void setName(String name) {
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Date getYear() {
@@ -177,15 +185,11 @@ public class Track implements Serializable, IdNamed
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (!simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year)) && (this.year == null || !simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year)))) {
+        if (this.year == null) return other.year == null;
+        if (other.year == null) return this.year == null;
+        if (!simpleDateformat.format(this.year).equals(simpleDateformat.format(other.year))) {
             return false;
         }
-        //if (this.albumCollection != other.albumCollection && (this.albumCollection == null || !this.albumCollection.equals(other.albumCollection))) {
-        //    return false;
-        //}
-        //if (this.artistCollection != other.artistCollection && (this.artistCollection == null || !this.artistCollection.equals(other.artistCollection))) {
-        //    return false;
-        //}
         return true;
     }
 
@@ -206,8 +210,6 @@ public class Track implements Serializable, IdNamed
         int hash = 3;
         hash = 29 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 29 * hash + (this.year != null ? simpleDateformat.format(this.year).hashCode() : 0);
-        //hash = 29 * hash + (this.albumCollection != null ? this.albumCollection.hashCode() : 0);
-        //hash = 29 * hash + (this.artistCollection != null ? this.artistCollection.hashCode() : 0);
         return hash;
     }
 
