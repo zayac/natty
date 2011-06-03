@@ -7,8 +7,6 @@ package ru.natty.persist;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -40,10 +38,6 @@ import org.apache.log4j.Logger;
 @Entity
 @Table(name = "album")
 @NamedQueries({
-//    @NamedQuery(name = "AlbumArtist.findByName", query = "SELECT Artist.name, Album.name FROM Artist " +
-//                                                    "INNER JOIN albums_artists ON Artist.id = albums_artists.artist_id " +
-//                                                    "INNER JOIN Album ON albums_artists.album_id = Album.id " + 
-//                                                    "WHERE Artist.name = :artist_name AND Album.name = :album_name"),
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
@@ -84,19 +78,6 @@ public class Album implements Serializable, IdNamed {
     private Boolean beanExists = false;
     @Transient 
     private final Integer STRING_LENGTH = 255;
-    
-//    @Transient
-//    private Artist artist = null;
-//    
-//    public void setArtist(Artist art)
-//    {
-//        artist = art;
-//    }
-//    
-//    public Artist getArtist()
-//    {
-//        return artist;
-//    }
     
     public Boolean isExists()
     {

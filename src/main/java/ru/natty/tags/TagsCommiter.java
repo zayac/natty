@@ -27,14 +27,7 @@ import org.apache.log4j.Logger;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.TagField;
-import org.jaudiotagger.tag.id3.AbstractID3v2Frame;
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v1Tag;
-import org.jaudiotagger.tag.id3.ID3v24FieldKey;
-import org.jaudiotagger.tag.id3.ID3v24Frames;
-import org.jaudiotagger.tag.id3.ID3v24Tag;
-import org.jaudiotagger.tag.id3.framebody.AbstractFrameBodyTextInfo;
 import ru.natty.persist.Album;
 import ru.natty.persist.Artist;
 import ru.natty.persist.Genre;
@@ -290,6 +283,7 @@ public class TagsCommiter {
     
     private String formatArtist(String source)
     {
+        source = EncodingConverter.getInstance().convertToUTF8(source);
         source.replaceAll("\\(\\d+\\)", "");
         try
         {
@@ -301,22 +295,6 @@ public class TagsCommiter {
         }
         return null; 
     }
-    
-    private ArrayList<String> getTrackName(String path, MP3File f)
-    {
-        ArrayList<String> ret = new ArrayList<String>();
-        Tag tag = f.getTag();
-        if(tag != null && !tag.isEmpty())
-        {
-            Integer fieldsNumber = tag.getFields(FieldKey.TITLE).size();
-            for(int i = 0; i < fieldsNumber; i++)
-            {
-                ret.add(tag.getValue(FieldKey.TITLE, i));
-            }
-        }
-        return ret;
-    }
-    
     
     private ArrayList<Track> getTrack(String path, MP3File f)
     {
@@ -413,6 +391,7 @@ public class TagsCommiter {
     
     private String formatGenre(String source)
     {
+        source = EncodingConverter.getInstance().convertToUTF8(source);
         source = source.replaceAll("\\(\\d+\\)", "");
         try
         {
@@ -468,6 +447,7 @@ public class TagsCommiter {
     
     private String formatTrack(String source)
     {
+        source = EncodingConverter.getInstance().convertToUTF8(source);
         source = source.replaceAll(" *\\d?\\d *- *", "");
         try
         {
@@ -482,6 +462,7 @@ public class TagsCommiter {
     
     private String formatAlbum(String source)
     {
+        source = EncodingConverter.getInstance().convertToUTF8(source);
         source = source.replaceAll("\\(\\d+\\)", "");
         try
         {

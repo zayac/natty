@@ -7,13 +7,11 @@ package ru.natty.persist;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -44,7 +42,6 @@ import javax.persistence.Transient;
     @NamedQuery(name = "Track.findByYear", query = "SELECT t FROM Track t WHERE t.year = :year"),
     @NamedQuery(name = "Track.findByNameAndYear", query = "SELECT t FROM Track t WHERE t.name = :name AND t.year = :year"),    
     @NamedQuery(name = "Track.findByNameAndNullYear", query = "SELECT t FROM Track t WHERE t.name = :name AND t.year IS NULL"),       
-    //@NamedQuery(name = "Track.findByNameYearAndAlbum", query = "SELECT a FROM (Track a  LEFT JOIN tracks_albums b ON a.id=b.track_id) LEFT JOIN Album c ON c.id=b.album_id WHERE a.name=:name AND a.year=:year AND c.name=:album"),
     @NamedQuery(name = "Track.findByUrl", query = "SELECT t FROM Track t WHERE t.url = :url")})
 public class Track implements Serializable, IdNamed
 {
