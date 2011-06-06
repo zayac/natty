@@ -7,8 +7,6 @@ package ru.natty.persist;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -40,15 +38,13 @@ import org.apache.log4j.Logger;
 @Entity
 @Table(name = "album")
 @NamedQueries({
-//    @NamedQuery(name = "AlbumArtist.findByName", query = "SELECT Artist.name, Album.name FROM Artist " +
-//                                                    "INNER JOIN albums_artists ON Artist.id = albums_artists.artist_id " +
-//                                                    "INNER JOIN Album ON albums_artists.album_id = Album.id " + 
-//                                                    "WHERE Artist.name = :artist_name AND Album.name = :album_name"),
     @NamedQuery(name = "Album.findAll", query = "SELECT a FROM Album a"),
     @NamedQuery(name = "Album.findById", query = "SELECT a FROM Album a WHERE a.id = :id"),
     @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name"),
     @NamedQuery(name = "Album.findByPattern", query = "SELECT a FROM Album a WHERE UPPER(a.name) like :name"),
     @NamedQuery(name = "Album.findByGenre", query = "SELECT a FROM Album a JOIN a.genreCollection g WHERE g.id = :genre"),
+    @NamedQuery(name = "Album.findByNameAndYear", query = "SELECT a FROM Album a WHERE a.name = :name AND a.year = :year"),    
+    @NamedQuery(name = "Album.findByNameAndNullYear", query = "SELECT a FROM Album a WHERE a.name = :name AND a.year IS NULL"),
     @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")})
 public class Album implements Serializable, IdNamed {
     private final static Logger log = Logger.getLogger(Album.class);
@@ -80,18 +76,8 @@ public class Album implements Serializable, IdNamed {
     private Set<Track> trackCollection;
     @Transient 
     private Boolean beanExists = false;
-//    @Transient
-//    private Artist artist = null;
-//    
-//    public void setArtist(Artist art)
-//    {
-//        artist = art;
-//    }
-//    
-//    public Artist getArtist()
-//    {
-//        return artist;
-//    }
+    @Transient 
+    private final Integer STRING_LENGTH = 255;
     
     public Boolean isExists()
     {
@@ -112,6 +98,8 @@ public class Album implements Serializable, IdNamed {
     public Album(String name) {
         this();
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Integer getId() {
@@ -124,6 +112,8 @@ public class Album implements Serializable, IdNamed {
 
     public void setName(String name) {
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Date getYear() {

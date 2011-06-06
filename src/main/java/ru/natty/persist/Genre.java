@@ -1,12 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ru.natty.persist;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +54,8 @@ public class Genre implements Serializable, IdNamed {
     private Set<Artist> artistCollection;
     @Transient 
     private Boolean beanExists = false;
+    @Transient 
+    private final Integer STRING_LENGTH = 255;
     
     public Boolean isExists()
     {
@@ -80,6 +76,8 @@ public class Genre implements Serializable, IdNamed {
     public Genre(String name) {
         this();
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Integer getId() {
@@ -92,6 +90,8 @@ public class Genre implements Serializable, IdNamed {
 
     public void setName(String name) {
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Collection<Album> getAlbumCollection() {

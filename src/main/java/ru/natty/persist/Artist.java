@@ -6,8 +6,6 @@
 package ru.natty.persist;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,10 +33,6 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "artist")
 @NamedQueries({
-//    @NamedQuery(name = "AlbumArtist.findByName", query = "SELECT Artist.name, Album.name FROM Artist " +
-//                                                            "INNER JOIN albums_artists ON Artist.id = albums_artists.artist_id " +
-//                                                            "INNER JOIN Album ON albums_artists.album_id = Album.id " + 
-//                                                            "WHERE Artist.name = :artist_name AND Album.name = :album_name"),
     @NamedQuery(name = "Artist.findAll", query = "SELECT a FROM Artist a"),
     @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id"),
     @NamedQuery(name = "Artist.findByGenreAndPattern", query = "SELECT a FROM Artist a"
@@ -46,7 +40,6 @@ import javax.persistence.Transient;
                                                                     + " WHERE g.id = :genre AND"
                                                                     + " UPPER(a.name) like :name"),
     @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")})
-    //@NamedQuery(name = "Artist.findByPattern", query = "SELECT a FROM Artist a WHERE UPPER(a.name) like UPPER(:name)")})
 public class Artist implements Serializable, IdNamed {
     private static final long serialVersionUID = 1L;
     @Id
@@ -70,6 +63,8 @@ public class Artist implements Serializable, IdNamed {
     private Set<Album> albumCollection;
     @Transient 
     private Boolean beanExists = false;
+    @Transient 
+    private final Integer STRING_LENGTH = 255;
     
     public Boolean isExists()
     {
@@ -90,6 +85,8 @@ public class Artist implements Serializable, IdNamed {
     public Artist(String name) {
         this();
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Integer getId() {
@@ -103,6 +100,8 @@ public class Artist implements Serializable, IdNamed {
 
     public void setName(String name) {
         this.name = name.replaceAll("\u0000", "");
+        if(this.name.length() > STRING_LENGTH)
+            this.name = this.name.substring(0, STRING_LENGTH);
     }
 
     public Set<Track> getTrackCollection() {
