@@ -59,7 +59,7 @@ public class IPlayer extends IWidget
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				sm.togglePause(SOUND_ID);
+				sm.togglePause (SOUND_ID);
 			}
 		});
 	}
