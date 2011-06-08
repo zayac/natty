@@ -9,8 +9,8 @@
     <property name="User" value="nattyuser"/>
     <property name="Password" value="usernatty"/>
 <!--    <property name="serverName" value="maxwell"/>-->
-    <property name="serverName" value="localhost"/>
-	<!--    <property name="serverName" value="93.175.1.114"/> -->
+<!--    <property name="serverName" value="localhost"/>-->
+    <property name="serverName" value="93.175.1.114"/>
 <!--    <property name="serverName" value="93.175.1.96"/>-->
     <property name="portNumber" value="5432"/>
     <property name="databaseName" value="natty"/>
