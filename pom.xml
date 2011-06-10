@@ -28,46 +28,28 @@
       <id>EclipseLink Repo</id>
       <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
     </repository>
-  </repositories>
-  <dependencies>
-		  <!--    <dependency>
-      <groupId>de.umass.lastfm</groupId>
-      <artifactId>lastfm</artifactId>
-      <version>0.1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/jar/last.fm-bindings-0.1.0.jar</systemPath>
-	</dependency>-->
+</repositories>
+<dependencies>
     <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>eclipselink</artifactId>
-      <version>2.0.0</version>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>eclipselink</artifactId>
+        <version>2.0.0</version>
     </dependency>
-    <dependency>
+      <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>2.3</version>
     </dependency>
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>1.7.1</version>
-      <scope>compile</scope>
+        <groupId>jcifs</groupId>
+        <artifactId>jcifs</artifactId>
+        <version>1.2.6</version>
     </dependency>
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>9.0-801.jdbc4</version>
     </dependency>
-    <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <!--<dependency>
-      <groupId>toplink.essentials</groupId>
-      <artifactId>toplink-essentials</artifactId>
-      <version>2.0-35</version>
-    </dependency>-->
     <dependency>
        <groupId>org.blinkenlights.jid3</groupId>
        <artifactId>JID3</artifactId>
@@ -79,29 +61,24 @@
       <version>2.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>jcifs</groupId>
-      <artifactId>jcifs</artifactId>
-      <version>1.2.6</version>
-    </dependency>    
-    <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.12</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>javax.persistence</artifactId>
-      <version>2.0.0</version>
-      <type>jar</type>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>javax.persistence</artifactId>
+        <version>2.0.0</version>
+        <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-      <version>1.0</version>
-      <type>jar</type>
+        <groupId>javax.persistence</groupId>
+        <artifactId>persistence-api</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
     </dependency>
-  </dependencies>
+</dependencies>
   <build>
     <plugins>
       <plugin>
@@ -112,7 +89,20 @@
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
-      </plugin>
-    </plugins>
+    </plugin>
+    <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+            <archive>
+                <manifest>
+                    <mainClass>ru.natty.parser.MainClass</mainClass>
+                </manifest>
+            </archive>
+            <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+        </configuration>
+    </plugin>
+</plugins>
   </build>
 </project>
