@@ -1,0 +1,4 @@
+<sun-web-app>
+    <property name="allowLinking" value="true"/>
+</sun-web-app>
+
